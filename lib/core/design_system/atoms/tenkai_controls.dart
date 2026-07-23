@@ -67,74 +67,59 @@ class _TenkaiInputState extends State<TenkaiInput> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
         if (widget.label != null) ...[
-          Text(widget.label!.toUpperCase(), style: TenkaiTypography.label),
+          Text(widget.label!.toUpperCase(), style: theme.textTheme.labelMedium),
           const SizedBox(height: 6),
         ],
-        TenkaiGlowWrapper(
-          glowing: _focusNode.hasFocus,
-          intensity: TenkaiGlowIntensity.soft,
-          borderRadius: TenkaiRadius.md,
-          borderColor: _focusNode.hasFocus
-              ? TenkaiColors.white
-              : TenkaiColors.gray700,
-          child: TextField(
-            controller: widget.controller,
-            focusNode: _focusNode,
-            obscureText: widget.obscureText,
-            keyboardType: widget.keyboardType,
-            enabled: widget.enabled,
-            maxLines: widget.maxLines,
-            onChanged: widget.onChanged,
-            onSubmitted: widget.onSubmitted,
-            autofillHints: widget.autofillHints,
-            textInputAction: widget.textInputAction,
-            style: TenkaiTypography.body.copyWith(
-              color: TenkaiColors.white,
+        TextField(
+          controller: widget.controller,
+          focusNode: _focusNode,
+          obscureText: widget.obscureText,
+          keyboardType: widget.keyboardType,
+          enabled: widget.enabled,
+          maxLines: widget.maxLines,
+          onChanged: widget.onChanged,
+          onSubmitted: widget.onSubmitted,
+          autofillHints: widget.autofillHints,
+          textInputAction: widget.textInputAction,
+          style: TenkaiTypography.body,
+          cursorColor: TenkaiColors.white,
+          cursorWidth: 1.8,
+          cursorHeight: 20,
+          cursorRadius: Radius.circular(TenkaiRadius.md),
+          cursorOpacityAnimates: true,
+          decoration: InputDecoration(
+            hintText: widget.placeholder,
+            hintStyle: TenkaiTypography.body.copyWith(
+              color: TenkaiColors.gray600,
               fontWeight: FontWeight.w300,
             ),
-            cursorColor: TenkaiColors.white,
-            cursorWidth: 1.8,
-            cursorHeight: 20,
-            cursorRadius: Radius.circular(TenkaiRadius.md),
-            cursorOpacityAnimates: true,
-            decoration: InputDecoration(
-              hintText: widget.placeholder,
-              hintStyle: TenkaiTypography.body.copyWith(
-                color: TenkaiColors.gray600,
-                fontWeight: FontWeight.w300,
-              ),
-              filled: true,
-              fillColor: _focusNode.hasFocus
-                  ? TenkaiColors.gray800
-                  : TenkaiColors.gray900,
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 14,
-                vertical: 12,
-              ),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(TenkaiRadius.md),
-                borderSide: BorderSide.none,
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(TenkaiRadius.md),
-                borderSide: BorderSide.none,
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(TenkaiRadius.md),
-                borderSide: BorderSide.none,
-              ),
-              prefixIcon: widget.prefix,
-              prefixIconConstraints: BoxConstraints(
-                maxWidth: 32,
-                maxHeight: 32,
-              ),
-              suffixIcon: widget.suffix,
+            filled: true,
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 14,
+              vertical: 12,
             ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(TenkaiRadius.md),
+              borderSide: BorderSide(color: TenkaiColors.gray400),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(TenkaiRadius.md),
+              borderSide: BorderSide(color: TenkaiColors.gray400),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(TenkaiRadius.md),
+              borderSide: BorderSide(color: TenkaiColors.gray400),
+            ),
+            prefixIcon: widget.prefix,
+            prefixIconConstraints: BoxConstraints(maxWidth: 32, maxHeight: 32),
+            suffixIcon: widget.suffix,
           ),
         ),
       ],
@@ -526,6 +511,8 @@ class _TenkaiSliderState extends State<TenkaiSlider> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
@@ -537,7 +524,7 @@ class _TenkaiSliderState extends State<TenkaiSlider> {
               if (widget.label != null)
                 Text(
                   widget.label!.toUpperCase(),
-                  style: TenkaiTypography.label,
+                  style: theme.textTheme.labelMedium,
                 ),
               if (widget.showValue)
                 Text(

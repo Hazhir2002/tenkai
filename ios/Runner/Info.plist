@@ -45,5 +45,9 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Tenkai uses speech recognition to log workouts by voice.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Tenkai needs microphone access for voice-logged workouts.</string>
 </dict>
 </plist>

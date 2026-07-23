@@ -37,6 +37,8 @@ class _TenkaiTabsState extends State<TenkaiTabs> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Container(
       decoration: const BoxDecoration(
         border: Border(
@@ -66,7 +68,7 @@ class _TenkaiTabsState extends State<TenkaiTabs> {
               ),
               child: Text(
                 widget.tabs[i].toUpperCase(),
-                style: TenkaiTypography.label.copyWith(
+                style: theme.textTheme.labelMedium?.copyWith(
                   color: active ? TenkaiColors.white : TenkaiColors.gray600,
                   letterSpacing: 1.0,
                 ),

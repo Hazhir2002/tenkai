@@ -56,6 +56,8 @@ class TenkaiBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
       decoration: BoxDecoration(
@@ -83,7 +85,7 @@ class TenkaiBadge extends StatelessWidget {
           ],
           Text(
             label.toUpperCase(),
-            style: TenkaiTypography.label.copyWith(color: _text),
+            style: theme.textTheme.labelMedium?.copyWith(color: _text),
           ),
         ],
       ),
@@ -161,13 +163,15 @@ class TenkaiMetricCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return TenkaiCard(
       interactive: true,
       glowOnHover: true,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label.toUpperCase(), style: TenkaiTypography.label),
+          Text(label.toUpperCase(), style: theme.textTheme.labelMedium),
           const SizedBox(height: 8),
           Text(
             value,
@@ -271,13 +275,18 @@ class TenkaiDivider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     if (label != null) {
       return Row(
         children: [
           Expanded(child: _line()),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: Text(label!.toUpperCase(), style: TenkaiTypography.label),
+            child: Text(
+              label!.toUpperCase(),
+              style: theme.textTheme.labelMedium,
+            ),
           ),
           Expanded(child: _line()),
         ],

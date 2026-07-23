@@ -24,38 +24,28 @@ abstract final class TenkaiTheme {
 
       // ── App bar ──
       appBarTheme: const AppBarTheme(
-        backgroundColor: TenkaiColors.gray950,
+        backgroundColor: Colors.transparent,
         foregroundColor: TenkaiColors.white,
         elevation: 0,
         scrolledUnderElevation: 0,
-        titleTextStyle: TextStyle(
-          fontFamily: TenkaiTypography.fontDisplay,
-          fontSize: 15,
-          fontWeight: FontWeight.w500,
-          letterSpacing: -0.2,
-          color: TenkaiColors.white,
-        ),
+        titleTextStyle: TenkaiTypography.h2,
         iconTheme: IconThemeData(color: TenkaiColors.gray400, size: 20),
-        systemOverlayStyle: SystemUiOverlayStyle(
-          statusBarBrightness: Brightness.dark,
-          statusBarIconBrightness: Brightness.light,
-          statusBarColor: Colors.transparent,
-        ),
       ),
 
       // ── Text ──
       textTheme: TextTheme(
         displayLarge: TenkaiTypography.d1,
         displayMedium: TenkaiTypography.d2,
+        displaySmall: TenkaiTypography.d3,
         headlineLarge: TenkaiTypography.h1,
         headlineMedium: TenkaiTypography.h2,
         headlineSmall: TenkaiTypography.h3,
         bodyLarge: TenkaiTypography.body,
         bodyMedium: TenkaiTypography.body,
         bodySmall: TenkaiTypography.bodySmall,
-        labelLarge: TenkaiTypography.labelMd,
-        labelMedium: TenkaiTypography.label,
-        labelSmall: TenkaiTypography.label,
+        labelLarge: TenkaiTypography.labelLg,
+        labelMedium: TenkaiTypography.labelMd,
+        labelSmall: TenkaiTypography.labelSm,
       ),
 
       // ── Divider ──
