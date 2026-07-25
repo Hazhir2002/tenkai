@@ -49,5 +49,9 @@
 	<string>Tenkai uses speech recognition to log workouts by voice.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Tenkai needs microphone access for voice-logged workouts.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Tenkai uses the camera to photograph book covers.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Tenkai lets you pick a book cover photo from your library.</string>
 </dict>
 </plist>

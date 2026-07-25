@@ -48,9 +48,7 @@ class TenkaiBadge extends StatelessWidget {
 
   List<BoxShadow>? get _glow => switch (variant) {
     TenkaiBadgeVariant.active => TenkaiGlow.soft,
-    TenkaiBadgeVariant.success => [
-      BoxShadow(color: TenkaiColors.success.withOpacity(0.2), blurRadius: 8),
-    ],
+    TenkaiBadgeVariant.success => TenkaiGlow.success,
     _ => null,
   };
 
@@ -257,9 +255,11 @@ class _ProgressFill extends StatelessWidget {
     return Container(
       width: maxWidth * value.clamp(0.0, 1.0),
       height: 1,
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: TenkaiColors.white,
-        boxShadow: [BoxShadow(color: Color(0x66FFFFFF), blurRadius: 6)],
+        boxShadow: [
+          BoxShadow(color: TenkaiColors.white.withOpacity(0.4), blurRadius: 6),
+        ],
       ),
     );
   }
@@ -299,9 +299,13 @@ class TenkaiDivider extends StatelessWidget {
     if (glow) {
       return Container(
         height: 1,
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.transparent, Color(0x33FFFFFF), Colors.transparent],
+            colors: [
+              Colors.transparent,
+              TenkaiColors.white.withOpacity(0.2),
+              Colors.transparent,
+            ],
           ),
         ),
       );

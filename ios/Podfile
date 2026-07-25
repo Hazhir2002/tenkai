@@ -39,5 +39,36 @@ end
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)
+    # cupertino_native_better ships Swift that only emits warnings under the
+    # Swift 5 language mode but hard-errors under Swift 6 (Sendable checks).
+    # Pin it to Swift 5 so it builds on the current Xcode/Swift toolchain.
+    if target.name == 'cupertino_native_better'
+      target.build_configurations.each do |config|
+        config.build_settings['SWIFT_VERSION'] = '5.0'
+      end
+    end
+    # awesome_notifications (IosAwnCore) forces BUILD_LIBRARY_FOR_DISTRIBUTION,
+    # which CocoaPods propagates onto the Runner app target. Runner uses an
+    # Objective-C bridging header, and Xcode rejects a bridging header together
+    # with a Swift module interface ("bridging headers with module interfaces
+    # is unsupported"). None of these app-embedded frameworks need library
+    # evolution, so turn it off everywhere.
+    target.build_configurations.each do |config|
+      config.build_settings['BUILD_LIBRARY_FOR_DISTRIBUTION'] = 'NO'
+    end
+  end
+
+  # The setting above only touches the Pods project's build settings; the
+  # Runner target reads BUILD_LIBRARY_FOR_DISTRIBUTION from the *generated*
+  # xcconfigs (e.g. Pods-Runner.debug.xcconfig, which CocoaPods sets to YES
+  # because IosAwnCore requests it). Flip those to NO too.
+  Dir.glob(File.join(installer.sandbox.root, 'Target Support Files', '**', '*.xcconfig')).each do |xcconfig|
+    contents = File.read(xcconfig)
+    if contents.include?('BUILD_LIBRARY_FOR_DISTRIBUTION = YES')
+      File.write(
+        xcconfig,
+        contents.gsub('BUILD_LIBRARY_FOR_DISTRIBUTION = YES', 'BUILD_LIBRARY_FOR_DISTRIBUTION = NO'),
+      )
+    end
   end
 end

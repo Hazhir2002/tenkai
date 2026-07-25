@@ -40,8 +40,11 @@ abstract final class TenkaiTheme {
         headlineLarge: TenkaiTypography.h1,
         headlineMedium: TenkaiTypography.h2,
         headlineSmall: TenkaiTypography.h3,
-        bodyLarge: TenkaiTypography.body,
-        bodyMedium: TenkaiTypography.body,
+        titleLarge: TenkaiTypography.titleLg,
+        titleMedium: TenkaiTypography.titleMd,
+        titleSmall: TenkaiTypography.titleSm,
+        bodyLarge: TenkaiTypography.bodyLg,
+        bodyMedium: TenkaiTypography.bodyMd,
         bodySmall: TenkaiTypography.bodySmall,
         labelLarge: TenkaiTypography.labelLg,
         labelMedium: TenkaiTypography.labelMd,
@@ -59,10 +62,12 @@ abstract final class TenkaiTheme {
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: TenkaiColors.gray900,
-        hintStyle: TenkaiTypography.body.copyWith(color: TenkaiColors.gray600),
+        hintStyle: TenkaiTypography.bodyMd.copyWith(
+          color: TenkaiColors.gray600,
+        ),
         contentPadding: const EdgeInsets.symmetric(
-          horizontal: 14,
-          vertical: 12,
+          horizontal: 14, // between sm(8)/md(12) — deliberately tuned
+          vertical: TenkaiSpacing.md,
         ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(TenkaiRadius.sharp),
@@ -83,7 +88,9 @@ abstract final class TenkaiTheme {
         backgroundColor: TenkaiColors.gray900,
         modalBackgroundColor: TenkaiColors.gray900,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(8)),
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(TenkaiRadius.sharp),
+          ),
         ),
       ),
 
@@ -118,6 +125,8 @@ abstract final class TenkaiTheme {
               : Colors.transparent;
         }),
         checkColor: WidgetStateProperty.all(TenkaiColors.black),
+        // Intentionally sharper than TenkaiRadius.sharp (8) — a near-square
+        // corner reads better at this control's small size.
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
         side: const BorderSide(color: TenkaiColors.gray600, width: 0.5),
       ),
@@ -125,7 +134,7 @@ abstract final class TenkaiTheme {
       // ── Snackbar ──
       snackBarTheme: SnackBarThemeData(
         backgroundColor: TenkaiColors.gray800,
-        contentTextStyle: TenkaiTypography.body.copyWith(
+        contentTextStyle: TenkaiTypography.bodyMd.copyWith(
           color: TenkaiColors.white,
         ),
         shape: RoundedRectangleBorder(

@@ -6,18 +6,13 @@ class StatRepository {
   StatRepository(this._db);
   final AppDatabase _db;
 
-  Future<UserStatData> addStat(UserStatCompanion entry) {
-    return _db.into(_db.userStat).insertReturning(entry);
-  }
+  Future<UserStatData> addStat(UserStatCompanion entry) =>
+      _db.profileDao.addStat(entry);
 
-  Future<List<UserStatData>> get allUserStats => _db.select(_db.userStat).get();
+  Future<List<UserStatData>> get allUserStats => _db.profileDao.allUserStats;
 
-  Future<UserStatData> updateStat(UserStatData entry) async {
-    await _db.update(_db.userStat).replace(entry);
-    return (_db.select(
-      _db.userStat,
-    )..where((t) => t.id.equals(entry.id))).getSingle();
-  }
+  Future<UserStatData> updateStat(UserStatData entry) =>
+      _db.profileDao.updateStat(entry);
 }
 
 final statRepositoryProvider = Provider<StatRepository>(

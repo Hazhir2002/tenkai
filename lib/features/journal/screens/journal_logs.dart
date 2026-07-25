@@ -1,10 +1,11 @@
-import 'package:cupertino_native/cupertino_native.dart';
+import 'package:cupertino_native_better/cupertino_native_better.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:tenkai/core/database.dart';
+import 'package:tenkai/core/design_system/atoms/tenkai_display.dart';
 
 import '../providers/journal_entries_provider.dart';
 import '../providers/journal_flow_provider.dart';
@@ -56,7 +57,7 @@ class _EmptyState extends StatelessWidget {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(32),
-        child: Card(
+        child: TenkaiCard(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -111,7 +112,7 @@ class _EntryCard extends HookConsumerWidget {
         ),
       ),
       onDismissed: (_) => notifier.deleteEntry(entry.id),
-      child: Card(
+      child: TenkaiCard(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

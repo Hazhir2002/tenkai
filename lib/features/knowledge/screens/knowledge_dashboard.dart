@@ -1,95 +1,109 @@
+import 'package:cupertino_native_better/cupertino_native_better.dart';
 import 'package:flutter/material.dart';
-import 'package:speech_to_text/speech_recognition_result.dart';
-import 'package:speech_to_text/speech_to_text.dart';
+import 'package:go_router/go_router.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:tenkai/core/design_system/tenkai.dart';
 
-class KnowledgeDashboard extends StatefulWidget {
+import '../models/book_enums.dart';
+import '../providers/books_provider.dart';
+
+/// The Knowledge tab is a hub of subsections. Books is the first one; more
+/// (notes, courses, ...) will land here over time.
+class KnowledgeDashboard extends HookConsumerWidget {
   const KnowledgeDashboard({super.key});
 
   @override
-  State<KnowledgeDashboard> createState() => _KnowledgeDashboardState();
+  Widget build(BuildContext context, WidgetRef ref) {
+    final booksAsync = ref.watch(booksProvider);
+    final reading = booksAsync.valueOrNull
+        ?.where((b) => BookStatus.fromDb(b.status) == BookStatus.reading)
+        .length;
+
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      extendBodyBehindAppBar: true,
+      appBar: const TenkaiAppBar(title: 'Knowledge', showBackButton: false),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(
+            TenkaiSpacing.lg,
+            TenkaiAppBar.compactHeight + TenkaiSpacing.md,
+            TenkaiSpacing.lg,
+            120,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TenkaiCard(
+                interactive: true,
+                glowOnHover: true,
+                onTap: () => context.push('/knowledge/books'),
+                child: Row(
+                  children: [
+                    const TenkaiNode(size: 22),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Books', style: TenkaiTypography.h3),
+                          const SizedBox(height: 2),
+                          Text(
+                            reading == null
+                                ? 'Track what you\'re reading'
+                                : reading == 0
+                                ? 'Nothing in progress'
+                                : '$reading reading',
+                            style: TenkaiTypography.bodySmall,
+                          ),
+                        ],
+                      ),
+                    ),
+                    const CNIcon(
+                      symbol: CNSymbol('chevron.right', color: TenkaiColors.gray600),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 12),
+              _ComingSoonCard(title: 'Notes'),
+              const SizedBox(height: 12),
+              _ComingSoonCard(title: 'Courses'),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
 
-class _KnowledgeDashboardState extends State<KnowledgeDashboard> {
-  final SpeechToText _speechToText = SpeechToText();
-  bool _speechEnabled = false;
-  String _lastWords = '';
-
-  @override
-  void initState() {
-    super.initState();
-    _initSpeech();
-  }
-
-  /// This has to happen only once per app
-  void _initSpeech() async {
-    _speechEnabled = await _speechToText.initialize();
-    setState(() {});
-  }
-
-  /// Each time to start a speech recognition session
-  void _startListening() async {
-    await _speechToText.listen(onResult: _onSpeechResult);
-    setState(() {});
-  }
-
-  /// Manually stop the active speech recognition session
-  /// Note that there are also timeouts that each platform enforces
-  /// and the SpeechToText plugin supports setting timeouts on the
-  /// listen method.
-  void _stopListening() async {
-    await _speechToText.stop();
-    setState(() {});
-  }
-
-  /// This is the callback that the SpeechToText plugin calls when
-  /// the platform returns recognized words.
-  void _onSpeechResult(SpeechRecognitionResult result) {
-    setState(() {
-      _lastWords = result.recognizedWords;
-    });
-  }
+class _ComingSoonCard extends StatelessWidget {
+  const _ComingSoonCard({required this.title});
+  final String title;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Speech Demo')),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Container(
-              padding: EdgeInsets.all(16),
-              child: Text(
-                'Recognized words:',
-                style: TextStyle(fontSize: 20.0),
-              ),
+    return Opacity(
+      opacity: 0.4,
+      child: TenkaiCard(
+        child: Row(
+          children: [
+            const CNIcon(
+              symbol: CNSymbol('hourglass', size: 20, color: TenkaiColors.gray600),
             ),
+            const SizedBox(width: 16),
             Expanded(
-              child: Container(
-                padding: EdgeInsets.all(16),
-                child: Text(
-                  // If listening is active show the recognized words
-                  _speechToText.isListening
-                      ? '$_lastWords'
-                      // If listening isn't active but could be tell the user
-                      // how to start it, otherwise indicate that speech
-                      // recognition is not yet ready or not supported on
-                      // the target device
-                      : _speechEnabled
-                      ? 'Tap the microphone to start listening...'
-                      : 'Speech not available',
-                ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(title, style: TenkaiTypography.h3),
+                  const SizedBox(height: 2),
+                  Text('Coming soon', style: TenkaiTypography.bodySmall),
+                ],
               ),
             ),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed:
-            // If not yet listening for speech start, otherwise stop
-            _speechToText.isNotListening ? _startListening : _stopListening,
-        tooltip: 'Listen',
-        child: Icon(_speechToText.isNotListening ? Icons.mic_off : Icons.mic),
       ),
     );
   }

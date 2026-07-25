@@ -1,8 +1,5 @@
-import 'package:cupertino_native/components/tab_bar.dart';
-import 'package:cupertino_native/style/sf_symbol.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:tenkai/core/design_system/atoms/tenkai_icon_button.dart';
 import 'package:tenkai/core/design_system/tenkai.dart';
 import 'package:tenkai/features/profile/provider/user_stat_provider.dart';
 import 'package:tenkai/features/profile/widgets/add_stat_form.dart';
@@ -21,10 +18,14 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final userStatState = ref.watch(userStatProvider);
 
     return Scaffold(
-      appBar: AppBar(
+      backgroundColor: Colors.transparent,
+      extendBodyBehindAppBar: true,
+      appBar: TenkaiAppBar(
+        title: 'Profile',
+        showBackButton: false,
         actions: [
-          TenkaiIconButton(
-            iconAsset: 'add',
+          TenkaiAppBarAction(
+            symbol: 'plus',
             onPressed: () => showModalBottomSheet(
               context: context,
               builder: (context) => SizedBox(
@@ -41,10 +42,15 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       body: Builder(
         builder: (context) {
           if (userStatState.isLoading) {
-            return const CircularProgressIndicator();
+            return const Center(child: CircularProgressIndicator());
           } else if (userStatState.userStats != null) {
             final userStats = userStatState.userStats!;
             return ListView.builder(
+              padding: EdgeInsets.only(
+                top:
+                    MediaQuery.of(context).padding.top +
+                    TenkaiAppBar.compactHeight,
+              ),
               itemCount: userStats.length,
               itemBuilder: (_, index) => GestureDetector(
                 onTap: () => showModalBottomSheet(

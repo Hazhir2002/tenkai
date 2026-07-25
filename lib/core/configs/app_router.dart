@@ -1,3 +1,4 @@
+import 'package:cupertino_native_better/components/tab_bar.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tenkai/core/widgets/main_shell_wrapper.dart';
@@ -7,14 +8,17 @@ import 'package:tenkai/features/gym_tracker/screens/create_program_screen.dart';
 import 'package:tenkai/features/gym_tracker/screens/exercises_screen.dart';
 import 'package:tenkai/features/gym_tracker/screens/gym_tracker_screen.dart';
 import 'package:tenkai/features/gym_tracker/screens/programs_screen.dart';
-import 'package:tenkai/features/habit_tracker/presentation/habit_tracker_screen.dart';
+import 'package:tenkai/features/habit_tracker/screens/habit_dashboard.dart';
 import 'package:tenkai/features/journal/screens/journal_dashboard.dart';
 import 'package:tenkai/features/journal/screens/journal_logs.dart';
+import 'package:tenkai/features/knowledge/screens/book_detail_screen.dart';
+import 'package:tenkai/features/knowledge/screens/books_screen.dart';
 import 'package:tenkai/features/knowledge/screens/knowledge_dashboard.dart';
 import 'package:tenkai/features/profile/screens/profile_screen.dart';
 
 final goRouterProvider = Provider<GoRouter>((ref) {
   return GoRouter(
+    // observers: [CNTabBarRouteObserver()],
     initialLocation: '/profile',
     routes: [
       StatefulShellRoute.indexedStack(
@@ -25,7 +29,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             routes: [
               GoRoute(
                 path: '/',
-                builder: (context, state) => const HabitTrackerScreen(),
+                builder: (context, state) => const HabitDashboard(),
               ),
             ],
           ),
@@ -42,6 +46,20 @@ final goRouterProvider = Provider<GoRouter>((ref) {
               GoRoute(
                 path: '/knowledge',
                 builder: (context, state) => const KnowledgeDashboard(),
+                routes: [
+                  GoRoute(
+                    path: '/books',
+                    builder: (context, state) => const BooksScreen(),
+                    routes: [
+                      GoRoute(
+                        path: '/:id',
+                        builder: (context, state) => BookDetailScreen(
+                          bookId: int.parse(state.pathParameters['id']!),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ],
           ),

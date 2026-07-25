@@ -6,9 +6,10 @@ import '../sounds/tenkai_sound.dart';
 import 'tenkai_glow.dart';
 
 // ─────────────────────────────────────────────
-// TENKAI · Atom — TenkaiButton
-// Three variants: primary, ghost, danger
-// Context-aware LED: ghost = soft, primary = strong on press
+// TENKAI · Atom — TenkaiIconButton
+// Minimal icon-only affordance: transparent background,
+// soft LED glow on hover/press. No variants — use TenkaiButton
+// for labeled/filled buttons.
 // ─────────────────────────────────────────────
 
 enum TenkaiIconButtonSize { sm, md, lg }
@@ -19,7 +20,6 @@ class TenkaiIconButton extends StatefulWidget {
     required this.iconAsset,
     required this.onPressed,
     this.size = TenkaiIconButtonSize.md,
-    this.loading = false,
     this.enabled = true,
     this.sound,
   });
@@ -27,7 +27,6 @@ class TenkaiIconButton extends StatefulWidget {
   final String iconAsset;
   final VoidCallback? onPressed;
   final TenkaiIconButtonSize size;
-  final bool loading;
   final bool enabled;
   final TenkaiSoundEvent? sound;
 
@@ -61,7 +60,7 @@ class _TenkaiIconButtonState extends State<TenkaiIconButton>
     super.dispose();
   }
 
-  bool get _isActive => widget.enabled && !widget.loading;
+  bool get _isActive => widget.enabled;
 
   final TenkaiSoundEvent _defaultSound = TenkaiSoundEvent.tap;
 
@@ -100,16 +99,16 @@ class _TenkaiIconButtonState extends State<TenkaiIconButton>
     ),
   };
 
-  final Color _bgColor = Colors.transparent;
-
-  final Color _borderColor = Colors.transparent;
-
   TenkaiGlowIntensity get _glowIntensity {
     if (!(_hovered || _pressed)) return TenkaiGlowIntensity.none;
     return TenkaiGlowIntensity.soft;
   }
 
-  final Color _glowColor = TenkaiColors.white;
+  double get _iconSize => switch (widget.size) {
+    TenkaiIconButtonSize.sm => 20,
+    TenkaiIconButtonSize.md => 24,
+    TenkaiIconButtonSize.lg => 32,
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -132,20 +131,20 @@ class _TenkaiIconButtonState extends State<TenkaiIconButton>
             glowing: _hovered || _pressed,
             intensity: _glowIntensity,
             borderRadius: TenkaiRadius.md,
-            borderColor: _borderColor,
-            glowColor: _glowColor,
+            borderColor: Colors.transparent,
+            glowColor: TenkaiColors.white,
             child: AnimatedContainer(
               duration: TenkaiDuration.medium,
               curve: TenkaiCurves.spring,
               padding: _padding,
               decoration: BoxDecoration(
-                color: _bgColor,
+                color: Colors.transparent,
                 borderRadius: BorderRadius.circular(TenkaiRadius.md),
               ),
               child: TenkaiIcon(
                 assetName: widget.iconAsset,
-                width: 32,
-                height: 32,
+                width: _iconSize,
+                height: _iconSize,
               ),
             ),
           ),

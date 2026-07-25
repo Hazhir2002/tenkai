@@ -17,7 +17,7 @@ enum TenkaiButtonSize { sm, md, lg }
 class TenkaiButton extends StatefulWidget {
   const TenkaiButton({
     super.key,
-    this.label,
+    required this.label,
     required this.onPressed,
     this.variant = TenkaiButtonVariant.primary,
     this.size = TenkaiButtonSize.md,
@@ -27,7 +27,7 @@ class TenkaiButton extends StatefulWidget {
     this.sound,
   });
 
-  final String? label;
+  final String label;
   final VoidCallback? onPressed;
   final TenkaiButtonVariant variant;
   final TenkaiButtonSize size;
@@ -231,7 +231,7 @@ class _TenkaiButtonState extends State<TenkaiButton>
                               color: _textColor,
                             ),
                           )
-                        : Text(widget.label!, style: _labelStyle),
+                        : Text(widget.label, style: _labelStyle),
                   ),
                 ],
               ),

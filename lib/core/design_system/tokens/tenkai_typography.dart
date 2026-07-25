@@ -54,7 +54,35 @@ abstract final class TenkaiTypography {
 
   static const TextStyle h3 = TextStyle(
     fontFamily: fontDisplay,
-    fontSize: 15,
+    fontSize: 16,
+    fontWeight: FontWeight.w600,
+    letterSpacing: -0.15,
+    height: 1.4,
+    color: TenkaiColors.white,
+  );
+
+  // ── title ──
+  static const TextStyle titleLg = TextStyle(
+    fontFamily: fontBody,
+    fontSize: 24,
+    fontWeight: FontWeight.w600,
+    letterSpacing: -0.56,
+    height: 1.2,
+    color: TenkaiColors.white,
+  );
+
+  static const TextStyle titleMd = TextStyle(
+    fontFamily: fontBody,
+    fontSize: 20,
+    fontWeight: FontWeight.w600,
+    letterSpacing: -0.3,
+    height: 1.3,
+    color: TenkaiColors.white,
+  );
+
+  static const TextStyle titleSm = TextStyle(
+    fontFamily: fontBody,
+    fontSize: 16,
     fontWeight: FontWeight.w600,
     letterSpacing: -0.15,
     height: 1.4,
@@ -62,22 +90,31 @@ abstract final class TenkaiTypography {
   );
 
   // ── Body ──
-  static const TextStyle body = TextStyle(
+  static const TextStyle bodyLg = TextStyle(
     fontFamily: fontBody,
-    fontSize: 15,
+    fontSize: 18,
     fontWeight: FontWeight.w400,
     letterSpacing: 0.1,
     height: 1.6,
-    color: TenkaiColors.gray100,
+    color: TenkaiColors.gray200,
+  );
+
+  static const TextStyle bodyMd = TextStyle(
+    fontFamily: fontBody,
+    fontSize: 16,
+    fontWeight: FontWeight.w400,
+    letterSpacing: 0.1,
+    height: 1.6,
+    color: TenkaiColors.gray200,
   );
 
   static const TextStyle bodySmall = TextStyle(
     fontFamily: fontBody,
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: FontWeight.w400,
     letterSpacing: 0.1,
     height: 1.5,
-    color: TenkaiColors.gray100,
+    color: TenkaiColors.gray200,
   );
 
   // ── Label / Utility ──
@@ -110,11 +147,26 @@ abstract final class TenkaiTypography {
   );
 
   static const TextStyle mono = TextStyle(
-    fontFamily: 'RobotoMono',
+    fontFamily: fontBody, // no monospace face is bundled; falls back to body
     fontSize: 13,
     fontWeight: FontWeight.w400,
     letterSpacing: 0.2,
     height: 1.5,
     color: TenkaiColors.gray500,
+  );
+
+  // ── Navigation (TenkaiAppBar) ──
+  static const TextStyle navTitle = TextStyle(
+    fontFamily: fontDisplay,
+    fontSize: 17,
+    fontWeight: FontWeight.w600,
+    color: TenkaiColors.white,
+  );
+
+  static const TextStyle navTitleLarge = TextStyle(
+    fontFamily: fontDisplay,
+    fontSize: 30,
+    fontWeight: FontWeight.w700,
+    color: TenkaiColors.white,
   );
 }

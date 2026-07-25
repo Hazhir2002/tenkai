@@ -4,6 +4,8 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   audioplayers_windows
+  awesome_notifications
+  file_selector_windows
   flutter_secure_storage_windows
   speech_to_text_windows
 )

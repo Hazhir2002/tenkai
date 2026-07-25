@@ -20,6 +20,9 @@ class TenkaiInput extends StatefulWidget {
     this.autofillHints,
     this.textInputAction,
     this.focusNode,
+    this.expands = false,
+    this.textAlignVertical,
+    this.autofocus = false,
   });
 
   final String? label;
@@ -32,10 +35,13 @@ class TenkaiInput extends StatefulWidget {
   final Widget? suffix;
   final Widget? prefix;
   final bool enabled;
-  final int maxLines;
+  final int? maxLines;
   final Iterable<String>? autofillHints;
   final TextInputAction? textInputAction;
   final FocusNode? focusNode;
+  final bool expands;
+  final TextAlignVertical? textAlignVertical;
+  final bool autofocus;
 
   @override
   State<TenkaiInput> createState() => _TenkaiInputState();
@@ -77,49 +83,61 @@ class _TenkaiInputState extends State<TenkaiInput> {
           Text(widget.label!.toUpperCase(), style: theme.textTheme.labelMedium),
           const SizedBox(height: 6),
         ],
-        TextField(
-          controller: widget.controller,
-          focusNode: _focusNode,
-          obscureText: widget.obscureText,
-          keyboardType: widget.keyboardType,
-          enabled: widget.enabled,
-          maxLines: widget.maxLines,
-          onChanged: widget.onChanged,
-          onSubmitted: widget.onSubmitted,
-          autofillHints: widget.autofillHints,
-          textInputAction: widget.textInputAction,
-          style: TenkaiTypography.body,
-          cursorColor: TenkaiColors.white,
-          cursorWidth: 1.8,
-          cursorHeight: 20,
-          cursorRadius: Radius.circular(TenkaiRadius.md),
-          cursorOpacityAnimates: true,
-          decoration: InputDecoration(
-            hintText: widget.placeholder,
-            hintStyle: TenkaiTypography.body.copyWith(
-              color: TenkaiColors.gray600,
-              fontWeight: FontWeight.w300,
+        TenkaiGlowWrapper(
+          glowing: _focusNode.hasFocus,
+          intensity: TenkaiGlowIntensity.soft,
+          borderRadius: TenkaiRadius.md,
+          borderColor: Colors.transparent,
+          child: TextField(
+            controller: widget.controller,
+            focusNode: _focusNode,
+            obscureText: widget.obscureText,
+            keyboardType: widget.keyboardType,
+            enabled: widget.enabled,
+            maxLines: widget.maxLines,
+            onChanged: widget.onChanged,
+            onSubmitted: widget.onSubmitted,
+            autofillHints: widget.autofillHints,
+            textInputAction: widget.textInputAction,
+            textAlignVertical: widget.textAlignVertical,
+            autofocus: widget.autofocus,
+            style: TenkaiTypography.bodyMd,
+            cursorColor: TenkaiColors.white,
+            cursorWidth: 1.8,
+            cursorHeight: 20,
+            expands: widget.expands,
+            cursorRadius: Radius.circular(TenkaiRadius.md),
+            cursorOpacityAnimates: true,
+            decoration: InputDecoration(
+              hintText: widget.placeholder,
+              hintStyle: TenkaiTypography.bodyMd.copyWith(
+                color: TenkaiColors.gray600,
+                fontWeight: FontWeight.w300,
+              ),
+              filled: true,
+              contentPadding: EdgeInsets.symmetric(
+                horizontal: 14, // between sm(8)/md(12) — deliberately tuned
+                vertical: TenkaiSpacing.md,
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(TenkaiRadius.md),
+                borderSide: BorderSide(color: TenkaiColors.gray400),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(TenkaiRadius.md),
+                borderSide: BorderSide(color: TenkaiColors.gray400),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(TenkaiRadius.md),
+                borderSide: BorderSide(color: TenkaiColors.white, width: 0.5),
+              ),
+              prefixIcon: widget.prefix,
+              prefixIconConstraints: BoxConstraints(
+                maxWidth: 32,
+                maxHeight: 32,
+              ),
+              suffixIcon: widget.suffix,
             ),
-            filled: true,
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 14,
-              vertical: 12,
-            ),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(TenkaiRadius.md),
-              borderSide: BorderSide(color: TenkaiColors.gray400),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(TenkaiRadius.md),
-              borderSide: BorderSide(color: TenkaiColors.gray400),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(TenkaiRadius.md),
-              borderSide: BorderSide(color: TenkaiColors.gray400),
-            ),
-            prefixIcon: widget.prefix,
-            prefixIconConstraints: BoxConstraints(maxWidth: 32, maxHeight: 32),
-            suffixIcon: widget.suffix,
           ),
         ),
       ],
@@ -253,7 +271,7 @@ class _TenkaiToggleState extends State<TenkaiToggle>
             const SizedBox(width: 10),
             Text(
               widget.label!,
-              style: TenkaiTypography.body.copyWith(fontSize: 13),
+              style: TenkaiTypography.bodyMd.copyWith(fontSize: 13),
             ),
           ],
         ],
@@ -359,7 +377,7 @@ class _TenkaiCheckboxState extends State<TenkaiCheckbox>
             const SizedBox(width: 10),
             Text(
               widget.label!,
-              style: TenkaiTypography.body.copyWith(fontSize: 13),
+              style: TenkaiTypography.bodyMd.copyWith(fontSize: 13),
             ),
           ],
         ],
@@ -418,7 +436,9 @@ class TenkaiRadioGroup<T> extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: List.generate(options.length, (i) {
         final opt = options[i];
-        final label = labels?[i] ?? opt.toString();
+        final label = (labels != null && i < labels!.length)
+            ? labels![i]
+            : opt.toString();
         final selected = opt == value;
         return GestureDetector(
           onTap: () {
@@ -467,7 +487,7 @@ class TenkaiRadioGroup<T> extends StatelessWidget {
                 const SizedBox(width: 10),
                 Text(
                   label,
-                  style: TenkaiTypography.body.copyWith(fontSize: 13),
+                  style: TenkaiTypography.bodyMd.copyWith(fontSize: 13),
                 ),
               ],
             ),

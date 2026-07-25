@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../tokens/tenkai_tokens.dart';
 import '../sounds/tenkai_sound.dart';
-import '../atoms/tenkai_glow.dart';
 
 // ─────────────────────────────────────────────
 // TENKAI · Molecules — Navigation & Feedback
@@ -201,8 +200,9 @@ void showTenkaiToast(BuildContext context, TenkaiToastData data) {
   entry = OverlayEntry(
     builder: (_) => Positioned(
       bottom: 24,
-      right: 24,
-      child: TenkaiToastOverlay(data: data),
+      left: 0,
+      right: 0,
+      child: Center(child: TenkaiToastOverlay(data: data)),
     ),
   );
   overlay.insert(entry);
@@ -243,42 +243,111 @@ class _TenkaiSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(top: 80),
-      decoration: BoxDecoration(
-        color: TenkaiColors.gray900,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(8)),
-        border: Border.all(color: TenkaiColors.gray700, width: 0.5),
-        boxShadow: [
-          BoxShadow(
-            color: TenkaiColors.white.withOpacity(0.04),
-            blurRadius: 40,
-            offset: const Offset(0, -4),
+    final media = MediaQuery.of(context);
+    final viewInsets = media.viewInsets.bottom; // keyboard height
+    final keyboardOpen = viewInsets > 0;
+
+    // Cap the sheet so its top never slides under the status bar. The inner
+    // scroll view takes over once the content (or the keyboard) needs more room.
+    final maxHeight = media.size.height - 80 - media.padding.top;
+
+    return AnimatedPadding(
+      // Lift the whole sheet above the keyboard so the form + submit button
+      // stay reachable instead of being covered by it.
+      duration: const Duration(milliseconds: 180),
+      curve: Curves.easeOut,
+      padding: EdgeInsets.only(bottom: viewInsets),
+      child: ConstrainedBox(
+        constraints: BoxConstraints(maxHeight: maxHeight),
+        child: Container(
+          decoration: BoxDecoration(
+            color: TenkaiColors.gray900,
+            borderRadius: const BorderRadius.vertical(
+              top: Radius.circular(TenkaiRadius.sharp),
+            ),
+            border: Border.all(color: TenkaiColors.gray700, width: 0.5),
+            boxShadow: [
+              BoxShadow(
+                color: TenkaiColors.white.withOpacity(0.04),
+                blurRadius: 40,
+                offset: const Offset(0, -4),
+              ),
+            ],
           ),
-        ],
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (showHandle) ...[
-            const SizedBox(height: 12),
-            Container(width: 32, height: 1, color: TenkaiColors.gray600),
-            const SizedBox(height: 20),
-          ],
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(title, style: TenkaiTypography.h2),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (showHandle) ...[
+                const SizedBox(height: 12),
+                Container(width: 32, height: 1, color: TenkaiColors.gray600),
                 const SizedBox(height: 20),
-                child,
-                SizedBox(height: MediaQuery.of(context).padding.bottom + 24),
               ],
+              Flexible(
+                child: GestureDetector(
+                  // Tap any empty space inside the sheet to drop the keyboard.
+                  onTap: () => FocusScope.of(context).unfocus(),
+                  behavior: HitTestBehavior.translucent,
+                  child: SingleChildScrollView(
+                    padding: EdgeInsets.fromLTRB(
+                      24,
+                      0,
+                      24,
+                      // When the keyboard is up the Done bar sits at the bottom;
+                      // only pad for the home indicator while it's closed.
+                      keyboardOpen ? 16 : media.padding.bottom + 24,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(title, style: TenkaiTypography.h2),
+                        const SizedBox(height: 20),
+                        child,
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              // A dismiss affordance pinned above the keyboard — the only way
+              // out of an iOS numeric keypad, which has no return/Done key.
+              if (keyboardOpen) const _KeyboardDoneBar(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _KeyboardDoneBar extends StatelessWidget {
+  const _KeyboardDoneBar();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: const BoxDecoration(
+        border: Border(
+          top: BorderSide(color: TenkaiColors.gray800, width: 0.5),
+        ),
+      ),
+      child: Align(
+        alignment: Alignment.centerRight,
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () {
+            TenkaiSound.tap();
+            FocusManager.instance.primaryFocus?.unfocus();
+          },
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+            child: Text(
+              'Done',
+              style: TenkaiTypography.labelMd.copyWith(
+                color: TenkaiColors.white,
+              ),
             ),
           ),
-        ],
+        ),
       ),
     );
   }

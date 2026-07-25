@@ -122,6 +122,7 @@ class JournalFlowNotifier extends Notifier<JournalFlowState> {
     if (trimmed.isEmpty) return;
     await ref
         .read(appDataBaseProvider)
+        .journalDao
         .addEntry(content: trimmed, source: state.draftSource);
     state = state.copyWith(
       stage: JournalFlowStage.idle,
@@ -131,11 +132,14 @@ class JournalFlowNotifier extends Notifier<JournalFlowState> {
   }
 
   Future<void> deleteEntry(int id) {
-    return ref.read(appDataBaseProvider).deleteEntry(id);
+    return ref.read(appDataBaseProvider).journalDao.deleteEntry(id);
   }
 
   Future<void> editEntry(JournalEntry entry, String newContent) {
-    return ref.read(appDataBaseProvider).updateEntry(entry, newContent.trim());
+    return ref
+        .read(appDataBaseProvider)
+        .journalDao
+        .updateEntry(entry, newContent.trim());
   }
 }
 

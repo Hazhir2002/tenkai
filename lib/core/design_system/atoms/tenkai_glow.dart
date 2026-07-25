@@ -67,51 +67,13 @@ class _TenkaiGlowWrapperState extends State<TenkaiGlowWrapper>
   }
 
   List<BoxShadow> _shadowsFor(double t) {
-    switch (widget.intensity) {
-      case TenkaiGlowIntensity.none:
-        return [];
-      case TenkaiGlowIntensity.soft:
-        return [
-          BoxShadow(
-            color: widget.glowColor.withOpacity(0.25 * t),
-            blurRadius: 8 * t,
-          ),
-          BoxShadow(
-            color: widget.glowColor.withOpacity(0.08 * t),
-            blurRadius: 20 * t,
-          ),
-        ];
-      case TenkaiGlowIntensity.medium:
-        return [
-          BoxShadow(
-            color: widget.glowColor.withOpacity(0.40 * t),
-            blurRadius: 12 * t,
-          ),
-          BoxShadow(
-            color: widget.glowColor.withOpacity(0.15 * t),
-            blurRadius: 32 * t,
-          ),
-          BoxShadow(
-            color: widget.glowColor.withOpacity(0.05 * t),
-            blurRadius: 60 * t,
-          ),
-        ];
-      case TenkaiGlowIntensity.strong:
-        return [
-          BoxShadow(
-            color: widget.glowColor.withOpacity(0.60 * t),
-            blurRadius: 16 * t,
-          ),
-          BoxShadow(
-            color: widget.glowColor.withOpacity(0.25 * t),
-            blurRadius: 40 * t,
-          ),
-          BoxShadow(
-            color: widget.glowColor.withOpacity(0.10 * t),
-            blurRadius: 80 * t,
-          ),
-        ];
-    }
+    final steps = switch (widget.intensity) {
+      TenkaiGlowIntensity.none => const <TenkaiGlowStep>[],
+      TenkaiGlowIntensity.soft => TenkaiGlow.softSteps,
+      TenkaiGlowIntensity.medium => TenkaiGlow.mediumSteps,
+      TenkaiGlowIntensity.strong => TenkaiGlow.strongSteps,
+    };
+    return TenkaiGlow.build(steps, color: widget.glowColor, t: t);
   }
 
   @override

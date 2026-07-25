@@ -8,5 +8,5 @@ import 'package:tenkai/core/providers.dart';
 /// the database with no manual refresh calls.
 final journalEntriesProvider = StreamProvider<List<JournalEntry>>((ref) {
   final db = ref.watch(appDataBaseProvider);
-  return db.watchAllEntries();
+  return db.journalDao.watchAllEntries();
 });
