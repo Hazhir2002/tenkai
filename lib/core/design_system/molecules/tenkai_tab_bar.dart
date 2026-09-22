@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../theme/tenkai_semantic_colors.dart';
-import '../sounds/tenkai_sound.dart';
 import '../tokens/tenkai_tokens.dart';
 
 /// One item in a [TenkaiTabBar].
@@ -60,7 +59,6 @@ class TenkaiTabBar extends StatelessWidget {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {
-        TenkaiSound.nav();
         onChanged(i);
       },
       child: AnimatedDefaultTextStyle(

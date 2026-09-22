@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../theme/tenkai_semantic_colors.dart';
-import '../sounds/tenkai_sound.dart';
 import '../tokens/tenkai_tokens.dart';
 import 'tenkai_motion.dart';
 
@@ -95,7 +94,6 @@ class TenkaiBanner extends StatelessWidget {
             if (onDismiss != null)
               GestureDetector(
                 onTap: () {
-                  TenkaiSound.tap();
                   onDismiss!();
                 },
                 child: Padding(

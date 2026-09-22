@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/tenkai_semantic_colors.dart';
 import '../tokens/tenkai_tokens.dart';
-import '../sounds/tenkai_sound.dart';
 
 // ─────────────────────────────────────────────
 // TENKAI · Atoms — Controls (flat)
@@ -187,7 +186,6 @@ class _TenkaiToggleState extends State<TenkaiToggle>
 
   void _toggle() {
     widget.onChanged(!widget.value);
-    TenkaiSound.tap();
   }
 
   @override
@@ -299,7 +297,6 @@ class _TenkaiCheckboxState extends State<TenkaiCheckbox>
 
   void _toggle() {
     widget.onChanged(!widget.value);
-    TenkaiSound.tap();
   }
 
   @override
@@ -405,7 +402,6 @@ class TenkaiRadioGroup<T> extends StatelessWidget {
         return GestureDetector(
           onTap: () {
             onChanged(opt);
-            TenkaiSound.tap();
           },
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 6),
@@ -532,7 +528,6 @@ class _TenkaiSliderState extends State<TenkaiSlider> {
             onChangeEnd: (_) => setState(() => _dragging = false),
             onChanged: (v) {
               widget.onChanged(v);
-              if (_dragging) TenkaiSound.play(TenkaiSoundEvent.drag);
             },
           ),
         ),

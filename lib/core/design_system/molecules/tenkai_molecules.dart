@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/tenkai_semantic_colors.dart';
 import '../tokens/tenkai_tokens.dart';
-import '../sounds/tenkai_sound.dart';
 
 // ─────────────────────────────────────────────
 // TENKAI · Molecules — Navigation & Feedback (flat)
@@ -51,7 +50,6 @@ class _TenkaiTabsState extends State<TenkaiTabs> {
             onTap: () {
               setState(() => _selected = i);
               widget.onChanged(i);
-              TenkaiSound.nav();
             },
             child: AnimatedContainer(
               duration: TenkaiDuration.medium,
@@ -116,8 +114,6 @@ class _TenkaiToastOverlayState extends State<TenkaiToastOverlay>
     _ctrl = AnimationController(vsync: this, duration: TenkaiDuration.medium);
     _anim = CurvedAnimation(parent: _ctrl, curve: TenkaiCurves.spring);
     _ctrl.forward();
-
-    TenkaiSound.confirm();
 
     Future.delayed(widget.data.duration, () {
       if (mounted) _ctrl.reverse();
@@ -221,7 +217,6 @@ Future<T?> showTenkaiSheet<T>({
   required Widget child,
   bool showHandle = true,
 }) async {
-  TenkaiSound.modal();
   return showModalBottomSheet<T>(
     context: context,
     backgroundColor: Colors.transparent,
@@ -334,7 +329,6 @@ class _KeyboardDoneBar extends StatelessWidget {
         child: GestureDetector(
           behavior: HitTestBehavior.opaque,
           onTap: () {
-            TenkaiSound.tap();
             FocusManager.instance.primaryFocus?.unfocus();
           },
           child: Padding(

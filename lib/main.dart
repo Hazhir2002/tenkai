@@ -8,8 +8,6 @@ import 'package:tenkai/core/theme_mode_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await TenkaiSound.initialize();
-
   // Load the persisted theme mode before the first frame so there's no flash.
   final storedThemeMode = await StorageService().getThemeMode();
 

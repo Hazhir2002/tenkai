@@ -9,9 +9,6 @@
 // Tokens
 export 'tokens/tenkai_tokens.dart';
 
-// Sound
-export 'sounds/tenkai_sound.dart';
-
 // Atoms
 export 'atoms/tenkai_glow.dart';
 export 'atoms/tenkai_button.dart';

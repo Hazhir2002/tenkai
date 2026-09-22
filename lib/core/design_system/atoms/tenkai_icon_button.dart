@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:tenkai/core/design_system/atoms/tenkai_icon.dart';
 import '../theme/tenkai_semantic_colors.dart';
 import '../tokens/tenkai_tokens.dart';
-import '../sounds/tenkai_sound.dart';
 
 // ─────────────────────────────────────────────
 // TENKAI · Atom — TenkaiIconButton (flat)
@@ -20,14 +19,12 @@ class TenkaiIconButton extends StatefulWidget {
     required this.onPressed,
     this.size = TenkaiIconButtonSize.md,
     this.enabled = true,
-    this.sound,
   });
 
   final String iconAsset;
   final VoidCallback? onPressed;
   final TenkaiIconButtonSize size;
   final bool enabled;
-  final TenkaiSoundEvent? sound;
 
   @override
   State<TenkaiIconButton> createState() => _TenkaiIconButtonState();
@@ -61,14 +58,11 @@ class _TenkaiIconButtonState extends State<TenkaiIconButton>
 
   bool get _isActive => widget.enabled;
 
-  final TenkaiSoundEvent _defaultSound = TenkaiSoundEvent.tap;
-
   void _onTapDown(_) {
     if (!_isActive) return;
     setState(() => _pressed = true);
     _pressController.forward();
     HapticFeedback.mediumImpact();
-    TenkaiSound.play(widget.sound ?? _defaultSound);
   }
 
   void _onTapUp(_) {

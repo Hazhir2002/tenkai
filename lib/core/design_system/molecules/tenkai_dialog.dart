@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../theme/tenkai_semantic_colors.dart';
-import '../sounds/tenkai_sound.dart';
 import '../tokens/tenkai_tokens.dart';
 
 /// A flat modal dialog card: display-face title, optional description/content,
@@ -91,7 +90,6 @@ Future<T?> showTenkaiDialog<T>({
   List<Widget>? actions,
   bool barrierDismissible = true,
 }) {
-  TenkaiSound.modal();
   return showGeneralDialog<T>(
     context: context,
     barrierDismissible: barrierDismissible,

@@ -36,16 +36,14 @@ class _HabitDetailSheet extends ConsumerWidget {
     await ref
         .read(notificationServiceProvider)
         .scheduleAfterCueReminders(view.habit.id, all);
-    TenkaiSound.confirm();
     if (context.mounted) Navigator.of(context).pop();
   }
 
   Future<void> _undo(BuildContext context, WidgetRef ref) async {
-    await ref.read(appDataBaseProvider).habitDao.unmarkHabitDone(
-          view.habit.id,
-          dateKeyFor(),
-        );
-    TenkaiSound.tap();
+    await ref
+        .read(appDataBaseProvider)
+        .habitDao
+        .unmarkHabitDone(view.habit.id, dateKeyFor());
     if (context.mounted) Navigator.of(context).pop();
   }
 
@@ -103,7 +101,8 @@ class _HabitDetailSheet extends ConsumerWidget {
             children: [
               for (final s in view.schedules)
                 TenkaiBadge(
-                  label: '${weekdayLabel(s.weekday)} ${formatHm(s.hour, s.minute)}',
+                  label:
+                      '${weekdayLabel(s.weekday)} ${formatHm(s.hour, s.minute)}',
                 ),
             ],
           ),

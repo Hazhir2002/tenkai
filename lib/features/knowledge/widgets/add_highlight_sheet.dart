@@ -81,7 +81,6 @@ class _AddHighlightSheet extends HookConsumerWidget {
                 quote: quoteCtrl.text.trim(),
                 note: note.isEmpty ? null : note,
               );
-              TenkaiSound.confirm();
               if (context.mounted) {
                 Navigator.of(context).pop();
                 showTenkaiToast(

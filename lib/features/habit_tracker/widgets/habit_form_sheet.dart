@@ -183,7 +183,6 @@ class _CuePicker extends ConsumerWidget {
               GestureDetector(
                 onTap: () {
                   notifier.setCueHabit(h.id);
-                  TenkaiSound.tap();
                 },
                 behavior: HitTestBehavior.opaque,
                 child: Padding(

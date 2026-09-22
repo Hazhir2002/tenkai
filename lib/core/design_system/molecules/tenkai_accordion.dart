@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../theme/tenkai_semantic_colors.dart';
-import '../sounds/tenkai_sound.dart';
 import '../tokens/tenkai_tokens.dart';
 
 /// A disclosure panel — the "unfold" motif as a component. A tappable header
@@ -29,7 +28,6 @@ class _TenkaiAccordionState extends State<TenkaiAccordion> {
 
   void _toggle() {
     setState(() => _open = !_open);
-    TenkaiSound.tap();
   }
 
   @override

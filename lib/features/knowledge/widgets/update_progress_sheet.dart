@@ -41,7 +41,8 @@ class _UpdateProgressSheet extends HookConsumerWidget {
       return () => pageCtrl.removeListener(listener);
     }, [pageCtrl]);
 
-    final valid = page.value > book.currentPage && page.value <= book.totalPages;
+    final valid =
+        page.value > book.currentPage && page.value <= book.totalPages;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -80,7 +81,6 @@ class _UpdateProgressSheet extends HookConsumerWidget {
                 summary: summary.isEmpty ? null : summary,
                 dateKey: bookDateKey(),
               );
-              TenkaiSound.confirm();
               if (context.mounted) {
                 Navigator.of(context).pop(page.value >= book.totalPages);
               }

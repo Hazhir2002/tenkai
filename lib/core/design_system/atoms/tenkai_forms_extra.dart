@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../theme/tenkai_semantic_colors.dart';
-import '../sounds/tenkai_sound.dart';
 import '../tokens/tenkai_tokens.dart';
 import 'tenkai_motion.dart';
 
@@ -49,7 +48,6 @@ class _TenkaiSelectState<T> extends State<TenkaiSelect<T>> {
     if (!widget.enabled) return;
     setState(() => _open = !_open);
     _open ? _controller.show() : _controller.hide();
-    TenkaiSound.tap();
   }
 
   void _close() {
@@ -190,7 +188,6 @@ class _TenkaiSelectState<T> extends State<TenkaiSelect<T>> {
       behavior: HitTestBehavior.opaque,
       onTap: () {
         widget.onChanged(o);
-        TenkaiSound.tap();
         _close();
       },
       child: Container(
@@ -317,7 +314,6 @@ class _TenkaiSearchInputState extends State<TenkaiSearchInput> {
                 _controller.clear();
                 widget.onChanged?.call('');
                 widget.onClear?.call();
-                TenkaiSound.tap();
               },
               child: Icon(Icons.close, size: 15, color: c.secondaryForeground),
             ),

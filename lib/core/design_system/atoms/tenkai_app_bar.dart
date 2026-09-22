@@ -1,7 +1,6 @@
 import 'package:cupertino_native_better/cupertino_native_better.dart';
 import 'package:flutter/material.dart';
 
-import '../sounds/tenkai_sound.dart';
 import '../theme/tenkai_semantic_colors.dart';
 import '../tokens/tenkai_tokens.dart';
 
@@ -38,7 +37,6 @@ class _TenkaiAppBarActionState extends State<TenkaiAppBarAction> {
 
   void _tap() {
     if (widget.onPressed == null) return;
-    TenkaiSound.tap();
     widget.onPressed!();
   }
 

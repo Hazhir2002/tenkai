@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../theme/tenkai_semantic_colors.dart';
-import '../sounds/tenkai_sound.dart';
 import '../tokens/tenkai_tokens.dart';
 
 enum TenkaiIconTileSize { sm, md, lg }
@@ -54,7 +53,6 @@ class TenkaiIconTile extends StatelessWidget {
     if (onTap == null) return tile;
     return GestureDetector(
       onTap: () {
-        TenkaiSound.tap();
         onTap!();
       },
       behavior: HitTestBehavior.opaque,

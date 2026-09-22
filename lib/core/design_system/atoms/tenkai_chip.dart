@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../sounds/tenkai_sound.dart';
 import '../theme/tenkai_semantic_colors.dart';
 import '../tokens/tenkai_tokens.dart';
 
@@ -25,7 +24,6 @@ class TenkaiChip extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         onTap();
-        TenkaiSound.tap();
       },
       behavior: HitTestBehavior.opaque,
       child: AnimatedContainer(

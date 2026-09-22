@@ -1,6 +1,5 @@
 import 'package:cupertino_native_better/cupertino_native_better.dart';
 import 'package:flutter/material.dart';
-import '../sounds/tenkai_sound.dart';
 import '../theme/tenkai_semantic_colors.dart';
 import '../tokens/tenkai_tokens.dart';
 
@@ -37,7 +36,6 @@ class _TenkaiRecordButtonState extends State<TenkaiRecordButton>
 
   void _onTap() {
     if (!widget.enabled) return;
-    TenkaiSound.tap();
     widget.onTap();
   }
 

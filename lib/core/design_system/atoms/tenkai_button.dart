@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../theme/tenkai_semantic_colors.dart';
 import '../tokens/tenkai_tokens.dart';
-import '../sounds/tenkai_sound.dart';
 
 // ─────────────────────────────────────────────
 // TENKAI · Atom — TenkaiButton (flat)
@@ -25,7 +24,6 @@ class TenkaiButton extends StatefulWidget {
     this.icon,
     this.loading = false,
     this.enabled = true,
-    this.sound,
   });
 
   final String label;
@@ -35,7 +33,6 @@ class TenkaiButton extends StatefulWidget {
   final Widget? icon;
   final bool loading;
   final bool enabled;
-  final TenkaiSoundEvent? sound;
 
   @override
   State<TenkaiButton> createState() => _TenkaiButtonState();
@@ -67,19 +64,10 @@ class _TenkaiButtonState extends State<TenkaiButton>
 
   bool get _isActive => widget.enabled && !widget.loading;
 
-  TenkaiSoundEvent get _defaultSound {
-    return switch (widget.variant) {
-      TenkaiButtonVariant.primary => TenkaiSoundEvent.confirm,
-      TenkaiButtonVariant.danger => TenkaiSoundEvent.error,
-      _ => TenkaiSoundEvent.tap,
-    };
-  }
-
   void _onTapDown(_) {
     if (!_isActive) return;
     _pressController.forward();
     HapticFeedback.mediumImpact();
-    TenkaiSound.play(widget.sound ?? _defaultSound);
   }
 
   void _onTapUp(_) {

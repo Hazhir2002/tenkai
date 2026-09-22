@@ -36,7 +36,6 @@ class StarRating extends StatelessWidget {
         return GestureDetector(
           onTap: () {
             onChanged!(i + 1);
-            TenkaiSound.tap();
           },
           behavior: HitTestBehavior.opaque,
           child: star,
