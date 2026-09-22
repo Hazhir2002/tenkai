@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:tenkai/core/design_system/atoms/tenkai_button.dart';
+import 'package:tenkai/core/design_system/tenkai.dart';
 
 class GymTrackerScreen extends StatelessWidget {
   const GymTrackerScreen({super.key});
@@ -8,17 +8,27 @@ class GymTrackerScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Gym tracker')),
-      body: Column(
+      backgroundColor: Colors.transparent,
+      extendBodyBehindAppBar: true,
+      appBar: const TenkaiAppBar(title: 'Gym'),
+      body: ListView(
+        padding: EdgeInsets.fromLTRB(
+          TenkaiSpacing.lg,
+          MediaQuery.of(context).padding.top + TenkaiAppBar.compactHeight,
+          TenkaiSpacing.lg,
+          TenkaiSpacing.xl,
+        ),
         children: [
-          TenkaiButton(
-            onPressed: () => context.push('/gym-tracker/exercises'),
-            label: 'exercises screen',
+          TenkaiListRow(
+            title: 'Exercises',
+            trailing: const Icon(Icons.chevron_right, size: 18),
+            onTap: () => context.push('/gym-tracker/exercises'),
           ),
-
-          TenkaiButton(
-            onPressed: () => context.push('/gym-tracker/programs'),
-            label: 'programs',
+          const SizedBox(height: TenkaiSpacing.sm),
+          TenkaiListRow(
+            title: 'Programs',
+            trailing: const Icon(Icons.chevron_right, size: 18),
+            onTap: () => context.push('/gym-tracker/programs'),
           ),
         ],
       ),

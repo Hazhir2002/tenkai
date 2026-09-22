@@ -54,7 +54,7 @@ class _HabitFormSheet extends HookConsumerWidget {
           children: [
             _label('Habit'),
             const SizedBox(height: 6),
-            TenkaiLiquidInput(
+            TenkaiInput(
               placeholder: 'e.g. Meditate for 2 minutes',
               controller: titleController,
               onChanged: notifier.setTitle,
@@ -132,7 +132,9 @@ class _HabitFormSheet extends HookConsumerWidget {
                     showTenkaiToast(
                       context,
                       TenkaiToastData(
-                        title: editing != null ? 'Habit updated' : 'Habit added',
+                        title: editing != null
+                            ? 'Habit updated'
+                            : 'Habit added',
                         variant: TenkaiToastVariant.success,
                       ),
                     );
@@ -146,10 +148,8 @@ class _HabitFormSheet extends HookConsumerWidget {
     );
   }
 
-  Widget _label(String text) => Text(
-    text.toUpperCase(),
-    style: TenkaiTypography.labelMd,
-  );
+  Widget _label(String text) =>
+      Text(text.toUpperCase(), style: TenkaiTypography.labelMd);
 }
 
 /// Picker for "after a habit" cue: a selectable list of existing habits.
@@ -166,7 +166,8 @@ class _CuePicker extends ConsumerWidget {
 
     return habitsAsync.when(
       loading: () => const Center(child: CupertinoActivityIndicator()),
-      error: (_, _) => Text('Couldn\'t load habits', style: TenkaiTypography.bodySmall),
+      error: (_, _) =>
+          Text('Couldn\'t load habits', style: TenkaiTypography.bodySmall),
       data: (habits) {
         final options = habits.where((h) => h.id != editingId).toList();
         if (options.isEmpty) {
@@ -214,25 +215,22 @@ class _RadioDot extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = context.tenkai;
     return Container(
       width: 18,
       height: 18,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        border: Border.all(
-          color: selected ? TenkaiColors.white : TenkaiColors.gray600,
-          width: 0.5,
-        ),
-        boxShadow: selected ? TenkaiGlow.soft : null,
+        border: Border.all(color: selected ? c.accent : c.border, width: 1),
       ),
       child: selected
           ? Center(
               child: Container(
                 width: 6,
                 height: 6,
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: TenkaiColors.white,
+                  color: c.accent,
                 ),
               ),
             )
@@ -296,9 +294,15 @@ class _SlotEditor extends StatelessWidget {
               Expanded(
                 child: GestureDetector(
                   onTap: () async {
-                    final picked = await _pickTime(context, slot.hour, slot.minute);
+                    final picked = await _pickTime(
+                      context,
+                      slot.hour,
+                      slot.minute,
+                    );
                     if (picked != null) {
-                      onChanged(slot.copyWith(hour: picked.$1, minute: picked.$2));
+                      onChanged(
+                        slot.copyWith(hour: picked.$1, minute: picked.$2),
+                      );
                     }
                   },
                   behavior: HitTestBehavior.opaque,
@@ -308,21 +312,26 @@ class _SlotEditor extends StatelessWidget {
                       vertical: 10,
                     ),
                     decoration: BoxDecoration(
-                      color: TenkaiColors.gray800,
-                      borderRadius: BorderRadius.circular(TenkaiRadius.sharp),
-                      border: Border.all(color: TenkaiColors.gray700, width: 0.5),
+                      color: context.tenkai.muted,
+                      borderRadius: BorderRadius.circular(TenkaiRadius.control),
+                      border: Border.all(
+                        color: context.tenkai.border,
+                        width: 1,
+                      ),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
                           formatHm(slot.hour, slot.minute),
-                          style: TenkaiTypography.mono,
+                          style: TenkaiTypography.mono.copyWith(
+                            color: context.tenkai.foreground,
+                          ),
                         ),
-                        const Icon(
+                        Icon(
                           Icons.access_time,
                           size: 16,
-                          color: TenkaiColors.gray400,
+                          color: context.tenkai.secondaryForeground,
                         ),
                       ],
                     ),
@@ -334,12 +343,12 @@ class _SlotEditor extends StatelessWidget {
                 GestureDetector(
                   onTap: onRemove,
                   behavior: HitTestBehavior.opaque,
-                  child: const Padding(
-                    padding: EdgeInsets.all(6),
+                  child: Padding(
+                    padding: const EdgeInsets.all(6),
                     child: Icon(
                       Icons.close,
                       size: 18,
-                      color: TenkaiColors.gray400,
+                      color: context.tenkai.secondaryForeground,
                     ),
                   ),
                 ),
@@ -380,10 +389,10 @@ Future<(int, int)?> _pickTime(
   var m = minute;
   final ok = await showModalBottomSheet<bool>(
     context: context,
-    backgroundColor: TenkaiColors.gray900,
+    backgroundColor: context.tenkai.card,
     builder: (sheetContext) {
       return CupertinoTheme(
-        data: const CupertinoThemeData(brightness: Brightness.dark),
+        data: CupertinoThemeData(brightness: Theme.of(context).brightness),
         child: SizedBox(
           height: 300,
           child: Column(

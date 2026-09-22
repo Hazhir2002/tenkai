@@ -18,11 +18,13 @@ class BookPaceChart extends StatelessWidget {
     PaceState.onTrack => TenkaiColors.success,
     PaceState.behind => TenkaiColors.warning,
     PaceState.finished => TenkaiColors.success,
-    PaceState.noTarget => TenkaiColors.white,
+    // Mid-gray that reads on both light and dark themes.
+    PaceState.noTarget => TenkaiColors.gray500,
   };
 
   @override
   Widget build(BuildContext context) {
+    final c = context.tenkai;
     return SizedBox(
       height: height,
       width: double.infinity,
@@ -31,7 +33,14 @@ class BookPaceChart extends StatelessWidget {
         duration: TenkaiDuration.glow,
         curve: TenkaiCurves.spring,
         builder: (_, t, __) => CustomPaint(
-          painter: _PacePainter(view: view, paceColor: _paceColor, t: t),
+          painter: _PacePainter(
+            view: view,
+            paceColor: _paceColor,
+            t: t,
+            gridColor: c.border,
+            guideColor: c.secondaryForeground,
+            todayColor: c.border,
+          ),
         ),
       ),
     );
@@ -43,11 +52,17 @@ class _PacePainter extends CustomPainter {
     required this.view,
     required this.paceColor,
     required this.t,
+    required this.gridColor,
+    required this.guideColor,
+    required this.todayColor,
   });
 
   final BookView view;
   final Color paceColor;
   final double t;
+  final Color gridColor;
+  final Color guideColor;
+  final Color todayColor;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -66,13 +81,9 @@ class _PacePainter extends CustomPainter {
 
     // Baseline + top gridline.
     final grid = Paint()
-      ..color = TenkaiColors.gray800
+      ..color = gridColor
       ..strokeWidth = 0.5;
-    canvas.drawLine(
-      Offset(padL, padT + h),
-      Offset(padL + w, padT + h),
-      grid,
-    );
+    canvas.drawLine(Offset(padL, padT + h), Offset(padL + w, padT + h), grid);
     canvas.drawLine(Offset(padL, padT), Offset(padL + w, padT), grid);
 
     // Expected line (thin, gray).
@@ -83,7 +94,7 @@ class _PacePainter extends CustomPainter {
         a,
         b,
         Paint()
-          ..color = TenkaiColors.gray500
+          ..color = guideColor
           ..strokeWidth = 1
           ..strokeCap = StrokeCap.round,
       );
@@ -95,7 +106,7 @@ class _PacePainter extends CustomPainter {
       Offset(todayX, padT),
       Offset(todayX, padT + h),
       Paint()
-        ..color = TenkaiColors.gray700
+        ..color = todayColor
         ..strokeWidth = 0.5,
     );
 
@@ -117,10 +128,7 @@ class _PacePainter extends CustomPainter {
         ..lineTo(endPt.dx, padT + h)
         ..lineTo(pts.first.dx, padT + h)
         ..close();
-      canvas.drawPath(
-        area,
-        Paint()..color = paceColor.withOpacity(0.10),
-      );
+      canvas.drawPath(area, Paint()..color = paceColor.withOpacity(0.10));
 
       canvas.drawPath(
         shown,
@@ -132,19 +140,8 @@ class _PacePainter extends CustomPainter {
           ..strokeJoin = StrokeJoin.round,
       );
 
-      // Glow dot at the current end.
-      canvas.drawCircle(
-        endPt,
-        3.5,
-        Paint()..color = paceColor,
-      );
-      canvas.drawCircle(
-        endPt,
-        3.5,
-        Paint()
-          ..color = paceColor.withOpacity(0.6)
-          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8),
-      );
+      // Solid dot at the current end (flat — no glow).
+      canvas.drawCircle(endPt, 3.5, Paint()..color = paceColor);
     }
   }
 
@@ -155,5 +152,10 @@ class _PacePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_PacePainter old) =>
-      old.t != t || old.view != view || old.paceColor != paceColor;
+      old.t != t ||
+      old.view != view ||
+      old.paceColor != paceColor ||
+      old.gridColor != gridColor ||
+      old.guideColor != guideColor ||
+      old.todayColor != todayColor;
 }

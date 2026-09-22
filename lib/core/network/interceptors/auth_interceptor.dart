@@ -1,14 +1,21 @@
 import 'package:dio/dio.dart';
+import 'package:tenkai/core/network/api_endpoints.dart';
 import 'package:tenkai/core/services/storage_service.dart';
 
+/// Attaches the bearer access token to every request and transparently
+/// recovers from an expired access token: on a `401` it rotates the token pair
+/// via `POST /auth/refresh` and retries the original request once. If the
+/// refresh token is itself dead, the session is cleared and [onSessionExpired]
+/// notifies the app so it can send the user back to login.
 class AuthInterceptor extends Interceptor {
+  AuthInterceptor({required this.storage, this.onSessionExpired});
+
   final StorageService storage;
-  // final AuthApi authApi;
+  final void Function()? onSessionExpired;
 
-  const AuthInterceptor({required this.storage});
-
-  // bool _isRefreshing = false;
-  // final List<RequestOptions> _queue = [];
+  /// Marks a request we've already retried, so a second `401` gives up instead
+  /// of looping forever.
+  static const _retriedKey = 'auth_retried';
 
   @override
   void onRequest(
@@ -16,66 +23,69 @@ class AuthInterceptor extends Interceptor {
     RequestInterceptorHandler handler,
   ) async {
     final token = await storage.getAccessToken();
-
-    print('injecting the authorization header...');
-    print(token);
-
     if (token != null) {
       options.headers['Authorization'] = 'Bearer $token';
     }
-
     handler.next(options);
   }
 
-  // @override
-  // void onError(DioException err, ErrorInterceptorHandler handler) async {
-  //   final status = err.response?.statusCode;
+  @override
+  void onError(DioException err, ErrorInterceptorHandler handler) async {
+    final request = err.requestOptions;
+    final isAuthRoute = request.path.contains('auth/');
+    final alreadyRetried = request.extra[_retriedKey] == true;
 
-  //   if (status != 401) {
-  //     handler.next(err);
-  //     return;
-  //   }
+    // Only attempt recovery for a genuine 401 on a protected, not-yet-retried
+    // request. Auth routes (login/refresh) must surface their own 401s.
+    if (err.response?.statusCode != 401 || isAuthRoute || alreadyRetried) {
+      handler.next(err);
+      return;
+    }
 
-  //   final request = err.requestOptions;
+    final refreshToken = await storage.getRefreshToken();
+    if (refreshToken == null) {
+      await _expireSession();
+      handler.next(err);
+      return;
+    }
 
-  //   _queue.add(request);
+    // Use a bare Dio (no interceptors) so refreshing can't recurse into itself.
+    final bareDio = Dio(BaseOptions(baseUrl: ApiEndpoints.apiUrl));
 
-  //   if (_isRefreshing) return;
+    late final String newAccess;
+    try {
+      final refreshResponse = await bareDio.post(
+        ApiEndpoints.refresh,
+        data: {'refresh_token': refreshToken},
+        options: Options(headers: {'Content-Type': 'application/json'}),
+      );
+      final data = refreshResponse.data as Map<String, dynamic>;
+      newAccess = data['access_token'] as String;
+      await storage.saveTokens(
+        accessToken: newAccess,
+        refreshToken: data['refresh_token'] as String,
+      );
+    } catch (_) {
+      // The refresh token is expired/revoked — the session is truly over.
+      await _expireSession();
+      handler.next(err);
+      return;
+    }
 
-  //   _isRefreshing = true;
+    // Replay the original request once with the rotated access token.
+    try {
+      request
+        ..headers['Authorization'] = 'Bearer $newAccess'
+        ..extra[_retriedKey] = true;
+      final retry = await bareDio.fetch(request);
+      handler.resolve(retry);
+    } on DioException catch (retryError) {
+      handler.next(retryError);
+    }
+  }
 
-  //   try {
-  //     final refreshToken = await storage.getRefreshToken();
-  //     if (refreshToken == null) throw Exception("No refresh token");
-
-  //     final result = await authApi.refresh(refreshToken);
-
-  //     final newAccess = result['accessToken'];
-  //     final newRefresh = result['refreshToken'];
-
-  //     await storage.saveTokens(
-  //       accessToken: newAccess,
-  //       refreshToken: newRefresh,
-  //     );
-
-  //     for (final req in _queue) {
-  //       final token = newAccess;
-  //       req.headers['Authorization'] = 'Bearer $token';
-  //     }
-
-  //     final retryResponses = await Future.wait(
-  //       _queue.map((req) => err.requestOptions.copyWith()),
-  //     );
-
-  //     _queue.clear();
-  //     _isRefreshing = false;
-
-  //     handler.resolve(err.response!);
-  //   } catch (e) {
-  //     _queue.clear();
-  //     _isRefreshing = false;
-  //     await storage.clear();
-  //     handler.next(err);
-  //   }
-  // }
+  Future<void> _expireSession() async {
+    await storage.deleteAllToken();
+    onSessionExpired?.call();
+  }
 }

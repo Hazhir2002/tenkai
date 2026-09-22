@@ -1,21 +1,22 @@
 import 'package:cupertino_native_better/cupertino_native_better.dart';
 import 'package:flutter/material.dart';
 
+import '../sounds/tenkai_sound.dart';
+import '../theme/tenkai_semantic_colors.dart';
 import '../tokens/tenkai_tokens.dart';
-import 'tenkai_glass_button.dart';
 
 // NOTE: there are two classes in this file — don't confuse them.
-//   • GlassAppBar        → the actual bar. THIS is what goes in
+//   • TenkaiAppBar        → the actual bar. THIS is what goes in
 //                          `Scaffold(appBar: ...)`. It implements
 //                          PreferredSizeWidget.
-//   • GlassAppBarAction  → a small 36x36 icon-button helper for the bar's
+//   • TenkaiAppBarAction  → a small 36x36 icon-button helper for the bar's
 //                          `actions` row. It is NOT a bar itself and is not
 //                          a PreferredSizeWidget.
 
-/// A single action for [TenkaiAppBar]'s trailing row: a native glass icon
-/// button with the Tenkai glow + press sound (via [TenkaiGlassIconButton]),
-/// at a fixed 36x36 tap target so callers don't fight CNButton's own sizing.
-class TenkaiAppBarAction extends StatelessWidget {
+/// A single action for [TenkaiAppBar]'s trailing row: a flat, borderless
+/// native-symbol icon button (no glass) at a fixed 36x36 tap target. The glyph
+/// is a native SF Symbol via [CNIcon]; the button dims briefly on press.
+class TenkaiAppBarAction extends StatefulWidget {
   const TenkaiAppBarAction({
     super.key,
     required this.symbol,
@@ -29,15 +30,42 @@ class TenkaiAppBarAction extends StatelessWidget {
   final double size;
 
   @override
+  State<TenkaiAppBarAction> createState() => _TenkaiAppBarActionState();
+}
+
+class _TenkaiAppBarActionState extends State<TenkaiAppBarAction> {
+  bool _pressed = false;
+
+  void _tap() {
+    if (widget.onPressed == null) return;
+    TenkaiSound.tap();
+    widget.onPressed!();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 36,
-      height: 36,
-      child: TenkaiGlassIconButton(
-        icon: CNSymbol(symbol, size: size),
-        onPressed: onPressed,
-        width: 36,
-        minHeight: 36,
+    final enabled = widget.onPressed != null;
+    final color = enabled
+        ? context.tenkai.foreground
+        : context.tenkai.mutedForeground;
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTapDown: enabled ? (_) => setState(() => _pressed = true) : null,
+      onTapUp: enabled ? (_) => setState(() => _pressed = false) : null,
+      onTapCancel: enabled ? () => setState(() => _pressed = false) : null,
+      onTap: enabled ? _tap : null,
+      child: AnimatedOpacity(
+        duration: TenkaiDuration.instant,
+        opacity: _pressed ? 0.55 : 1.0,
+        child: SizedBox(
+          width: 36,
+          height: 36,
+          child: Center(
+            child: CNIcon(
+              symbol: CNSymbol(widget.symbol, size: widget.size, color: color),
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -48,21 +76,16 @@ class TenkaiAppBarAction extends StatelessWidget {
 /// style) that fades into the compact title as [scrollController] scrolls.
 enum TenkaiAppBarStyle { compact, large }
 
-/// A Liquid Glass replacement for Flutter's [AppBar]. It's a drop-in for
-/// `Scaffold(appBar: ...)` — same [PreferredSizeWidget] contract — rendered
-/// as a real native Liquid Glass bar (via [NativeGlass]) instead of a solid
-/// Material one.
-///
-/// There's no native "app bar" widget in `cupertino_native_better` to reuse
-/// directly (it ships buttons, icons, a tab bar, slider, switch, segmented
-/// control, popup menu, and a generic `LiquidGlassContainer` — no bar), so
-/// this composes that generic native glass container as the bar surface,
-/// with `CNButton`/`CNIcon` for every interactive piece.
+/// A flat drop-in for Flutter's [AppBar] — same [PreferredSizeWidget]
+/// contract for `Scaffold(appBar: ...)`. It is NOT a glass panel: the surface
+/// is the solid scaffold background through the status bar + title area, then
+/// dissolves to transparent over a short band at the bottom so scrolling
+/// content melts under the bar.
 ///
 /// Handles: safe-area top inset automatically, an automatic native-style
 /// back chevron when the current route can pop, an optional large-title
 /// mode that collapses into the compact title on scroll, and a trailing
-/// row of consistently-sized [GlassAppBarAction]s.
+/// row of consistently-sized [TenkaiAppBarAction]s (flat native-symbol icons).
 class TenkaiAppBar extends StatefulWidget implements PreferredSizeWidget {
   const TenkaiAppBar({
     super.key,
@@ -145,6 +168,7 @@ class _TenkaiAppBarState extends State<TenkaiAppBar> {
 
   @override
   Widget build(BuildContext context) {
+    final c = context.tenkai;
     final topPadding = MediaQuery.of(context).padding.top;
     final isLarge = widget.style == TenkaiAppBarStyle.large;
     final canPop = Navigator.of(context).canPop();
@@ -153,37 +177,11 @@ class _TenkaiAppBarState extends State<TenkaiAppBar> {
     final compactTitleOpacity = isLarge ? _collapse : 1.0;
     final largeTitleOpacity = isLarge ? 1 - _collapse : 0.0;
 
-    final defaultTitleStyle = TenkaiTypography.navTitle.copyWith(
-      color: TenkaiColors.white.withOpacity(0.85),
-    );
-    final defaultLargeTitleStyle = TenkaiTypography.navTitleLarge.copyWith(
-      color: TenkaiColors.white.withOpacity(0.9),
-    );
-
-    // The bar is not a glass panel — it's a fade. The background is solid
-    // scaffold color (gray950) through the status bar + title area, then
-    // dissolves to transparent over the bottom `_fadeExtra` band, so scroll
-    // content passing behind the bar melts into the background.
-    final largeExtra = isLarge ? TenkaiAppBar._largeTitleExtra : 0.0;
-    final bottomHeight = widget.bottom?.preferredSize.height ?? 0;
-    final contentHeight =
-        topPadding + TenkaiAppBar.compactHeight + largeExtra + bottomHeight;
-    final totalHeight = contentHeight + TenkaiAppBar._fadeExtra;
-    final opaqueStop = (contentHeight / totalHeight).clamp(0.0, 1.0);
+    final defaultTitleStyle = TenkaiTypography.h2;
+    final defaultLargeTitleStyle = TenkaiTypography.h1;
 
     return DecoratedBox(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            TenkaiColors.gray950,
-            TenkaiColors.gray950,
-            TenkaiColors.gray950.withOpacity(0.0),
-          ],
-          stops: [0.0, opaqueStop, 1.0],
-        ),
-      ),
+      decoration: BoxDecoration(color: Theme.of(context).colorScheme.surface),
       child: Padding(
         padding: EdgeInsets.only(top: topPadding),
         child: Column(

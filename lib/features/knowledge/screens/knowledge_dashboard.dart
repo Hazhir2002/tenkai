@@ -34,10 +34,9 @@ class KnowledgeDashboard extends HookConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              TenkaiCard(
-                interactive: true,
-                glowOnHover: true,
-                onTap: () => context.push('/knowledge/books'),
+              Card(
+                // interactive: true,
+                // onTap: () => context.push('/knowledge/books'),
                 child: Row(
                   children: [
                     const TenkaiNode(size: 22),
@@ -59,8 +58,11 @@ class KnowledgeDashboard extends HookConsumerWidget {
                         ],
                       ),
                     ),
-                    const CNIcon(
-                      symbol: CNSymbol('chevron.right', color: TenkaiColors.gray600),
+                    CNIcon(
+                      symbol: CNSymbol(
+                        'chevron.right',
+                        color: context.tenkai.secondaryForeground,
+                      ),
                     ),
                   ],
                 ),
@@ -85,11 +87,15 @@ class _ComingSoonCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Opacity(
       opacity: 0.4,
-      child: TenkaiCard(
+      child: Card(
         child: Row(
           children: [
-            const CNIcon(
-              symbol: CNSymbol('hourglass', size: 20, color: TenkaiColors.gray600),
+            CNIcon(
+              symbol: CNSymbol(
+                'hourglass',
+                size: 20,
+                color: context.tenkai.secondaryForeground,
+              ),
             ),
             const SizedBox(width: 16),
             Expanded(

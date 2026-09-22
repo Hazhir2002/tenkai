@@ -52,8 +52,7 @@ class BookDetailScreen extends ConsumerWidget {
       body: SafeArea(
         child: viewAsync.when(
           loading: () => const Center(child: CupertinoActivityIndicator()),
-          error: (err, _) =>
-              Center(child: Text('Couldn\'t load book: $err')),
+          error: (err, _) => Center(child: Text('Couldn\'t load book: $err')),
           data: (view) {
             if (view == null) {
               return const Center(child: Text('Book not found'));
@@ -143,7 +142,10 @@ class _BookDetailBody extends ConsumerWidget {
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    TenkaiBadge(label: view.status.label, variant: _statusVariant),
+                    TenkaiBadge(
+                      label: view.status.label,
+                      variant: _statusVariant,
+                    ),
                     if (badge != null) ...[const SizedBox(width: 8), badge],
                   ],
                 ),
@@ -204,9 +206,8 @@ class _BookDetailBody extends ConsumerWidget {
           if (view.status != BookStatus.finished) ...[
             SizedBox(
               width: double.infinity,
-              child: TenkaiGlassButton(
+              child: TenkaiButton(
                 label: 'Update progress',
-                style: TenkaiGlassButtonStyle.prominentGlass,
                 onPressed: () => _updateProgress(context, ref, book),
               ),
             ),
@@ -297,7 +298,10 @@ class _BookDetailBody extends ConsumerWidget {
   ) async {
     final finished = await showUpdateProgressSheet(context, ref, book);
     if (finished == true && context.mounted) {
-      final updated = await ref.read(appDataBaseProvider).bookDao.getBook(book.id);
+      final updated = await ref
+          .read(appDataBaseProvider)
+          .bookDao
+          .getBook(book.id);
       if (updated != null && context.mounted) {
         await showFinishBookSheet(context, ref, updated);
       }
@@ -318,12 +322,14 @@ class _SessionRow extends ConsumerWidget {
         alignment: Alignment.centerRight,
         padding: const EdgeInsets.symmetric(horizontal: 20),
         color: TenkaiColors.errorDim,
-        child: const CNIcon(symbol: CNSymbol('trash', color: TenkaiColors.error)),
+        child: const CNIcon(
+          symbol: CNSymbol('trash', color: TenkaiColors.error),
+        ),
       ),
       onDismissed: (_) =>
           ref.read(appDataBaseProvider).bookDao.deleteSession(session.id),
-      child: TenkaiCard(
-        padding: const EdgeInsets.all(14),
+      child: Card(
+        // padding: const EdgeInsets.all(14),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -361,12 +367,14 @@ class _HighlightRow extends ConsumerWidget {
         alignment: Alignment.centerRight,
         padding: const EdgeInsets.symmetric(horizontal: 20),
         color: TenkaiColors.errorDim,
-        child: const CNIcon(symbol: CNSymbol('trash', color: TenkaiColors.error)),
+        child: const CNIcon(
+          symbol: CNSymbol('trash', color: TenkaiColors.error),
+        ),
       ),
       onDismissed: (_) =>
           ref.read(appDataBaseProvider).bookDao.deleteHighlight(highlight.id),
-      child: TenkaiCard(
-        padding: const EdgeInsets.all(14),
+      child: Card(
+        // padding: const EdgeInsets.all(14),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../theme/tenkai_semantic_colors.dart';
 import '../tokens/tenkai_tokens.dart';
 import '../sounds/tenkai_sound.dart';
-import 'tenkai_glow.dart';
 
 // ─────────────────────────────────────────────
-// TENKAI · Atom — TenkaiButton
-// Three variants: primary, ghost, danger
-// Context-aware LED: ghost = soft, primary = strong on press
+// TENKAI · Atom — TenkaiButton (flat)
+// Variants: primary, secondary, ghost, danger, link.
+// Emphasis is carried by fill + border weight, not color. Glow is restricted
+// to the primary action (a restrained accent bloom); no ambient hover glow.
 // ─────────────────────────────────────────────
 
-enum TenkaiButtonVariant { primary, ghost, danger, link }
+enum TenkaiButtonVariant { primary, secondary, ghost, danger, link }
 
 enum TenkaiButtonSize { sm, md, lg }
 
@@ -42,9 +43,6 @@ class TenkaiButton extends StatefulWidget {
 
 class _TenkaiButtonState extends State<TenkaiButton>
     with SingleTickerProviderStateMixin {
-  bool _hovered = false;
-  bool _pressed = false;
-
   late AnimationController _pressController;
   late Animation<double> _scaleAnim;
 
@@ -53,9 +51,10 @@ class _TenkaiButtonState extends State<TenkaiButton>
     super.initState();
     _pressController = AnimationController(
       vsync: this,
-      duration: TenkaiDuration.fast,
+      duration: TenkaiDuration.instant,
     );
-    _scaleAnim = Tween<double>(begin: 1.0, end: 0.97).animate(
+    // Press = 2.5% scale-down on the snap curve.
+    _scaleAnim = Tween<double>(begin: 1.0, end: 0.975).animate(
       CurvedAnimation(parent: _pressController, curve: TenkaiCurves.snap),
     );
   }
@@ -71,15 +70,13 @@ class _TenkaiButtonState extends State<TenkaiButton>
   TenkaiSoundEvent get _defaultSound {
     return switch (widget.variant) {
       TenkaiButtonVariant.primary => TenkaiSoundEvent.confirm,
-      TenkaiButtonVariant.ghost => TenkaiSoundEvent.tap,
       TenkaiButtonVariant.danger => TenkaiSoundEvent.error,
-      TenkaiButtonVariant.link => TenkaiSoundEvent.tap,
+      _ => TenkaiSoundEvent.tap,
     };
   }
 
   void _onTapDown(_) {
     if (!_isActive) return;
-    setState(() => _pressed = true);
     _pressController.forward();
     HapticFeedback.mediumImpact();
     TenkaiSound.play(widget.sound ?? _defaultSound);
@@ -87,130 +84,85 @@ class _TenkaiButtonState extends State<TenkaiButton>
 
   void _onTapUp(_) {
     if (!_isActive) return;
-    setState(() => _pressed = false);
     _pressController.reverse();
     widget.onPressed?.call();
   }
 
-  void _onTapCancel() {
-    setState(() => _pressed = false);
-    _pressController.reverse();
-  }
+  void _onTapCancel() => _pressController.reverse();
 
   EdgeInsets get _padding => switch (widget.size) {
     TenkaiButtonSize.sm => const EdgeInsets.symmetric(
-      horizontal: 14,
-      vertical: 8,
+      horizontal: 12,
+      vertical: 7,
     ),
     TenkaiButtonSize.md => const EdgeInsets.symmetric(
-      horizontal: 20,
-      vertical: 12,
+      horizontal: 18,
+      vertical: 10,
     ),
     TenkaiButtonSize.lg => const EdgeInsets.symmetric(
-      horizontal: 28,
-      vertical: 16,
+      horizontal: 24,
+      vertical: 13,
     ),
   };
 
-  TextStyle get _labelStyle {
-    final base = switch (widget.size) {
-      TenkaiButtonSize.sm => TenkaiTypography.labelMd.copyWith(fontSize: 11),
-      TenkaiButtonSize.md => TenkaiTypography.labelMd,
-      TenkaiButtonSize.lg => TenkaiTypography.labelMd.copyWith(fontSize: 13),
-    };
-    return base.copyWith(color: _textColor, letterSpacing: 1.0);
-  }
-
-  Color get _textColor => switch (widget.variant) {
-    TenkaiButtonVariant.primary => TenkaiColors.black,
-    TenkaiButtonVariant.ghost => TenkaiColors.white,
-    TenkaiButtonVariant.link => TenkaiColors.white,
-    TenkaiButtonVariant.danger => TenkaiColors.error,
-  };
-
-  Color get _bgColor => switch (widget.variant) {
-    TenkaiButtonVariant.primary => TenkaiColors.white,
-    TenkaiButtonVariant.ghost => TenkaiColors.gray900,
-    TenkaiButtonVariant.link => Colors.transparent,
-    TenkaiButtonVariant.danger => TenkaiColors.gray900,
-  };
-
-  Color get _borderColor {
-    if (_hovered || _pressed) {
-      return switch (widget.variant) {
-        TenkaiButtonVariant.primary => TenkaiColors.white,
-        TenkaiButtonVariant.ghost => TenkaiColors.white,
-        TenkaiButtonVariant.link => Colors.transparent,
-        TenkaiButtonVariant.danger => TenkaiColors.error,
-      };
-    }
-    return switch (widget.variant) {
-      TenkaiButtonVariant.primary => TenkaiColors.white,
-      TenkaiButtonVariant.ghost => TenkaiColors.gray700,
-      TenkaiButtonVariant.link => Colors.transparent,
-      TenkaiButtonVariant.danger => TenkaiColors.errorBorder,
-    };
-  }
-
-  TenkaiGlowIntensity get _glowIntensity {
-    if (!(_hovered || _pressed)) return TenkaiGlowIntensity.none;
-    return switch (widget.variant) {
-      TenkaiButtonVariant.primary => TenkaiGlowIntensity.strong,
-      TenkaiButtonVariant.ghost => TenkaiGlowIntensity.soft,
-      TenkaiButtonVariant.link => TenkaiGlowIntensity.soft,
-      TenkaiButtonVariant.danger => TenkaiGlowIntensity.soft,
-    };
-  }
-
-  Color get _glowColor => switch (widget.variant) {
-    TenkaiButtonVariant.primary => TenkaiColors.white,
-    TenkaiButtonVariant.ghost => TenkaiColors.white,
-    TenkaiButtonVariant.link => TenkaiColors.white,
-    TenkaiButtonVariant.danger => TenkaiColors.error,
+  double get _fontSize => switch (widget.size) {
+    TenkaiButtonSize.sm => 11,
+    TenkaiButtonSize.md => 12,
+    TenkaiButtonSize.lg => 13,
   };
 
   @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      cursor: _isActive
-          ? SystemMouseCursors.click
-          : SystemMouseCursors.forbidden,
-      onEnter: (_) => setState(() => _hovered = true),
-      onExit: (_) => setState(() {
-        _hovered = false;
-        _pressed = false;
-      }),
-      child: GestureDetector(
-        onTapDown: _onTapDown,
-        onTapUp: _onTapUp,
-        onTapCancel: _onTapCancel,
-        child: ScaleTransition(
-          scale: _scaleAnim,
-          child: TenkaiGlowWrapper(
-            glowing: _hovered || _pressed,
-            intensity: _glowIntensity,
-            borderRadius: TenkaiRadius.md,
-            borderColor: _borderColor,
-            glowColor: _glowColor,
+    final c = context.tenkai;
+
+    final (Color bg, Color fg, Color border) = switch (widget.variant) {
+      TenkaiButtonVariant.primary => (c.accent, c.accentForeground, c.accent),
+      TenkaiButtonVariant.secondary => (c.card, c.foreground, c.border),
+      TenkaiButtonVariant.ghost => (Colors.transparent, c.foreground, c.border),
+      TenkaiButtonVariant.danger => (
+        Colors.transparent,
+        c.destructive,
+        c.border,
+      ),
+      TenkaiButtonVariant.link => (
+        Colors.transparent,
+        c.foreground,
+        Colors.transparent,
+      ),
+    };
+
+    // Glow is emphasis only: the primary action carries a restrained bloom.
+    final shadow = widget.variant == TenkaiButtonVariant.primary && _isActive
+        ? TenkaiGlow.accentOf(c.accent)
+        : null;
+
+    final labelStyle = TenkaiTypography.labelMd.copyWith(
+      fontSize: _fontSize,
+      color: fg,
+      letterSpacing: _fontSize * 0.08,
+    );
+
+    return Opacity(
+      opacity: widget.enabled ? 1.0 : 0.45,
+      child: MouseRegion(
+        cursor: _isActive
+            ? SystemMouseCursors.click
+            : SystemMouseCursors.forbidden,
+        child: GestureDetector(
+          onTapDown: _onTapDown,
+          onTapUp: _onTapUp,
+          onTapCancel: _onTapCancel,
+          child: ScaleTransition(
+            scale: _scaleAnim,
             child: AnimatedContainer(
               duration: TenkaiDuration.medium,
-              curve: TenkaiCurves.spring,
+              curve: TenkaiCurves.easeOut,
               padding: _padding,
               decoration: BoxDecoration(
-                color: _bgColor,
-                borderRadius: BorderRadius.circular(TenkaiRadius.md),
-                // Subtle inner fill on hover for ghost
-                gradient:
-                    (widget.variant != TenkaiButtonVariant.primary && _hovered)
-                    ? LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          TenkaiColors.white.withOpacity(0.04),
-                          TenkaiColors.white.withOpacity(0.01),
-                        ],
-                      )
-                    : null,
+                color: bg,
+                borderRadius: BorderRadius.circular(TenkaiRadius.control),
+                border: Border.all(color: border, width: 1),
+                boxShadow: shadow,
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -224,14 +176,14 @@ class _TenkaiButtonState extends State<TenkaiButton>
                     duration: TenkaiDuration.fast,
                     child: widget.loading
                         ? SizedBox(
-                            width: 16,
-                            height: 16,
+                            width: 15,
+                            height: 15,
                             child: CircularProgressIndicator(
-                              strokeWidth: 1,
-                              color: _textColor,
+                              strokeWidth: 1.5,
+                              color: fg,
                             ),
                           )
-                        : Text(widget.label, style: _labelStyle),
+                        : Text(widget.label.toUpperCase(), style: labelStyle),
                   ),
                 ],
               ),

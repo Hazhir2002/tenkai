@@ -1,11 +1,9 @@
+/// Credentials for `POST /auth/login`. The API authenticates by email.
 class LoginParams {
-  final String username;
+  final String email;
   final String password;
 
-  const LoginParams({required this.username, required this.password});
+  const LoginParams({required this.email, required this.password});
 
-  Map<String, String> toJson(LoginParams params) => {
-    'username': params.username,
-    'password': params.password,
-  };
+  Map<String, dynamic> toJson() => {'email': email, 'password': password};
 }

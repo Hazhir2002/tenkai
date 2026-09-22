@@ -1,6 +1,11 @@
+/// Motion durations. Everything settles; nothing bounces.
 abstract final class TenkaiDuration {
-  static const fast = Duration(milliseconds: 120);
-  static const medium = Duration(milliseconds: 240);
-  static const slow = Duration(milliseconds: 400);
-  static const glow = Duration(milliseconds: 600);
+  static const instant = Duration(milliseconds: 90); // press
+  static const fast = Duration(milliseconds: 150); // checkbox, hover
+  static const medium = Duration(milliseconds: 260); // default state change
+  static const slow = Duration(milliseconds: 420); // sheets, entries
+  static const reveal = Duration(milliseconds: 560); // reveals, unfold
+
+  /// Legacy alias — the glow activation animation. Kept for existing callers.
+  static const glow = reveal;
 }

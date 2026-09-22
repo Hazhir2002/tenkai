@@ -1,10 +1,11 @@
-import 'dart:io';
-
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tenkai/features/auth/models/user.dart';
 import 'package:tenkai/features/auth/params/login_params.dart';
+import 'package:tenkai/features/auth/params/register_params.dart';
 import 'package:tenkai/features/auth/repositories/auth_repository.dart';
 
+/// [initial] means "still restoring the session on launch" — the router shows a
+/// splash until it resolves to [authenticated] or [unauthenticated].
 enum AuthStatus { initial, authenticated, unauthenticated }
 
 class AuthState {
@@ -38,205 +39,64 @@ class AuthState {
 }
 
 class AuthNotifier extends Notifier<AuthState> {
-  late AuthRepository authRepository;
+  late final AuthRepository _repository;
 
   @override
   AuthState build() {
-    // _checkAuthStatus();
-    authRepository = ref.read(authRepositoryProvider);
+    _repository = ref.read(authRepositoryProvider);
+    Future.microtask(restoreSession);
     return const AuthState();
   }
 
-  // Future<void> _checkAuthStatus() async {
-  //   final isAuth = await ref.read(authRepositoryProvider).isAuthenticated();
-  //   if (isAuth) {
-  //     final result = await ref.read(getMeUseCaseProvider).call(NoParams());
-  //     result.fold(
-  //       (_) => state = state.copyWith(status: AuthStatus.unauthenticated),
-  //       (user) => state = state.copyWith(
-  //         status: AuthStatus.authenticated,
-  //         user: user,
-  //       ),
-  //     );
-  //   } else {
-  //     state = state.copyWith(status: AuthStatus.unauthenticated);
-  //   }
-  // }
-
-  Future<void> login(LoginParams params) async {
-    state = state.copyWith(isLoading: true, clearError: true);
-    final result = await authRepository.login(params);
-
-    return result.fold(
-      (failure) => state = state.copyWith(
-        isLoading: false,
-        errorMessage: failure.message,
-        status: AuthStatus.unauthenticated,
-      ),
-      (result) async {
-        final meResult = await authRepository.getMe();
-        meResult.fold(
-          (f) =>
-              state = state.copyWith(isLoading: false, errorMessage: f.message),
-          (user) => state = state.copyWith(
-            isLoading: false,
-            status: AuthStatus.authenticated,
-            user: user,
-          ),
-        );
-      },
+  /// Attempts to silently resume a persisted session on app launch.
+  Future<void> restoreSession() async {
+    final result = await _repository.restoreSession();
+    state = result.fold(
+      (_) => const AuthState(status: AuthStatus.unauthenticated),
+      (user) => AuthState(status: AuthStatus.authenticated, user: user),
     );
   }
 
-  // Future<bool> register(RegisterParams params) async {
-  //   state = state.copyWith(isLoading: true, clearError: true);
-  //   final result = await ref.read(registerUseCaseProvider).call(params);
+  Future<void> login(LoginParams params) async {
+    state = state.copyWith(isLoading: true, clearError: true);
+    final result = await _repository.login(params);
+    state = result.fold(
+      (failure) => state.copyWith(
+        isLoading: false,
+        status: AuthStatus.unauthenticated,
+        errorMessage: failure.message,
+      ),
+      (user) => AuthState(status: AuthStatus.authenticated, user: user),
+    );
+  }
 
-  //   return result.fold(
-  //     (failure) {
-  //       state = state.copyWith(isLoading: false, errorMessage: failure.message);
-  //       return false;
-  //     },
-  //     (_) {
-  //       state = state.copyWith(isLoading: false);
-  //       return true;
-  //     },
-  //   );
-  // }
+  Future<void> register(RegisterParams params) async {
+    state = state.copyWith(isLoading: true, clearError: true);
+    final result = await _repository.register(params);
+    state = result.fold(
+      (failure) => state.copyWith(
+        isLoading: false,
+        status: AuthStatus.unauthenticated,
+        errorMessage: failure.message,
+      ),
+      (user) => AuthState(status: AuthStatus.authenticated, user: user),
+    );
+  }
 
-  // Future<bool> verifyEmail(String token) async {
-  //   state = state.copyWith(isLoading: true, clearError: true);
-  //   final result = await ref.read(verifyEmailUseCaseProvider).call(token);
-  //   return result.fold(
-  //     (f) {
-  //       state = state.copyWith(isLoading: false, errorMessage: f.message);
-  //       return false;
-  //     },
-  //     (_) {
-  //       state = state.copyWith(isLoading: false);
-  //       return true;
-  //     },
-  //   );
-  // }
+  Future<void> logout() async {
+    await _repository.logout();
+    state = const AuthState(status: AuthStatus.unauthenticated);
+  }
 
-  // Future<bool> resendVerification(String email) async {
-  //   state = state.copyWith(isLoading: true, clearError: true);
-  //   final result = await ref
-  //       .read(resendVerificationUseCaseProvider)
-  //       .call(email);
-  //   return result.fold(
-  //     (f) {
-  //       state = state.copyWith(isLoading: false, errorMessage: f.message);
-  //       return false;
-  //     },
-  //     (_) {
-  //       state = state.copyWith(isLoading: false);
-  //       return true;
-  //     },
-  //   );
-  // }
-
-  // Future<bool> forgotPassword(String email) async {
-  //   state = state.copyWith(isLoading: true, clearError: true);
-  //   final result = await ref.read(forgotPasswordUseCaseProvider).call(email);
-  //   return result.fold(
-  //     (f) {
-  //       state = state.copyWith(isLoading: false, errorMessage: f.message);
-  //       return false;
-  //     },
-  //     (_) {
-  //       state = state.copyWith(isLoading: false);
-  //       return true;
-  //     },
-  //   );
-  // }
-
-  // Future<bool> resetPassword(ResetPasswordParams params) async {
-  //   state = state.copyWith(isLoading: true, clearError: true);
-  //   final result = await ref.read(resetPasswordUseCaseProvider).call(params);
-  //   return result.fold(
-  //     (f) {
-  //       state = state.copyWith(isLoading: false, errorMessage: f.message);
-  //       return false;
-  //     },
-  //     (_) {
-  //       state = state.copyWith(isLoading: false);
-  //       return true;
-  //     },
-  //   );
-  // }
-
-  // Future<bool> changePassword(ChangePasswordParams params) async {
-  //   state = state.copyWith(isLoading: true, clearError: true);
-  //   final result = await ref.read(changePasswordUseCaseProvider).call(params);
-  //   return result.fold(
-  //     (f) {
-  //       state = state.copyWith(isLoading: false, errorMessage: f.message);
-  //       return false;
-  //     },
-  //     (_) {
-  //       state = state.copyWith(isLoading: false);
-  //       return true;
-  //     },
-  //   );
-  // }
-
-  // Future<bool> updateProfile(UpdateProfileParams params) async {
-  //   state = state.copyWith(isLoading: true, clearError: true);
-  //   final result = await ref.read(updateProfileUseCaseProvider).call(params);
-  //   return result.fold(
-  //     (f) {
-  //       state = state.copyWith(isLoading: false, errorMessage: f.message);
-  //       return false;
-  //     },
-  //     (user) {
-  //       state = state.copyWith(isLoading: false, user: user);
-  //       return true;
-  //     },
-  //   );
-  // }
-
-  // Future<bool> uploadAvatar(File file) async {
-  //   state = state.copyWith(isLoading: true, clearError: true);
-  //   final result = await ref.read(uploadAvatarUseCaseProvider).call(file);
-  //   return result.fold(
-  //     (f) {
-  //       state = state.copyWith(isLoading: false, errorMessage: f.message);
-  //       return false;
-  //     },
-  //     (user) {
-  //       state = state.copyWith(isLoading: false, user: user);
-  //       return true;
-  //     },
-  //   );
-  // }
-
-  // Future<bool> deleteAvatar() async {
-  //   state = state.copyWith(isLoading: true, clearError: true);
-  //   final result = await ref.read(deleteAvatarUseCaseProvider).call(NoParams());
-  //   return result.fold(
-  //     (f) {
-  //       state = state.copyWith(isLoading: false, errorMessage: f.message);
-  //       return false;
-  //     },
-  //     (user) {
-  //       state = state.copyWith(isLoading: false, user: user);
-  //       return true;
-  //     },
-  //   );
-  // }
-
-  // Future<void> logout() async {
-  //   state = state.copyWith(isLoading: true);
-  //   await ref.read(logoutUseCaseProvider).call(NoParams());
-  //   state = const AuthState(status: AuthStatus.unauthenticated);
-  // }
-
-  // Future<void> logoutAll() async {
-  //   state = state.copyWith(isLoading: true);
-  //   await ref.read(logoutAllUseCaseProvider).call(NoParams());
-  //   state = const AuthState(status: AuthStatus.unauthenticated);
-  // }
+  /// Invoked by the network layer when a token refresh fails unrecoverably, so
+  /// the router guard can bounce the user back to login.
+  void markSessionExpired() {
+    if (state.status == AuthStatus.unauthenticated) return;
+    state = const AuthState(
+      status: AuthStatus.unauthenticated,
+      errorMessage: 'Session expired. Please log in again.',
+    );
+  }
 
   void clearError() => state = state.copyWith(clearError: true);
 }

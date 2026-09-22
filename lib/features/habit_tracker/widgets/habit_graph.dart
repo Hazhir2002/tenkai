@@ -20,7 +20,7 @@ class _NodeStyle {
   final String? badgeLabel;
   final TenkaiBadgeVariant badgeVariant;
 
-  factory _NodeStyle.of(HabitView v) {
+  factory _NodeStyle.of(HabitView v, TenkaiSemanticColors c) {
     switch (v.dayState) {
       case HabitDayState.doneToday:
         return const _NodeStyle(
@@ -31,40 +31,40 @@ class _NodeStyle {
           badgeVariant: TenkaiBadgeVariant.success,
         );
       case HabitDayState.next:
-        return const _NodeStyle(
-          color: TenkaiColors.white,
+        return _NodeStyle(
+          color: c.foreground,
           glowing: true,
           size: 24,
           badgeLabel: 'Next',
           badgeVariant: TenkaiBadgeVariant.active,
         );
       case HabitDayState.pendingToday:
-        return const _NodeStyle(
-          color: TenkaiColors.white,
+        return _NodeStyle(
+          color: c.foreground,
           glowing: true,
           size: 18,
           badgeLabel: 'Pending',
           badgeVariant: TenkaiBadgeVariant.neutral,
         );
       case HabitDayState.notScheduledToday:
-        return const _NodeStyle(
-          color: TenkaiColors.gray400,
+        return _NodeStyle(
+          color: c.mutedForeground,
           glowing: false,
           size: 16,
           badgeLabel: null,
           badgeVariant: TenkaiBadgeVariant.neutral,
         );
       case HabitDayState.building:
-        return const _NodeStyle(
-          color: TenkaiColors.gray300,
+        return _NodeStyle(
+          color: c.mutedForeground,
           glowing: true,
           size: 16,
           badgeLabel: 'Building',
           badgeVariant: TenkaiBadgeVariant.neutral,
         );
       case HabitDayState.planned:
-        return const _NodeStyle(
-          color: TenkaiColors.gray600,
+        return _NodeStyle(
+          color: c.border,
           glowing: false,
           size: 14,
           badgeLabel: 'Planned',
@@ -112,9 +112,9 @@ class _ChainBranch extends StatelessWidget {
             // roughly under the parent node's centre.
             margin: const EdgeInsets.only(left: 13),
             padding: const EdgeInsets.only(left: 15),
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               border: Border(
-                left: BorderSide(color: TenkaiColors.gray700, width: 1),
+                left: BorderSide(color: context.tenkai.border, width: 1),
               ),
             ),
             child: Column(
@@ -138,7 +138,7 @@ class _NodeRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = _NodeStyle.of(view);
+    final style = _NodeStyle.of(view, context.tenkai);
     final dimmed = view.dayState == HabitDayState.planned;
 
     return Padding(
@@ -160,14 +160,13 @@ class _NodeRow extends StatelessWidget {
           Expanded(
             child: Opacity(
               opacity: dimmed ? 0.6 : 1.0,
-              child: TenkaiCard(
-                interactive: true,
-                glowOnHover: true,
-                onTap: () => onTap(view),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 14,
-                ),
+              child: Card(
+                // interactive: true,
+                // onTap: () => onTap(view),
+                // padding: const EdgeInsets.symmetric(
+                //   horizontal: 16,
+                //   vertical: 14,
+                // ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

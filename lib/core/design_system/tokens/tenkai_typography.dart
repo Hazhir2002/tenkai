@@ -1,172 +1,110 @@
 import 'package:flutter/material.dart';
-import 'package:tenkai/core/design_system/tokens/tenkai_colors.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 abstract final class TenkaiTypography {
-  static const fontDisplay = 'Inter';
-  static const fontBody = 'Roboto';
-
-  // ── Display ──
-  static const TextStyle d1 = TextStyle(
-    fontFamily: fontDisplay,
-    fontSize: 56,
-    fontWeight: FontWeight.w300,
-    letterSpacing: -2.24, // -0.04em
-    height: 1.05,
-    color: TenkaiColors.white,
+  static TextStyle d1 = GoogleFonts.geistMono(
+    fontSize: 54,
+    fontWeight: FontWeight.w400,
+    letterSpacing: -1.08,
+    height: 1.04,
   );
 
-  static const TextStyle d2 = TextStyle(
-    fontFamily: fontDisplay,
+  static TextStyle d2 = GoogleFonts.geistMono(
     fontSize: 40,
-    fontWeight: FontWeight.w300,
-    letterSpacing: -1.2,
-    height: 1.1,
-    color: TenkaiColors.white,
+    fontWeight: FontWeight.w400,
+    letterSpacing: -0.72,
+    height: 1.08,
   );
 
-  static const TextStyle d3 = TextStyle(
-    fontFamily: fontDisplay,
-    fontSize: 32,
-    fontWeight: FontWeight.w300,
-    letterSpacing: -1.2,
-    height: 1.1,
-    color: TenkaiColors.white,
+  static TextStyle d3 = GoogleFonts.geistMono(
+    fontSize: 30,
+    fontWeight: FontWeight.w400,
+    letterSpacing: -0.45, // -0.015em
+    height: 1.14,
   );
 
-  // ── Headings ──
-  static const TextStyle h1 = TextStyle(
-    fontFamily: fontDisplay,
-    fontSize: 28,
-    fontWeight: FontWeight.w600,
-    letterSpacing: -0.56,
-    height: 1.2,
-    color: TenkaiColors.white,
+  static TextStyle h1 = GoogleFonts.geistMono(
+    fontSize: 26,
+    fontWeight: FontWeight.w400,
+    letterSpacing: -0.312,
+    height: 1.22,
   );
 
-  static const TextStyle h2 = TextStyle(
-    fontFamily: fontDisplay,
+  static TextStyle h2 = GoogleFonts.robotoMono(
     fontSize: 20,
-    fontWeight: FontWeight.w600,
-    letterSpacing: -0.3,
+    fontWeight: FontWeight.w400,
+    letterSpacing: -0.16,
     height: 1.3,
-    color: TenkaiColors.white,
   );
 
-  static const TextStyle h3 = TextStyle(
-    fontFamily: fontDisplay,
+  static TextStyle h3 = GoogleFonts.robotoMono(
     fontSize: 16,
     fontWeight: FontWeight.w600,
-    letterSpacing: -0.15,
+    letterSpacing: 0,
     height: 1.4,
-    color: TenkaiColors.white,
   );
 
-  // ── title ──
-  static const TextStyle titleLg = TextStyle(
-    fontFamily: fontBody,
+  static TextStyle titleLg = GoogleFonts.robotoSlab(
     fontSize: 24,
-    fontWeight: FontWeight.w600,
-    letterSpacing: -0.56,
+    fontWeight: FontWeight.w400,
     height: 1.2,
-    color: TenkaiColors.white,
   );
 
-  static const TextStyle titleMd = TextStyle(
-    fontFamily: fontBody,
+  static TextStyle titleMd = GoogleFonts.robotoSlab(
     fontSize: 20,
-    fontWeight: FontWeight.w600,
-    letterSpacing: -0.3,
+    fontWeight: FontWeight.w400,
     height: 1.3,
-    color: TenkaiColors.white,
   );
 
-  static const TextStyle titleSm = TextStyle(
-    fontFamily: fontBody,
+  static TextStyle titleSm = GoogleFonts.robotoSlab(
     fontSize: 16,
     fontWeight: FontWeight.w600,
-    letterSpacing: -0.15,
     height: 1.4,
-    color: TenkaiColors.white,
   );
 
-  // ── Body ──
-  static const TextStyle bodyLg = TextStyle(
-    fontFamily: fontBody,
-    fontSize: 18,
-    fontWeight: FontWeight.w400,
-    letterSpacing: 0.1,
-    height: 1.6,
-    color: TenkaiColors.gray200,
-  );
-
-  static const TextStyle bodyMd = TextStyle(
-    fontFamily: fontBody,
+  static TextStyle bodyLg = GoogleFonts.robotoSlab(
     fontSize: 16,
     fontWeight: FontWeight.w400,
-    letterSpacing: 0.1,
     height: 1.6,
-    color: TenkaiColors.gray200,
   );
 
-  static const TextStyle bodySmall = TextStyle(
-    fontFamily: fontBody,
-    fontSize: 14,
+  static TextStyle bodyMd = GoogleFonts.robotoSlab(
+    fontSize: 14.5,
     fontWeight: FontWeight.w400,
-    letterSpacing: 0.1,
-    height: 1.5,
-    color: TenkaiColors.gray200,
+    height: 1.6,
   );
 
-  // ── Label / Utility ──
+  static TextStyle bodySmall = GoogleFonts.robotoSlab(
+    fontSize: 13,
+    fontWeight: FontWeight.w400,
+    height: 1.6,
+  );
 
-  static const TextStyle labelLg = TextStyle(
-    fontFamily: fontDisplay,
+  static TextStyle labelLg = GoogleFonts.robotoSlab(
     fontSize: 14,
     fontWeight: FontWeight.w500,
-    letterSpacing: 1.2,
+    letterSpacing: 0.14, // 0.01em
     height: 1.4,
-    color: TenkaiColors.gray400,
   );
 
-  static const TextStyle labelMd = TextStyle(
-    fontFamily: fontDisplay,
+  static TextStyle labelMd = GoogleFonts.robotoSlab(
     fontSize: 12,
     fontWeight: FontWeight.w500,
-    letterSpacing: 1.8,
+    letterSpacing: 0.12, // 0.01em
     height: 1.4,
-    color: TenkaiColors.gray400,
   );
 
-  static const TextStyle labelSm = TextStyle(
-    fontFamily: fontDisplay,
+  static TextStyle labelSm = GoogleFonts.robotoSlab(
     fontSize: 10,
     fontWeight: FontWeight.w500,
-    letterSpacing: 1.8,
+    letterSpacing: 1.6, // 0.16em — wide-tracked all-caps meta
     height: 1.4,
-    color: TenkaiColors.gray400,
   );
 
-  static const TextStyle mono = TextStyle(
-    fontFamily: fontBody, // no monospace face is bundled; falls back to body
+  static TextStyle mono = GoogleFonts.robotoSlab(
     fontSize: 13,
     fontWeight: FontWeight.w400,
     letterSpacing: 0.2,
     height: 1.5,
-    color: TenkaiColors.gray500,
-  );
-
-  // ── Navigation (TenkaiAppBar) ──
-  static const TextStyle navTitle = TextStyle(
-    fontFamily: fontDisplay,
-    fontSize: 17,
-    fontWeight: FontWeight.w600,
-    color: TenkaiColors.white,
-  );
-
-  static const TextStyle navTitleLarge = TextStyle(
-    fontFamily: fontDisplay,
-    fontSize: 30,
-    fontWeight: FontWeight.w700,
-    color: TenkaiColors.white,
   );
 }

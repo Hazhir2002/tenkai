@@ -59,207 +59,198 @@ class _BookFormSheet extends HookConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-            // Cover picker
-            Center(
-              child: GestureDetector(
-                onTap: () => _pickCover(context, ref),
-                behavior: HitTestBehavior.opaque,
-                child: Column(
-                  children: [
-                    BookCover(
-                      path: form.coverImagePath,
-                      width: 84,
-                      height: 118,
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      form.coverImagePath == null ? 'Add cover' : 'Change cover',
-                      style: TenkaiTypography.labelSm,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
-
-            _label('Title'),
-            const SizedBox(height: 6),
-            TenkaiLiquidInput(
-              placeholder: 'Book title',
-              controller: titleCtrl,
-              onChanged: notifier.setTitle,
-              textInputAction: TextInputAction.next,
-            ),
-            const SizedBox(height: 16),
-            TenkaiInput(
-              label: 'Author (optional)',
-              placeholder: 'Author',
-              controller: authorCtrl,
-              onChanged: notifier.setAuthor,
-            ),
-            const SizedBox(height: 16),
-            Row(
+        // Cover picker
+        Center(
+          child: GestureDetector(
+            onTap: () => _pickCover(context, ref),
+            behavior: HitTestBehavior.opaque,
+            child: Column(
               children: [
-                Expanded(
-                  child: TenkaiInput(
-                    label: 'Total pages',
-                    placeholder: '320',
-                    controller: totalCtrl,
-                    keyboardType: TextInputType.number,
-                    onChanged: (v) => notifier.setTotalPages(int.tryParse(v)),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: TenkaiInput(
-                    label: 'Current page',
-                    placeholder: '0',
-                    controller: currentCtrl,
-                    keyboardType: TextInputType.number,
-                    onChanged: (v) =>
-                        notifier.setCurrentPage(int.tryParse(v) ?? 0),
-                  ),
+                BookCover(path: form.coverImagePath, width: 84, height: 118),
+                const SizedBox(height: 8),
+                Text(
+                  form.coverImagePath == null ? 'Add cover' : 'Change cover',
+                  style: TenkaiTypography.labelSm,
                 ),
               ],
             ),
-            const SizedBox(height: 20),
+          ),
+        ),
+        const SizedBox(height: 20),
 
-            _label('Shelf'),
-            const SizedBox(height: 8),
-            TenkaiRadioGroup<BookStatus>(
-              options: BookStatus.values,
-              labels: BookStatus.values.map((s) => s.label).toList(),
-              value: form.status,
-              onChanged: notifier.setStatus,
-            ),
-            const SizedBox(height: 20),
-            const TenkaiDivider(),
-            const SizedBox(height: 16),
-
-            // Deadline (optional)
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('Deadline (optional)', style: TenkaiTypography.bodyMd),
-                Row(
-                  children: [
-                    if (form.deadline != null) ...[
-                      Text(
-                        DateFormat('MMM d, y').format(form.deadline!),
-                        style: TenkaiTypography.labelMd.copyWith(
-                          color: TenkaiColors.white,
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      GestureDetector(
-                        onTap: () => notifier.setDeadline(null),
-                        child: const CNIcon(
-                          symbol: CNSymbol(
-                            'xmark',
-                            size: 16,
-                            color: TenkaiColors.gray400,
-                          ),
-                        ),
-                      ),
-                    ] else
-                      TenkaiButton(
-                        label: 'Set',
-                        size: TenkaiButtonSize.sm,
-                        variant: TenkaiButtonVariant.ghost,
-                        onPressed: () async {
-                          final picked = await _pickDate(
-                            context,
-                            form.deadline,
-                          );
-                          if (picked != null) notifier.setDeadline(picked);
-                        },
-                      ),
-                  ],
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            TenkaiInput(
-              label: 'Or a daily page goal (optional)',
-              placeholder: 'e.g. 10',
-              controller: goalCtrl,
-              keyboardType: TextInputType.number,
-              onChanged: (v) => notifier.setDailyGoal(int.tryParse(v)),
-            ),
-            const SizedBox(height: 20),
-            const TenkaiDivider(),
-            const SizedBox(height: 16),
-
-            // Reminder
-            TenkaiToggle(
-              value: form.reminderEnabled,
-              onChanged: notifier.setReminderEnabled,
-              label: 'Daily reading reminder',
-            ),
-            if (form.reminderEnabled) ...[
-              const SizedBox(height: 12),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('Remind me at', style: TenkaiTypography.bodyMd),
-                  GestureDetector(
-                    onTap: () async {
-                      final picked = await _pickTime(
-                        context,
-                        form.reminderHour,
-                        form.reminderMinute,
-                      );
-                      if (picked != null) {
-                        notifier.setReminderTime(picked.$1, picked.$2);
-                      }
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 14,
-                        vertical: 8,
-                      ),
-                      decoration: BoxDecoration(
-                        color: TenkaiColors.gray800,
-                        borderRadius: BorderRadius.circular(TenkaiRadius.sharp),
-                        border: Border.all(
-                          color: TenkaiColors.gray700,
-                          width: 0.5,
-                        ),
-                      ),
-                      child: Text(
-                        _hm(form.reminderHour, form.reminderMinute),
-                        style: TenkaiTypography.mono,
-                      ),
-                    ),
-                  ),
-                ],
+        _label('Title'),
+        const SizedBox(height: 6),
+        TenkaiInput(
+          placeholder: 'Book title',
+          controller: titleCtrl,
+          onChanged: notifier.setTitle,
+          textInputAction: TextInputAction.next,
+        ),
+        const SizedBox(height: 16),
+        TenkaiInput(
+          label: 'Author (optional)',
+          placeholder: 'Author',
+          controller: authorCtrl,
+          onChanged: notifier.setAuthor,
+        ),
+        const SizedBox(height: 16),
+        Row(
+          children: [
+            Expanded(
+              child: TenkaiInput(
+                label: 'Total pages',
+                placeholder: '320',
+                controller: totalCtrl,
+                keyboardType: TextInputType.number,
+                onChanged: (v) => notifier.setTotalPages(int.tryParse(v)),
               ),
-            ],
-
-            const SizedBox(height: 24),
-            SizedBox(
-              width: double.infinity,
-              child: TenkaiButton(
-                label: editing != null ? 'Save changes' : 'Add book',
-                loading: form.saving,
-                enabled: form.isValid && !form.saving,
-                onPressed: () async {
-                  final id = await notifier.save();
-                  if (id != null && context.mounted) {
-                    Navigator.of(context).pop();
-                    showTenkaiToast(
-                      context,
-                      TenkaiToastData(
-                        title: editing != null ? 'Book updated' : 'Book added',
-                        variant: TenkaiToastVariant.success,
-                      ),
-                    );
-                  }
-                },
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: TenkaiInput(
+                label: 'Current page',
+                placeholder: '0',
+                controller: currentCtrl,
+                keyboardType: TextInputType.number,
+                onChanged: (v) => notifier.setCurrentPage(int.tryParse(v) ?? 0),
               ),
             ),
           ],
-        );
+        ),
+        const SizedBox(height: 20),
+
+        _label('Shelf'),
+        const SizedBox(height: 8),
+        TenkaiRadioGroup<BookStatus>(
+          options: BookStatus.values,
+          labels: BookStatus.values.map((s) => s.label).toList(),
+          value: form.status,
+          onChanged: notifier.setStatus,
+        ),
+        const SizedBox(height: 20),
+        const TenkaiDivider(),
+        const SizedBox(height: 16),
+
+        // Deadline (optional)
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text('Deadline (optional)', style: TenkaiTypography.bodyMd),
+            Row(
+              children: [
+                if (form.deadline != null) ...[
+                  Text(
+                    DateFormat('MMM d, y').format(form.deadline!),
+                    style: TenkaiTypography.labelMd.copyWith(
+                      color: context.tenkai.foreground,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  GestureDetector(
+                    onTap: () => notifier.setDeadline(null),
+                    child: CNIcon(
+                      symbol: CNSymbol(
+                        'xmark',
+                        size: 16,
+                        color: context.tenkai.mutedForeground,
+                      ),
+                    ),
+                  ),
+                ] else
+                  TenkaiButton(
+                    label: 'Set',
+                    size: TenkaiButtonSize.sm,
+                    variant: TenkaiButtonVariant.ghost,
+                    onPressed: () async {
+                      final picked = await _pickDate(context, form.deadline);
+                      if (picked != null) notifier.setDeadline(picked);
+                    },
+                  ),
+              ],
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
+        TenkaiInput(
+          label: 'Or a daily page goal (optional)',
+          placeholder: 'e.g. 10',
+          controller: goalCtrl,
+          keyboardType: TextInputType.number,
+          onChanged: (v) => notifier.setDailyGoal(int.tryParse(v)),
+        ),
+        const SizedBox(height: 20),
+        const TenkaiDivider(),
+        const SizedBox(height: 16),
+
+        // Reminder
+        TenkaiToggle(
+          value: form.reminderEnabled,
+          onChanged: notifier.setReminderEnabled,
+          label: 'Daily reading reminder',
+        ),
+        if (form.reminderEnabled) ...[
+          const SizedBox(height: 12),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('Remind me at', style: TenkaiTypography.bodyMd),
+              GestureDetector(
+                onTap: () async {
+                  final picked = await _pickTime(
+                    context,
+                    form.reminderHour,
+                    form.reminderMinute,
+                  );
+                  if (picked != null) {
+                    notifier.setReminderTime(picked.$1, picked.$2);
+                  }
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 8,
+                  ),
+                  decoration: BoxDecoration(
+                    color: context.tenkai.card,
+                    borderRadius: BorderRadius.circular(TenkaiRadius.control),
+                    border: Border.all(color: context.tenkai.border, width: 1),
+                  ),
+                  child: Text(
+                    _hm(form.reminderHour, form.reminderMinute),
+                    style: TenkaiTypography.mono.copyWith(
+                      color: context.tenkai.foreground,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+
+        const SizedBox(height: 24),
+        SizedBox(
+          width: double.infinity,
+          child: TenkaiButton(
+            label: editing != null ? 'Save changes' : 'Add book',
+            loading: form.saving,
+            enabled: form.isValid && !form.saving,
+            onPressed: () async {
+              final id = await notifier.save();
+              if (id != null && context.mounted) {
+                Navigator.of(context).pop();
+                showTenkaiToast(
+                  context,
+                  TenkaiToastData(
+                    title: editing != null ? 'Book updated' : 'Book added',
+                    variant: TenkaiToastVariant.success,
+                  ),
+                );
+              }
+            },
+          ),
+        ),
+      ],
+    );
   }
 
   Widget _label(String t) =>
@@ -270,23 +261,26 @@ class _BookFormSheet extends HookConsumerWidget {
     final notifier = ref.read(bookFormProvider.notifier);
     final source = await showModalBottomSheet<ImageSource?>(
       context: context,
-      backgroundColor: TenkaiColors.gray900,
+      backgroundColor: context.tenkai.card,
       builder: (sheetCtx) => SafeArea(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              leading: const CNIcon(
-                symbol: CNSymbol('camera.fill', color: TenkaiColors.white),
+              leading: CNIcon(
+                symbol: CNSymbol(
+                  'camera.fill',
+                  color: context.tenkai.foreground,
+                ),
               ),
               title: const Text('Take photo'),
               onTap: () => Navigator.pop(sheetCtx, ImageSource.camera),
             ),
             ListTile(
-              leading: const CNIcon(
+              leading: CNIcon(
                 symbol: CNSymbol(
                   'photo.on.rectangle',
-                  color: TenkaiColors.white,
+                  color: context.tenkai.foreground,
                 ),
               ),
               title: const Text('Choose from library'),
@@ -320,9 +314,9 @@ Future<DateTime?> _pickDate(BuildContext context, DateTime? initial) async {
   var picked = initial ?? DateTime.now().add(const Duration(days: 14));
   final ok = await showModalBottomSheet<bool>(
     context: context,
-    backgroundColor: TenkaiColors.gray900,
+    backgroundColor: context.tenkai.card,
     builder: (sheetCtx) => CupertinoTheme(
-      data: const CupertinoThemeData(brightness: Brightness.dark),
+      data: CupertinoThemeData(brightness: Theme.of(context).brightness),
       child: SizedBox(
         height: 300,
         child: Column(
@@ -354,13 +348,17 @@ Future<DateTime?> _pickDate(BuildContext context, DateTime? initial) async {
   return ok == true ? picked : null;
 }
 
-Future<(int, int)?> _pickTime(BuildContext context, int hour, int minute) async {
+Future<(int, int)?> _pickTime(
+  BuildContext context,
+  int hour,
+  int minute,
+) async {
   var h = hour, m = minute;
   final ok = await showModalBottomSheet<bool>(
     context: context,
-    backgroundColor: TenkaiColors.gray900,
+    backgroundColor: context.tenkai.card,
     builder: (sheetCtx) => CupertinoTheme(
-      data: const CupertinoThemeData(brightness: Brightness.dark),
+      data: CupertinoThemeData(brightness: Theme.of(context).brightness),
       child: SizedBox(
         height: 300,
         child: Column(

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import '../theme/tenkai_semantic_colors.dart';
 import '../tokens/tenkai_tokens.dart';
 import '../sounds/tenkai_sound.dart';
 
 // ─────────────────────────────────────────────
-// TENKAI · Molecules — Navigation & Feedback
+// TENKAI · Molecules — Navigation & Feedback (flat)
 // TenkaiTabs, TenkaiToast, TenkaiBottomSheet
+// Flat hairline surfaces, no glow, no drop shadows.
 // ─────────────────────────────────────────────
 
 // ── TABS ─────────────────────────────────────
@@ -36,13 +38,11 @@ class _TenkaiTabsState extends State<TenkaiTabs> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final c = context.tenkai;
 
-    return Container(
-      decoration: const BoxDecoration(
-        border: Border(
-          bottom: BorderSide(color: TenkaiColors.gray800, width: 0.5),
-        ),
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: c.border, width: 1)),
       ),
       child: Row(
         children: List.generate(widget.tabs.length, (i) {
@@ -55,21 +55,20 @@ class _TenkaiTabsState extends State<TenkaiTabs> {
             },
             child: AnimatedContainer(
               duration: TenkaiDuration.medium,
-              curve: TenkaiCurves.spring,
+              curve: TenkaiCurves.easeOut,
               padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
               decoration: BoxDecoration(
                 border: Border(
                   bottom: BorderSide(
-                    color: active ? TenkaiColors.white : Colors.transparent,
+                    color: active ? c.accent : Colors.transparent,
                     width: 1,
                   ),
                 ),
               ),
               child: Text(
                 widget.tabs[i].toUpperCase(),
-                style: theme.textTheme.labelMedium?.copyWith(
-                  color: active ? TenkaiColors.white : TenkaiColors.gray600,
-                  letterSpacing: 1.0,
+                style: TenkaiTypography.labelMd.copyWith(
+                  color: active ? c.foreground : c.secondaryForeground,
                 ),
               ),
             ),
@@ -131,15 +130,16 @@ class _TenkaiToastOverlayState extends State<TenkaiToastOverlay>
     super.dispose();
   }
 
-  Color get _dotColor => switch (widget.data.variant) {
-    TenkaiToastVariant.info => TenkaiColors.white,
-    TenkaiToastVariant.success => TenkaiColors.success,
-    TenkaiToastVariant.warning => TenkaiColors.warning,
-    TenkaiToastVariant.error => TenkaiColors.error,
+  Color _dotColor(TenkaiSemanticColors c) => switch (widget.data.variant) {
+    TenkaiToastVariant.info => c.foreground,
+    TenkaiToastVariant.success => Colors.greenAccent,
+    TenkaiToastVariant.warning => Colors.yellowAccent,
+    TenkaiToastVariant.error => Colors.redAccent,
   };
 
   @override
   Widget build(BuildContext context) {
+    final c = context.tenkai;
     return AnimatedBuilder(
       animation: _anim,
       builder: (_, child) => Transform.translate(
@@ -149,10 +149,9 @@ class _TenkaiToastOverlayState extends State<TenkaiToastOverlay>
       child: Container(
         constraints: const BoxConstraints(minWidth: 260, maxWidth: 340),
         decoration: BoxDecoration(
-          color: TenkaiColors.gray800,
-          borderRadius: BorderRadius.circular(TenkaiRadius.sm),
-          border: Border.all(color: TenkaiColors.gray600, width: 0.5),
-          boxShadow: TenkaiGlow.soft,
+          color: c.card,
+          borderRadius: BorderRadius.circular(TenkaiRadius.card),
+          border: Border.all(color: c.border, width: 1),
         ),
         padding: const EdgeInsets.all(14),
         child: Row(
@@ -161,13 +160,10 @@ class _TenkaiToastOverlayState extends State<TenkaiToastOverlay>
             Container(
               width: 6,
               height: 6,
-              margin: const EdgeInsets.only(top: 4, right: 12),
+              margin: const EdgeInsets.only(top: 6, right: 12),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: _dotColor,
-                boxShadow: [
-                  BoxShadow(color: _dotColor.withOpacity(0.5), blurRadius: 4),
-                ],
+                color: _dotColor(c),
               ),
             ),
             Expanded(
@@ -175,12 +171,17 @@ class _TenkaiToastOverlayState extends State<TenkaiToastOverlay>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(widget.data.title, style: TenkaiTypography.h3),
+                  Text(
+                    widget.data.title,
+                    style: TenkaiTypography.h3.copyWith(color: c.foreground),
+                  ),
                   if (widget.data.message != null) ...[
                     const SizedBox(height: 2),
                     Text(
                       widget.data.message!,
-                      style: TenkaiTypography.bodySmall,
+                      style: TenkaiTypography.bodySmall.copyWith(
+                        color: c.mutedForeground,
+                      ),
                     ),
                   ],
                 ],
@@ -193,7 +194,7 @@ class _TenkaiToastOverlayState extends State<TenkaiToastOverlay>
   }
 }
 
-/// Show a toast — call from anywhere with context
+/// Show a toast — call from anywhere with context.
 void showTenkaiToast(BuildContext context, TenkaiToastData data) {
   final overlay = Overlay.of(context);
   late OverlayEntry entry;
@@ -243,6 +244,7 @@ class _TenkaiSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = context.tenkai;
     final media = MediaQuery.of(context);
     final viewInsets = media.viewInsets.bottom; // keyboard height
     final keyboardOpen = viewInsets > 0;
@@ -261,25 +263,18 @@ class _TenkaiSheet extends StatelessWidget {
         constraints: BoxConstraints(maxHeight: maxHeight),
         child: Container(
           decoration: BoxDecoration(
-            color: TenkaiColors.gray900,
+            color: c.card,
             borderRadius: const BorderRadius.vertical(
-              top: Radius.circular(TenkaiRadius.sharp),
+              top: Radius.circular(TenkaiRadius.sheet),
             ),
-            border: Border.all(color: TenkaiColors.gray700, width: 0.5),
-            boxShadow: [
-              BoxShadow(
-                color: TenkaiColors.white.withOpacity(0.04),
-                blurRadius: 40,
-                offset: const Offset(0, -4),
-              ),
-            ],
+            border: Border.all(color: c.border, width: 1),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               if (showHandle) ...[
                 const SizedBox(height: 12),
-                Container(width: 32, height: 1, color: TenkaiColors.gray600),
+                Container(width: 32, height: 2, color: c.border),
                 const SizedBox(height: 20),
               ],
               Flexible(
@@ -300,7 +295,12 @@ class _TenkaiSheet extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(title, style: TenkaiTypography.h2),
+                        Text(
+                          title,
+                          style: TenkaiTypography.h2.copyWith(
+                            color: c.foreground,
+                          ),
+                        ),
                         const SizedBox(height: 20),
                         child,
                       ],
@@ -324,11 +324,10 @@ class _KeyboardDoneBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        border: Border(
-          top: BorderSide(color: TenkaiColors.gray800, width: 0.5),
-        ),
+    final c = context.tenkai;
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        border: Border(top: BorderSide(color: c.border, width: 1)),
       ),
       child: Align(
         alignment: Alignment.centerRight,
@@ -342,9 +341,7 @@ class _KeyboardDoneBar extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
             child: Text(
               'Done',
-              style: TenkaiTypography.labelMd.copyWith(
-                color: TenkaiColors.white,
-              ),
+              style: TenkaiTypography.labelMd.copyWith(color: c.foreground),
             ),
           ),
         ),

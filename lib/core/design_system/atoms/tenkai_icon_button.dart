@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tenkai/core/design_system/atoms/tenkai_icon.dart';
+import '../theme/tenkai_semantic_colors.dart';
 import '../tokens/tenkai_tokens.dart';
 import '../sounds/tenkai_sound.dart';
-import 'tenkai_glow.dart';
 
 // ─────────────────────────────────────────────
-// TENKAI · Atom — TenkaiIconButton
-// Minimal icon-only affordance: transparent background,
-// soft LED glow on hover/press. No variants — use TenkaiButton
-// for labeled/filled buttons.
+// TENKAI · Atom — TenkaiIconButton (flat)
+// Icon-only affordance: transparent background, a muted fill appears on
+// hover/press. No glow. Use TenkaiButton for labeled/filled buttons.
 // ─────────────────────────────────────────────
 
 enum TenkaiIconButtonSize { sm, md, lg }
@@ -47,9 +46,9 @@ class _TenkaiIconButtonState extends State<TenkaiIconButton>
     super.initState();
     _pressController = AnimationController(
       vsync: this,
-      duration: TenkaiDuration.fast,
+      duration: TenkaiDuration.instant,
     );
-    _scaleAnim = Tween<double>(begin: 1.0, end: 0.97).animate(
+    _scaleAnim = Tween<double>(begin: 1.0, end: 0.975).animate(
       CurvedAnimation(parent: _pressController, curve: TenkaiCurves.snap),
     );
   }
@@ -85,24 +84,10 @@ class _TenkaiIconButtonState extends State<TenkaiIconButton>
   }
 
   EdgeInsets get _padding => switch (widget.size) {
-    TenkaiIconButtonSize.sm => const EdgeInsets.symmetric(
-      horizontal: 8,
-      vertical: 8,
-    ),
-    TenkaiIconButtonSize.md => const EdgeInsets.symmetric(
-      horizontal: 12,
-      vertical: 12,
-    ),
-    TenkaiIconButtonSize.lg => const EdgeInsets.symmetric(
-      horizontal: 16,
-      vertical: 16,
-    ),
+    TenkaiIconButtonSize.sm => const EdgeInsets.all(8),
+    TenkaiIconButtonSize.md => const EdgeInsets.all(12),
+    TenkaiIconButtonSize.lg => const EdgeInsets.all(16),
   };
-
-  TenkaiGlowIntensity get _glowIntensity {
-    if (!(_hovered || _pressed)) return TenkaiGlowIntensity.none;
-    return TenkaiGlowIntensity.soft;
-  }
 
   double get _iconSize => switch (widget.size) {
     TenkaiIconButtonSize.sm => 20,
@@ -112,6 +97,8 @@ class _TenkaiIconButtonState extends State<TenkaiIconButton>
 
   @override
   Widget build(BuildContext context) {
+    final c = context.tenkai;
+    final active = _hovered || _pressed;
     return MouseRegion(
       cursor: _isActive
           ? SystemMouseCursors.click
@@ -127,24 +114,21 @@ class _TenkaiIconButtonState extends State<TenkaiIconButton>
         onTapCancel: _onTapCancel,
         child: ScaleTransition(
           scale: _scaleAnim,
-          child: TenkaiGlowWrapper(
-            glowing: _hovered || _pressed,
-            intensity: _glowIntensity,
-            borderRadius: TenkaiRadius.md,
-            borderColor: Colors.transparent,
-            glowColor: TenkaiColors.white,
-            child: AnimatedContainer(
-              duration: TenkaiDuration.medium,
-              curve: TenkaiCurves.spring,
-              padding: _padding,
-              decoration: BoxDecoration(
-                color: Colors.transparent,
-                borderRadius: BorderRadius.circular(TenkaiRadius.md),
-              ),
+          child: AnimatedContainer(
+            duration: TenkaiDuration.fast,
+            curve: TenkaiCurves.easeOut,
+            padding: _padding,
+            decoration: BoxDecoration(
+              color: active ? c.card : Colors.transparent,
+              borderRadius: BorderRadius.circular(TenkaiRadius.control),
+            ),
+            child: Opacity(
+              opacity: widget.enabled ? 1.0 : 0.4,
               child: TenkaiIcon(
                 assetName: widget.iconAsset,
                 width: _iconSize,
                 height: _iconSize,
+                color: c.foreground,
               ),
             ),
           ),

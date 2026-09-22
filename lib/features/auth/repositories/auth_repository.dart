@@ -1,95 +1,76 @@
-import 'dart:io';
-
 import 'package:dartz/dartz.dart';
-import 'package:dio/dio.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tenkai/core/errors/failures.dart';
 import 'package:tenkai/core/helpers/repository_helper.dart';
-import 'package:tenkai/core/network/api_endpoints.dart';
-import 'package:tenkai/core/network/dio_client.dart';
 import 'package:tenkai/core/services/storage_service.dart';
-import 'package:tenkai/features/auth/models/token_model.dart';
+import 'package:tenkai/features/auth/models/auth_response.dart';
 import 'package:tenkai/features/auth/models/user.dart';
-import 'package:tenkai/features/auth/params/change_password_params.dart';
 import 'package:tenkai/features/auth/params/login_params.dart';
 import 'package:tenkai/features/auth/params/register_params.dart';
-import 'package:tenkai/features/auth/params/reset_password_params.dart';
-import 'package:tenkai/features/auth/params/update_profile_params.dart';
+import 'package:tenkai/features/auth/sources/auth_remote_source.dart';
 
+/// Coordinates authentication: talks to [AuthRemoteSource] and owns the local
+/// token pair in [StorageService]. Every method returns `Either<Failure, _>`.
 class AuthRepository {
-  final DioClient _dioClient;
+  final AuthRemoteSource _remoteSource;
   final StorageService _storage;
 
-  AuthRepository(this._dioClient, this._storage);
+  const AuthRepository(this._remoteSource, this._storage);
 
-  Future<Either<Failure, void>> login(LoginParams params) async {
-    try {
-      final response = await _dioClient.dio.post(
-        ApiEndpoints.login,
-        data: params.toJson(params),
-      );
-      _storage.saveAccessToken(response.data['accessToken']);
-      return Right(null);
-    } on DioException catch (e) {
-      return Left(e.error as Failure);
-    } catch (e) {
-      return Left(UnknownFailure(e.toString()));
+  Future<Either<Failure, User>> login(LoginParams params) =>
+      RepositoryHelper.executeFromSource(() async {
+        final auth = await _remoteSource.login(params);
+        await _persist(auth);
+        return auth.user;
+      });
+
+  Future<Either<Failure, User>> register(RegisterParams params) =>
+      RepositoryHelper.executeFromSource(() async {
+        final auth = await _remoteSource.register(params);
+        await _persist(auth);
+        return auth.user;
+      });
+
+  /// Restores a session on launch by exchanging the stored refresh token for a
+  /// fresh pair (there is no `/users/me` endpoint). Returns [UnauthorizedFailure]
+  /// when there is no stored session to restore.
+  Future<Either<Failure, User>> restoreSession() async {
+    final refreshToken = await _storage.getRefreshToken();
+    if (refreshToken == null) {
+      return const Left(UnauthorizedFailure('No active session'));
     }
+    return RepositoryHelper.executeFromSource(() async {
+      final auth = await _remoteSource.refresh(refreshToken);
+      await _persist(auth);
+      return auth.user;
+    });
   }
 
-  Future<User> register(RegisterParams registerParams) async {
-    throw Exception();
-  }
+  /// Revokes the refresh token server-side and clears local tokens. The local
+  /// clear happens regardless of the network outcome so the user is always
+  /// logged out on their device.
+  Future<Either<Failure, Unit>> logout() =>
+      RepositoryHelper.executeFromSource(() async {
+        final refreshToken = await _storage.getRefreshToken();
+        try {
+          if (refreshToken != null) {
+            await _remoteSource.logout(refreshToken);
+          }
+        } finally {
+          await _storage.deleteAllToken();
+        }
+        return unit;
+      });
 
-  Future<String> verifyEmail(String token) async {
-    throw Exception();
-  }
-
-  Future<String> resendVerification(String email) async {
-    throw Exception();
-  }
-
-  Future<String> logout(String refreshToken) async {
-    throw Exception();
-  }
-
-  Future<String> logoutAll() async {
-    throw Exception();
-  }
-
-  Future<String> forgotPassword(String email) async {
-    throw Exception();
-  }
-
-  Future<String> resetPassword(ResetPasswordParams params) async {
-    throw Exception();
-  }
-
-  Future<String> changePassword(ChangePasswordParams params) async {
-    throw Exception();
-  }
-
-  Future<Either<Failure, User>> getMe() async {
-    return RepositoryHelper.execute<User>(
-      () => _dioClient.dio.get(ApiEndpoints.me),
-      parser: User.fromJson,
-    );
-  }
-
-  Future<User> updateProfile(UpdateProfileParams params) async {
-    throw Exception();
-  }
-
-  Future<User> uploadAvatar(File file) async {
-    throw Exception();
-  }
-
-  Future<User> deleteAvatar() async {
-    throw Exception();
-  }
+  Future<void> _persist(AuthResponse auth) => _storage.saveTokens(
+    accessToken: auth.accessToken,
+    refreshToken: auth.refreshToken,
+  );
 }
 
 final authRepositoryProvider = Provider<AuthRepository>(
-  (ref) => AuthRepository(ref.read(dioClientProvider), StorageService()),
+  (ref) => AuthRepository(
+    ref.read(authRemoteSourceProvider),
+    ref.read(storageServiceProvider),
+  ),
 );

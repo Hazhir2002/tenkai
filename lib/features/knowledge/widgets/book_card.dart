@@ -51,13 +51,13 @@ class BookCover extends StatelessWidget {
         child: (path != null && File(path!).existsSync())
             ? Image.file(File(path!), fit: BoxFit.cover)
             : Container(
-                color: TenkaiColors.gray800,
+                color: context.tenkai.card,
                 child: Center(
                   child: CNIcon(
                     symbol: CNSymbol(
                       'book.closed',
                       size: width * 0.5,
-                      color: TenkaiColors.gray600,
+                      color: context.tenkai.secondaryForeground,
                     ),
                   ),
                 ),
@@ -78,11 +78,10 @@ class BookCard extends StatelessWidget {
     final book = view.book;
     final badge = paceBadge(view.paceState);
 
-    return TenkaiCard(
-      interactive: true,
-      glowOnHover: true,
-      onTap: onTap,
-      padding: const EdgeInsets.all(14),
+    return Card(
+      // interactive: true,
+      // onTap: onTap,
+      // padding: const EdgeInsets.all(14),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

@@ -4,10 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:tenkai/features/habit_tracker/screens/habit_dashboard.dart';
-import 'package:tenkai/features/journal/screens/journal_dashboard.dart';
-import 'package:tenkai/features/knowledge/screens/knowledge_dashboard.dart';
-import 'package:tenkai/features/profile/screens/profile_screen.dart';
+import 'package:iconsax/iconsax.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class MainShellWrapper extends ConsumerStatefulWidget {
   final StatefulNavigationShell navigationShell;
@@ -23,10 +21,12 @@ class _MainShellWrapperState extends ConsumerState<MainShellWrapper> {
   Widget build(BuildContext context) {
     final String location = GoRouterState.of(context).uri.toString();
     final bool showBottomBar = [
+      // '/',
+      // '/goals',
+      '/habits',
       '/profile',
-      '/',
-      '/knowledge',
-      '/journal',
+      // '/knowledge',
+      // '/journal',
     ].contains(location);
 
     void _onItemTap(int index) {
@@ -51,40 +51,24 @@ class _MainShellWrapperState extends ConsumerState<MainShellWrapper> {
       body: widget.navigationShell,
       extendBody: true,
       bottomNavigationBar: showBottomBar
-          ? CNTabBar(
-              iconSize: 16,
-              items: [
-                CNTabBarItem(
-                  icon: CNSymbol(
-                    widget.navigationShell.currentIndex == 0
-                        ? 'house.fill'
-                        : 'house',
-                  ),
+          ? NavigationBar(
+              labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
+              selectedIndex: widget.navigationShell.currentIndex,
+              onDestinationSelected: _onItemTap,
+              destinations: [
+                NavigationDestination(
+                  selectedIcon: Icon(Iconsax.user),
+                  icon: Icon(Iconsax.user),
+                  label: 'habits',
                 ),
-                CNTabBarItem(
-                  icon: CNSymbol(
-                    widget.navigationShell.currentIndex == 1
-                        ? 'person.fill'
-                        : 'person',
-                  ),
-                ),
-                CNTabBarItem(
-                  icon: CNSymbol(
-                    widget.navigationShell.currentIndex == 2
-                        ? 'text.book.closed.fill'
-                        : 'text.book.closed',
-                  ),
-                ),
-                CNTabBarItem(
-                  icon: CNSymbol(
-                    widget.navigationShell.currentIndex == 3
-                        ? 'book.fill'
-                        : 'book',
-                  ),
+                NavigationDestination(
+                  selectedIcon: Icon(LucideIcons.user),
+                  icon: Icon(LucideIcons.user),
+                  label: 'profile',
                 ),
               ],
-              currentIndex: widget.navigationShell.currentIndex,
-              onTap: _onItemTap,
+              // currentIndex: widget.navigationShell.currentIndex,
+              // onTap: _onItemTap,
             )
           : null,
     );

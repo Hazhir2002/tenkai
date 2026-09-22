@@ -19,6 +19,7 @@ class RepositoryHelper {
           ),
         );
       }
+
       return Right(parser(data));
     } on DioException catch (e) {
       return Left(_mapDioException(e));
@@ -53,6 +54,18 @@ class RepositoryHelper {
     }
   }
 
+  static Future<Either<Failure, T>> executeFromSource<T>(
+    Future<T> Function() request,
+  ) async {
+    try {
+      return Right(await request());
+    } on DioException catch (e) {
+      return Left(_mapDioException(e));
+    } catch (e) {
+      return Left(UnknownFailure(e.toString()));
+    }
+  }
+
   static Failure _mapDioException(DioException e) {
     // If an interceptor already attached a typed Failure, trust it.
     if (e.error is Failure) return e.error as Failure;
@@ -67,15 +80,12 @@ class RepositoryHelper {
       case DioExceptionType.cancel:
         return const UnknownFailure('Request cancelled');
       case DioExceptionType.badResponse:
-        final status = e.response?.statusCode;
         final message = _extractServerMessage(e.response?.data);
         return ServerFailure(message ?? 'Server error');
       case DioExceptionType.badCertificate:
       case DioExceptionType.unknown:
-        return UnknownFailure(e.message ?? 'Unknown error');
       case DioExceptionType.transformTimeout:
-        // TODO: Handle this case.
-        throw UnimplementedError();
+        return UnknownFailure(e.message ?? 'Unknown error');
     }
   }
 

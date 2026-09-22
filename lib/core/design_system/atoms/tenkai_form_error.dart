@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../theme/tenkai_semantic_colors.dart';
 import '../tokens/tenkai_tokens.dart';
 
 class TenkaiFormError extends StatelessWidget {
@@ -24,7 +25,7 @@ class TenkaiFormError extends StatelessWidget {
           child: Text(
             errorMessage ?? '',
             style: TenkaiTypography.bodySmall.copyWith(
-              color: TenkaiColors.error,
+              color: context.tenkai.destructive,
             ),
           ),
         ),

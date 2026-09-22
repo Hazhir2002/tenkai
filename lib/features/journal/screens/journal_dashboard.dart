@@ -133,7 +133,7 @@ class _LiveTranscriptPreview extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return TenkaiCard(
+    return Card(
       child: ConstrainedBox(
         constraints: const BoxConstraints(
           minHeight: 120,
@@ -162,7 +162,6 @@ class _ReviewSheet extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final flow = ref.watch(journalFlowProvider);
     final notifier = ref.read(journalFlowProvider.notifier);
-    final theme = Theme.of(context);
     final controller = useTextEditingController(text: flow.draftText);
 
     return Column(
@@ -183,18 +182,17 @@ class _ReviewSheet extends HookConsumerWidget {
         Row(
           children: [
             Expanded(
-              child: TenkaiGlassButton(
+              child: TenkaiButton(
                 label: 'Discard',
+                variant: TenkaiButtonVariant.ghost,
                 onPressed: () => notifier.discardDraft(),
               ),
             ),
             const SizedBox(width: 12),
             Expanded(
               flex: 2,
-              child: TenkaiGlassButton(
+              child: TenkaiButton(
                 label: 'Save to Journal',
-                style: TenkaiGlassButtonStyle.prominentGlass,
-                labelColor: theme.colorScheme.onPrimary,
                 onPressed: () async {
                   await notifier.confirmAndSave();
                 },

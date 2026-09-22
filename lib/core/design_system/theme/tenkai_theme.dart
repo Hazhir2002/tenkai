@@ -1,149 +1,145 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:tenkai/core/design_system/atoms/tenkai_page_transition_builder.dart';
 import '../tokens/tenkai_tokens.dart';
+import 'tenkai_semantic_colors.dart';
 
+/// The Tenkai theme. Dark is the shipped default; [light] is a supported scope
+/// built from the same flat spec. Both are flat — 1px hairline borders, muted
+/// fills, no shadows, no blur, no glass. Glow lives in components (focus ring +
+/// primary action), never in the base theme.
 abstract final class TenkaiTheme {
-  static ThemeData get dark {
+  static ThemeData get dark =>
+      _build(brightness: Brightness.dark, c: TenkaiSemanticColors.dark);
+
+  static ThemeData get light =>
+      _build(brightness: Brightness.light, c: TenkaiSemanticColors.light);
+
+  static ThemeData _build({
+    required Brightness brightness,
+    required TenkaiSemanticColors c,
+  }) {
+    final textColor = c.foreground;
     return ThemeData(
       useMaterial3: false,
-      brightness: Brightness.dark,
-      scaffoldBackgroundColor: TenkaiColors.gray950,
-      colorScheme: const ColorScheme.dark(
-        surface: TenkaiColors.gray900,
-        onSurface: TenkaiColors.white,
-        primary: TenkaiColors.white,
-        onPrimary: TenkaiColors.black,
-        secondary: TenkaiColors.gray400,
-        onSecondary: TenkaiColors.black,
-        error: TenkaiColors.error,
-        onError: TenkaiColors.white,
-        outline: TenkaiColors.gray700,
-        surfaceContainerHighest: TenkaiColors.gray800,
-      ),
+      brightness: brightness,
+      scaffoldBackgroundColor: c.background,
+      extensions: [c],
+
+      cardTheme: CardThemeData(color: c.card),
 
       // ── App bar ──
-      appBarTheme: const AppBarTheme(
+      appBarTheme: AppBarTheme(
         backgroundColor: Colors.transparent,
-        foregroundColor: TenkaiColors.white,
+        foregroundColor: c.foreground,
         elevation: 0,
         scrolledUnderElevation: 0,
-        titleTextStyle: TenkaiTypography.h2,
-        iconTheme: IconThemeData(color: TenkaiColors.gray400, size: 20),
+        titleTextStyle: TenkaiTypography.h2.copyWith(color: c.foreground),
+        iconTheme: IconThemeData(color: c.mutedForeground, size: 20),
       ),
 
       // ── Text ──
       textTheme: TextTheme(
-        displayLarge: TenkaiTypography.d1,
-        displayMedium: TenkaiTypography.d2,
-        displaySmall: TenkaiTypography.d3,
-        headlineLarge: TenkaiTypography.h1,
-        headlineMedium: TenkaiTypography.h2,
-        headlineSmall: TenkaiTypography.h3,
-        titleLarge: TenkaiTypography.titleLg,
-        titleMedium: TenkaiTypography.titleMd,
-        titleSmall: TenkaiTypography.titleSm,
-        bodyLarge: TenkaiTypography.bodyLg,
-        bodyMedium: TenkaiTypography.bodyMd,
-        bodySmall: TenkaiTypography.bodySmall,
-        labelLarge: TenkaiTypography.labelLg,
-        labelMedium: TenkaiTypography.labelMd,
-        labelSmall: TenkaiTypography.labelSm,
+        displayLarge: TenkaiTypography.d1.copyWith(color: textColor),
+        displayMedium: TenkaiTypography.d2.copyWith(color: textColor),
+        displaySmall: TenkaiTypography.d3.copyWith(color: textColor),
+        headlineLarge: TenkaiTypography.h1.copyWith(color: textColor),
+        headlineMedium: TenkaiTypography.h2.copyWith(color: textColor),
+        headlineSmall: TenkaiTypography.h3.copyWith(color: textColor),
+        titleLarge: TenkaiTypography.titleLg.copyWith(color: textColor),
+        titleMedium: TenkaiTypography.titleMd.copyWith(color: textColor),
+        titleSmall: TenkaiTypography.titleSm.copyWith(color: textColor),
+        bodyLarge: TenkaiTypography.bodyLg.copyWith(color: c.mutedForeground),
+        bodyMedium: TenkaiTypography.bodyMd.copyWith(color: c.mutedForeground),
+        bodySmall: TenkaiTypography.bodySmall.copyWith(
+          color: c.mutedForeground,
+        ),
+        labelLarge: TenkaiTypography.labelLg.copyWith(color: c.mutedForeground),
+        labelMedium: TenkaiTypography.labelMd.copyWith(
+          color: c.mutedForeground,
+        ),
+        labelSmall: TenkaiTypography.labelSm.copyWith(color: c.mutedForeground),
       ),
 
-      // ── Divider ──
-      dividerTheme: const DividerThemeData(
-        color: TenkaiColors.gray800,
-        thickness: 0.5,
-        space: 0,
-      ),
+      // ── Divider (hairline) ──
+      dividerTheme: DividerThemeData(color: c.border, thickness: 1, space: 0),
 
-      // ── Input ──
       inputDecorationTheme: InputDecorationTheme(
-        filled: true,
-        fillColor: TenkaiColors.gray900,
-        hintStyle: TenkaiTypography.bodyMd.copyWith(
-          color: TenkaiColors.gray600,
-        ),
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 14, // between sm(8)/md(12) — deliberately tuned
-          vertical: TenkaiSpacing.md,
-        ),
+        filled: false,
+        hintStyle: TenkaiTypography.bodyLg.copyWith(color: c.mutedForeground),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(TenkaiRadius.sharp),
-          borderSide: const BorderSide(color: TenkaiColors.gray700, width: 0.5),
+          borderRadius: BorderRadius.circular(TenkaiRadius.control),
+          borderSide: BorderSide(color: c.input, width: 1),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(TenkaiRadius.sharp),
-          borderSide: const BorderSide(color: TenkaiColors.gray700, width: 0.5),
+          borderRadius: BorderRadius.circular(TenkaiRadius.control),
+          borderSide: BorderSide(color: c.input, width: 1),
         ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(TenkaiRadius.sharp),
-          borderSide: const BorderSide(color: TenkaiColors.white, width: 0.5),
-        ),
+        focusedBorder: null,
       ),
 
-      // ── Bottom sheet ──
-      bottomSheetTheme: const BottomSheetThemeData(
-        backgroundColor: TenkaiColors.gray900,
-        modalBackgroundColor: TenkaiColors.gray900,
+      // ── Bottom sheet (flat) ──
+      bottomSheetTheme: BottomSheetThemeData(
+        // backgroundColor: c.surface,
+        // modalBackgroundColor: c.surface,
+        elevation: 0,
+        modalElevation: 0,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-            top: Radius.circular(TenkaiRadius.sharp),
+          borderRadius: const BorderRadius.vertical(
+            top: Radius.circular(TenkaiRadius.sheet),
           ),
+          side: BorderSide(color: c.border, width: 1),
         ),
       ),
 
-      // ── Slider ──
+      // ── Slider (thin track, accent thumb) ──
       sliderTheme: SliderThemeData(
-        activeTrackColor: TenkaiColors.white,
-        inactiveTrackColor: TenkaiColors.gray700,
-        thumbColor: TenkaiColors.white,
+        activeTrackColor: c.accent,
+        inactiveTrackColor: c.border,
+        thumbColor: c.accent,
         trackHeight: 1,
         overlayShape: SliderComponentShape.noOverlay,
       ),
 
       // ── Switch ──
-      switchTheme: SwitchThemeData(
-        thumbColor: WidgetStateProperty.resolveWith((states) {
-          return states.contains(WidgetState.selected)
-              ? TenkaiColors.black
-              : TenkaiColors.gray500;
-        }),
-        trackColor: WidgetStateProperty.resolveWith((states) {
-          return states.contains(WidgetState.selected)
-              ? TenkaiColors.white
-              : TenkaiColors.gray800;
-        }),
-      ),
+      // switchTheme: SwitchThemeData(
+      //   thumbColor: WidgetStateProperty.resolveWith((states) {
+      //     return states.contains(WidgetState.selected)
+      //         ? c.accentFg
+      //         : c.fgSubtle;
+      //   }),
+      //   trackColor: WidgetStateProperty.resolveWith((states) {
+      //     return states.contains(WidgetState.selected)
+      //         ? c.accent
+      //         : c.surfaceMuted;
+      //   }),
+      // ),
 
-      // ── Checkbox ──
-      checkboxTheme: CheckboxThemeData(
-        fillColor: WidgetStateProperty.resolveWith((states) {
-          return states.contains(WidgetState.selected)
-              ? TenkaiColors.white
-              : Colors.transparent;
-        }),
-        checkColor: WidgetStateProperty.all(TenkaiColors.black),
-        // Intentionally sharper than TenkaiRadius.sharp (8) — a near-square
-        // corner reads better at this control's small size.
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
-        side: const BorderSide(color: TenkaiColors.gray600, width: 0.5),
-      ),
+      // // ── Checkbox ──
+      // checkboxTheme: CheckboxThemeData(
+      //   fillColor: WidgetStateProperty.resolveWith((states) {
+      //     return states.contains(WidgetState.selected)
+      //         ? c.accent
+      //         : Colors.transparent;
+      //   }),
+      //   checkColor: WidgetStateProperty.all(c.accentFg),
+      //   shape: RoundedRectangleBorder(
+      //     borderRadius: BorderRadius.circular(TenkaiRadius.check),
+      //   ),
+      //   side: BorderSide(color: c.borderStrong, width: 1),
+      // ),
 
-      // ── Snackbar ──
-      snackBarTheme: SnackBarThemeData(
-        backgroundColor: TenkaiColors.gray800,
-        contentTextStyle: TenkaiTypography.bodyMd.copyWith(
-          color: TenkaiColors.white,
-        ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(TenkaiRadius.sm),
-          side: const BorderSide(color: TenkaiColors.gray600, width: 0.5),
-        ),
-        behavior: SnackBarBehavior.floating,
-      ),
-
+      // // ── Snackbar (flat, hairline) ──
+      // snackBarTheme: SnackBarThemeData(
+      //   backgroundColor: c.surfaceMuted,
+      //   contentTextStyle: TenkaiTypography.bodyMd.copyWith(color: c.fg),
+      //   elevation: 0,
+      //   shape: RoundedRectangleBorder(
+      //     borderRadius: BorderRadius.circular(TenkaiRadius.card),
+      //     side: BorderSide(color: c.border, width: 1),
+      //   ),
+      //   behavior: SnackBarBehavior.floating,
+      // ),
       pageTransitionsTheme: const PageTransitionsTheme(
         builders: <TargetPlatform, PageTransitionsBuilder>{
           TargetPlatform.android: TenkaiPageTransitionBuilder(),

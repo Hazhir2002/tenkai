@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:tenkai/core/design_system/tenkai.dart';
 
-// ─── Gradient Button ──────────────────────────────────────────────────────────
+// Shared auth UI, in the flat Tenkai language — hairline surfaces, the semantic
+// color layer, no gradients or drop shadows. (Login/Register use the design-
+// system widgets directly; these wrappers serve the verify/forgot/reset flow.)
 
-class GradientButton extends StatefulWidget {
+// ─── Primary button (full width) ───────────────────────────────────────────
+
+/// A full-width primary action. Kept named `GradientButton` for its call sites,
+/// but it is now a flat [TenkaiButton] — no gradient, no shadow.
+class GradientButton extends StatelessWidget {
   const GradientButton({
     super.key,
     required this.label,
@@ -18,109 +24,28 @@ class GradientButton extends StatefulWidget {
   final IconData? icon;
 
   @override
-  State<GradientButton> createState() => _GradientButtonState();
-}
-
-class _GradientButtonState extends State<GradientButton>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _controller;
-  late final Animation<double> _scale;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 120),
-      lowerBound: 0.96,
-      upperBound: 1.0,
-      value: 1.0,
-    );
-    _scale = _controller;
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTapDown: (_) => _controller.reverse(),
-      onTapUp: (_) {
-        _controller.forward();
-        widget.onPressed?.call();
-      },
-      onTapCancel: () => _controller.forward(),
-      child: ScaleTransition(
-        scale: _scale,
-        child: Container(
-          height: 56,
-          decoration: BoxDecoration(
-            gradient: widget.onPressed == null
-                ? null
-                : LinearGradient(
-                    colors: [
-                      Color(0xFFFF6B6B),
-                      Color(0xFFFF8E53),
-                      Color(0xFF7C5CBF),
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-            color: widget.onPressed == null
-                ? Color(0xFF6B6579).withOpacity(0.2)
-                : null,
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: widget.onPressed == null
-                ? []
-                : [
-                    BoxShadow(
-                      color: Color(0xFF7C5CBF).withOpacity(0.35),
-                      blurRadius: 20,
-                      offset: const Offset(0, 8),
-                    ),
-                  ],
-          ),
-          alignment: Alignment.center,
-          child: widget.isLoading
-              ? const SizedBox(
-                  width: 24,
-                  height: 24,
-                  child: CircularProgressIndicator(
-                    color: Colors.white,
-                    strokeWidth: 2.5,
-                  ),
-                )
-              : Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (widget.icon != null) ...[
-                      Icon(widget.icon, color: Colors.white, size: 20),
-                      const SizedBox(width: 8),
-                    ],
-                    Text(
-                      widget.label,
-                      style: const TextStyle(
-                        fontFamily: 'Nunito',
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.white,
-                        letterSpacing: 0.3,
-                      ),
-                    ),
-                  ],
-                ),
-        ),
+    return SizedBox(
+      width: double.infinity,
+      child: TenkaiButton(
+        label: label,
+        loading: isLoading,
+        enabled: onPressed != null,
+        size: TenkaiButtonSize.lg,
+        icon: icon != null
+            ? Icon(icon, size: 18, color: context.tenkai.accentForeground)
+            : null,
+        onPressed: onPressed,
       ),
     );
   }
 }
 
-// ─── Auth Text Field ──────────────────────────────────────────────────────────
+// ─── Auth text field ────────────────────────────────────────────────────────
 
+/// A validated text field for the auth forms (a [TextFormField] so it can plug
+/// into a [Form]). Styling comes from the flat, theme-aware
+/// `inputDecorationTheme`, so it themes automatically.
 class AuthTextField extends StatefulWidget {
   const AuthTextField({
     super.key,
@@ -158,7 +83,7 @@ class _AuthTextFieldState extends State<AuthTextField> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final c = context.tenkai;
 
     return TextFormField(
       controller: widget.controller,
@@ -169,12 +94,14 @@ class _AuthTextFieldState extends State<AuthTextField> {
       validator: widget.validator,
       onFieldSubmitted: widget.onFieldSubmitted,
       autofillHints: widget.autofillHints,
-      style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
+      style: TenkaiTypography.bodyMd.copyWith(color: c.foreground),
+      cursorColor: c.accent,
       decoration: InputDecoration(
         labelText: widget.label,
         hintText: widget.hint,
+        labelStyle: TenkaiTypography.bodyMd.copyWith(color: c.mutedForeground),
         prefixIcon: widget.prefixIcon != null
-            ? Icon(widget.prefixIcon, size: 20)
+            ? Icon(widget.prefixIcon, size: 20, color: c.secondaryForeground)
             : null,
         suffixIcon: widget.isPassword
             ? GestureDetector(
@@ -183,8 +110,8 @@ class _AuthTextFieldState extends State<AuthTextField> {
                   _obscure
                       ? Icons.visibility_outlined
                       : Icons.visibility_off_outlined,
-                  // color: AppColors.onSurfaceMuted,
                   size: 20,
+                  color: c.secondaryForeground,
                 ),
               )
             : null,
@@ -193,7 +120,7 @@ class _AuthTextFieldState extends State<AuthTextField> {
   }
 }
 
-// ─── Error Banner ─────────────────────────────────────────────────────────────
+// ─── Status banners (flat) ──────────────────────────────────────────────────
 
 class AuthErrorBanner extends StatelessWidget {
   const AuthErrorBanner({super.key, required this.message});
@@ -201,39 +128,9 @@ class AuthErrorBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.error.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: theme.colorScheme.error.withOpacity(0.3)),
-      ),
-      child: Row(
-        children: [
-          Icon(
-            Icons.error_outline_rounded,
-            color: theme.colorScheme.error,
-            size: 18,
-          ),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Text(
-              message,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.error,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
+    return TenkaiBanner(title: message, variant: TenkaiBannerVariant.error);
   }
 }
-
-// ─── Success Banner ───────────────────────────────────────────────────────────
 
 class AuthSuccessBanner extends StatelessWidget {
   const AuthSuccessBanner({super.key, required this.message});
@@ -241,158 +138,43 @@ class AuthSuccessBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: TenkaiColors.success.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: TenkaiColors.success.withOpacity(0.3)),
-      ),
-      child: Row(
-        children: [
-          const Icon(
-            Icons.check_circle_outline_rounded,
-            color: TenkaiColors.success,
-            size: 18,
-          ),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Text(
-              message,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: TenkaiColors.success,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
+    return TenkaiBanner(title: message, variant: TenkaiBannerVariant.success);
   }
 }
 
-// ─── Google Button ────────────────────────────────────────────────────────────
+// ─── Auth header ────────────────────────────────────────────────────────────
 
-class GoogleSignInButton extends StatelessWidget {
-  const GoogleSignInButton({super.key, required this.onPressed});
-  final VoidCallback onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return GestureDetector(
-      onTap: onPressed,
-      child: Container(
-        height: 56,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: const Color(0xFFE0D8F0), width: 1.5),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // Inline Google "G" logo via text
-            Container(
-              width: 24,
-              height: 24,
-              decoration: const BoxDecoration(shape: BoxShape.circle),
-              child: CustomPaint(painter: _GoogleLogoPainter()),
-            ),
-            const SizedBox(width: 12),
-            Text(
-              'Continue with Google',
-              style: theme.textTheme.bodyMedium?.copyWith(
-                fontWeight: FontWeight.w700,
-                color: theme.colorScheme.onSurface,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _GoogleLogoPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final center = Offset(size.width / 2, size.height / 2);
-    final radius = size.width / 2;
-
-    // Draw colored segments of the Google G
-    final colors = [
-      const Color(0xFF4285F4), // blue
-      const Color(0xFF34A853), // green
-      const Color(0xFFFBBC05), // yellow
-      const Color(0xFFEA4335), // red
-    ];
-
-    final startAngles = [-0.3, 1.27, 2.67, 4.45];
-    final sweepAngles = [1.57, 1.4, 1.78, 1.4];
-
-    for (var i = 0; i < 4; i++) {
-      final paint = Paint()
-        ..color = colors[i]
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = size.width * 0.25
-        ..strokeCap = StrokeCap.butt;
-
-      canvas.drawArc(
-        Rect.fromCircle(center: center, radius: radius * 0.7),
-        startAngles[i],
-        sweepAngles[i],
-        false,
-        paint,
-      );
-    }
-  }
-
-  @override
-  bool shouldRepaint(_) => false;
-}
-
-// ─── Auth Header ──────────────────────────────────────────────────────────────
-
+/// The flat header for the verify/forgot/reset screens: the Tenkai mark, a
+/// display-face title, and a muted subtitle. (The `emoji` parameter is retained
+/// for call-site compatibility but no longer rendered — the system uses no
+/// emoji; the logo mark carries the brand.)
 class AuthHeader extends StatelessWidget {
   const AuthHeader({
     super.key,
-    required this.emoji,
+    this.emoji,
     required this.title,
     required this.subtitle,
   });
 
-  final String emoji;
+  final String? emoji;
   final String title;
   final String subtitle;
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final c = context.tenkai;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(emoji, style: const TextStyle(fontSize: 48)),
-        const SizedBox(height: 12),
-        // ShaderMask(
-        //   shaderCallback: (bounds) =>
-        //       theme.colorScheme.primary.createShader(bounds),
-        //   child: Text(
-        //     title,
-        //     style: AppTextStyles.display.copyWith(color: Colors.white),
-        //   ),
-        // ),
+        const TenkaiLogoMark(size: 40),
+        const SizedBox(height: TenkaiSpacing.lg),
+        Text(title, style: TenkaiTypography.h1.copyWith(color: c.foreground)),
         const SizedBox(height: 6),
-        Text(subtitle, style: theme.textTheme.titleMedium),
+        Text(
+          subtitle,
+          style: TenkaiTypography.bodyMd.copyWith(color: c.mutedForeground),
+        ),
       ],
     );
   }

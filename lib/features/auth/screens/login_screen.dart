@@ -21,36 +21,42 @@ class LoginScreen extends ConsumerStatefulWidget {
 }
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
-  final _formKey = GlobalKey<FormState>();
-  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  bool _obscurePassword = true;
   final _passwordFocus = FocusNode();
+  bool _obscurePassword = true;
+  String? _validationError;
 
   @override
   void dispose() {
-    _usernameController.dispose();
+    _emailController.dispose();
     _passwordController.dispose();
+    _passwordFocus.dispose();
     super.dispose();
   }
 
   Future<void> _submit() async {
-    if (_formKey.currentState!.validate()) {
-      FocusScope.of(context).unfocus();
-      await ref
-          .read(authProvider.notifier)
-          .login(
-            LoginParams(
-              username: _usernameController.text.trim(),
-              password: _passwordController.text,
-            ),
-          );
+    FocusScope.of(context).unfocus();
+    final email = _emailController.text.trim();
+    final error =
+        emailValidator(email) ?? passwordValidator(_passwordController.text);
+    if (error != null) {
+      setState(() => _validationError = error);
+      HapticFeedback.vibrate();
+      return;
+    }
+    setState(() => _validationError = null);
 
-      if (ref.read(authProvider).isAuthenticated && mounted) {
-        context.go('/profile');
-      } else {
-        HapticFeedback.vibrate();
-      }
+    await ref
+        .read(authProvider.notifier)
+        .login(LoginParams(email: email, password: _passwordController.text));
+
+    if (!mounted) return;
+    // The router guard redirects on success; this is a belt-and-braces nudge.
+    if (ref.read(authProvider).isAuthenticated) {
+      context.go('/');
+    } else {
+      HapticFeedback.vibrate();
     }
   }
 
@@ -62,7 +68,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
-
         child: Center(
           child: SingleChildScrollView(
             child: Column(
@@ -76,84 +81,64 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   style: theme.textTheme.bodyMedium,
                 ),
                 const SizedBox(height: 40),
-
-                TenkaiFormError(errorMessage: authState.errorMessage),
-                Form(
-                  key: _formKey,
-                  autovalidateMode: AutovalidateMode.onUnfocus,
-                  child: Column(
-                    children: [
-                      TenkaiInput(
-                        controller: _usernameController,
-                        keyboardType: TextInputType.name,
-                        textInputAction: TextInputAction.next,
-                        autofillHints: const [AutofillHints.name],
-                        onSubmitted: (_) => _passwordFocus.requestFocus(),
-                        prefix: Padding(
-                          padding: EdgeInsets.all(8),
-                          child: TenkaiIcon(assetName: 'user'),
-                        ),
-                        label: 'Username',
-                        placeholder: 'Heisenberg',
-                      ),
-                      const SizedBox(height: 8),
-                      TenkaiInput(
-                        focusNode: _passwordFocus,
-                        controller: _passwordController,
-                        obscureText: _obscurePassword,
-                        placeholder: 'Your password',
-                        prefix: AnimatedSwitcher(
-                          duration: TenkaiDuration.fast,
-                          child: _obscurePassword
-                              ? TenkaiIconButton(
-                                  size: TenkaiIconButtonSize.sm,
-                                  iconAsset: 'padlock',
-                                  onPressed: () => setState(
-                                    () => _obscurePassword = !_obscurePassword,
-                                  ),
-                                )
-                              : TenkaiIconButton(
-                                  size: TenkaiIconButtonSize.sm,
-                                  iconAsset: 'lock-slash',
-                                  onPressed: () => setState(
-                                    () => _obscurePassword = !_obscurePassword,
-                                  ),
-                                ),
-                        ),
-                        label: 'Password',
-                        onSubmitted: (_) => _submit(),
-                      ),
-                      const SizedBox(height: 12),
-                      TenkaiButton(
-                        variant: TenkaiButtonVariant.link,
-                        onPressed: () => context.push('/forgot-password'),
-                        label: 'Forgot Password?',
-                      ),
-
-                      SizedBox(
-                        width: double.infinity,
-                        child: TenkaiButton(
-                          onPressed: _submit,
-                          loading: authState.isLoading,
-                          label: 'Sign in',
-                        ),
-                      ),
-                      const SizedBox(height: 24),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "Don't have an account?",
-                            style: theme.textTheme.bodySmall,
-                          ),
-                          TextButton(
-                            onPressed: () => context.go('/register'),
-                            child: const Text('Sign Up'),
-                          ),
-                        ],
-                      ),
-                    ],
+                TenkaiFormError(
+                  errorMessage: _validationError ?? authState.errorMessage,
+                ),
+                TenkaiInput(
+                  controller: _emailController,
+                  keyboardType: TextInputType.emailAddress,
+                  textInputAction: TextInputAction.next,
+                  autofillHints: const [AutofillHints.email],
+                  onSubmitted: (_) => _passwordFocus.requestFocus(),
+                  prefix: const Padding(
+                    padding: EdgeInsets.all(8),
+                    child: TenkaiIcon(assetName: 'user'),
                   ),
+                  label: 'Email',
+                  placeholder: 'jane@example.com',
+                ),
+                const SizedBox(height: 8),
+                TenkaiInput(
+                  focusNode: _passwordFocus,
+                  controller: _passwordController,
+                  obscureText: _obscurePassword,
+                  placeholder: 'Your password',
+                  autofillHints: const [AutofillHints.password],
+                  prefix: AnimatedSwitcher(
+                    duration: TenkaiDuration.fast,
+                    child: TenkaiIconButton(
+                      size: TenkaiIconButtonSize.sm,
+                      iconAsset: _obscurePassword ? 'padlock' : 'lock-slash',
+                      onPressed: () => setState(
+                        () => _obscurePassword = !_obscurePassword,
+                      ),
+                    ),
+                  ),
+                  label: 'Password',
+                  onSubmitted: (_) => _submit(),
+                ),
+                const SizedBox(height: 20),
+                SizedBox(
+                  width: double.infinity,
+                  child: TenkaiButton(
+                    onPressed: _submit,
+                    loading: authState.isLoading,
+                    label: 'Sign in',
+                  ),
+                ),
+                const SizedBox(height: 24),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Don't have an account?",
+                      style: theme.textTheme.bodySmall,
+                    ),
+                    TextButton(
+                      onPressed: () => context.go('/register'),
+                      child: const Text('Sign Up'),
+                    ),
+                  ],
                 ),
               ],
             ),

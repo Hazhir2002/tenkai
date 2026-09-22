@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:tenkai/core/errors/failures.dart';
 
 class ErrorDecoderInterceptor extends Interceptor {
@@ -7,10 +8,26 @@ class ErrorDecoderInterceptor extends Interceptor {
     final response = err.response;
 
     if (response == null) {
+      // Transport/connection-level failure: there is no HTTP response (DNS,
+      // routing, timeout, refused, OS-level block…). Preserve the original
+      // DioException type and the underlying OS error (the SocketException +
+      // errno) so the real cause is visible instead of a blank "unknown".
+      if (kDebugMode) {
+        debugPrint(
+          '[Network] transport error → type=${err.type} '
+          'error=${err.error} (${err.error.runtimeType}) '
+          'message=${err.message}',
+        );
+      }
+      final detail =
+          err.error?.toString() ?? err.message ?? 'No internet connection.';
       handler.next(
         DioException(
           requestOptions: err.requestOptions,
-          error: NetworkFailure(),
+          type: err.type,
+          stackTrace: err.stackTrace,
+          message: err.message,
+          error: NetworkFailure(detail),
         ),
       );
       return;

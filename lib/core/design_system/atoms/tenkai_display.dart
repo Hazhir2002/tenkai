@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import '../theme/tenkai_semantic_colors.dart';
 import '../tokens/tenkai_tokens.dart';
 
 // ─────────────────────────────────────────────
-// TENKAI · Atoms — Display
-// TenkaiBadge, TenkaiCard, TenkaiProgress, TenkaiDivider
+// TENKAI · Atoms — Display (flat)
+// TenkaiBadge, TenkaiCard, TenkaiMetricCard, TenkaiProgress, TenkaiDivider
+// Flat hairline surfaces. No shadows. Glow is reserved for the focus ring and
+// the primary action / selected node only — none of these carry ambient glow.
 // ─────────────────────────────────────────────
 
 // ── BADGE ────────────────────────────────────
@@ -22,47 +25,32 @@ class TenkaiBadge extends StatelessWidget {
   final TenkaiBadgeVariant variant;
   final bool dot;
 
-  Color get _bg => switch (variant) {
-    TenkaiBadgeVariant.neutral => TenkaiColors.gray800,
-    TenkaiBadgeVariant.active => Colors.transparent,
-    TenkaiBadgeVariant.success => TenkaiColors.successDim,
-    TenkaiBadgeVariant.warning => TenkaiColors.warningDim,
-    TenkaiBadgeVariant.error => TenkaiColors.errorDim,
-  };
-
-  Color get _text => switch (variant) {
-    TenkaiBadgeVariant.neutral => TenkaiColors.gray400,
-    TenkaiBadgeVariant.active => TenkaiColors.white,
-    TenkaiBadgeVariant.success => TenkaiColors.success,
-    TenkaiBadgeVariant.warning => TenkaiColors.warning,
-    TenkaiBadgeVariant.error => TenkaiColors.error,
-  };
-
-  Color get _border => switch (variant) {
-    TenkaiBadgeVariant.neutral => TenkaiColors.gray700,
-    TenkaiBadgeVariant.active => TenkaiColors.gray500,
-    TenkaiBadgeVariant.success => TenkaiColors.successBorder,
-    TenkaiBadgeVariant.warning => TenkaiColors.warningBorder,
-    TenkaiBadgeVariant.error => TenkaiColors.errorBorder,
-  };
-
-  List<BoxShadow>? get _glow => switch (variant) {
-    TenkaiBadgeVariant.active => TenkaiGlow.soft,
-    TenkaiBadgeVariant.success => TenkaiGlow.success,
-    _ => null,
-  };
-
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final c = context.tenkai;
+
+    final (Color bg, Color text, Color border) = switch (variant) {
+      TenkaiBadgeVariant.neutral => (c.card, c.mutedForeground, c.border),
+      TenkaiBadgeVariant.active => (Colors.transparent, c.foreground, c.border),
+      TenkaiBadgeVariant.success => (
+        Colors.greenAccent,
+        Colors.greenAccent,
+        Colors.greenAccent,
+      ),
+      TenkaiBadgeVariant.warning => (
+        Colors.yellowAccent,
+        Colors.yellowAccent,
+        Colors.yellowAccent,
+      ),
+      TenkaiBadgeVariant.error => (c.destructive, c.destructive, c.destructive),
+    };
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
       decoration: BoxDecoration(
-        color: _bg,
-        borderRadius: BorderRadius.circular(TenkaiRadius.sharp),
-        border: Border.all(color: _border, width: 0.5),
-        boxShadow: _glow,
+        color: bg,
+        borderRadius: BorderRadius.circular(TenkaiRadius.badge),
+        border: Border.all(color: border, width: 1),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -72,18 +60,12 @@ class TenkaiBadge extends StatelessWidget {
               width: 5,
               height: 5,
               margin: const EdgeInsets.only(right: 6),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: _text,
-                boxShadow: [
-                  BoxShadow(color: _text.withOpacity(0.5), blurRadius: 4),
-                ],
-              ),
+              decoration: BoxDecoration(shape: BoxShape.circle, color: text),
             ),
           ],
           Text(
             label.toUpperCase(),
-            style: theme.textTheme.labelMedium?.copyWith(color: _text),
+            style: TenkaiTypography.labelSm.copyWith(color: text),
           ),
         ],
       ),
@@ -91,60 +73,7 @@ class TenkaiBadge extends StatelessWidget {
   }
 }
 
-// ── CARD ─────────────────────────────────────
-
-class TenkaiCard extends StatefulWidget {
-  const TenkaiCard({
-    super.key,
-    required this.child,
-    this.padding,
-    this.interactive = false,
-    this.onTap,
-    this.glowOnHover = false,
-  });
-
-  final Widget child;
-  final EdgeInsets? padding;
-  final bool interactive;
-  final VoidCallback? onTap;
-  final bool glowOnHover;
-
-  @override
-  State<TenkaiCard> createState() => _TenkaiCardState();
-}
-
-class _TenkaiCardState extends State<TenkaiCard> {
-  bool _hovered = false;
-
-  @override
-  Widget build(BuildContext context) {
-    final card = AnimatedContainer(
-      duration: TenkaiDuration.medium,
-      curve: TenkaiCurves.spring,
-      padding: widget.padding ?? const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: TenkaiColors.gray900,
-        borderRadius: BorderRadius.circular(TenkaiRadius.sm),
-        border: Border.all(
-          color: _hovered ? TenkaiColors.gray600 : TenkaiColors.gray800,
-          width: 0.5,
-        ),
-        boxShadow: (_hovered && widget.glowOnHover) ? TenkaiGlow.soft : null,
-      ),
-      child: widget.child,
-    );
-
-    if (!widget.interactive) return card;
-
-    return MouseRegion(
-      onEnter: (_) => setState(() => _hovered = true),
-      onExit: (_) => setState(() => _hovered = false),
-      child: GestureDetector(onTap: widget.onTap, child: card),
-    );
-  }
-}
-
-/// Metric card — for KPI / stat display
+/// Metric card — for KPI / stat display.
 class TenkaiMetricCard extends StatelessWidget {
   const TenkaiMetricCard({
     super.key,
@@ -161,26 +90,33 @@ class TenkaiMetricCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final c = context.tenkai;
 
-    return TenkaiCard(
-      interactive: true,
-      glowOnHover: true,
+    return Card(
+      // interactive: true,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label.toUpperCase(), style: theme.textTheme.labelMedium),
+          Text(
+            label.toUpperCase(),
+            style: TenkaiTypography.labelMd.copyWith(color: c.mutedForeground),
+          ),
           const SizedBox(height: 8),
           Text(
             value,
-            style: TenkaiTypography.d2.copyWith(
+            style: TenkaiTypography.d3.copyWith(
               fontSize: 28,
-              color: accent ?? TenkaiColors.white,
+              color: accent ?? c.foreground,
             ),
           ),
           if (subtext != null) ...[
             const SizedBox(height: 4),
-            Text(subtext!, style: TenkaiTypography.bodySmall),
+            Text(
+              subtext!,
+              style: TenkaiTypography.bodySmall.copyWith(
+                color: c.secondaryForeground,
+              ),
+            ),
           ],
         ],
       ),
@@ -206,6 +142,7 @@ class TenkaiProgress extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = context.tenkai;
     final pct = (value * 100).round();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -216,8 +153,19 @@ class TenkaiProgress extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               if (label != null)
-                Text(label!, style: TenkaiTypography.bodySmall),
-              if (showPercent) Text('$pct%', style: TenkaiTypography.labelMd),
+                Text(
+                  label!,
+                  style: TenkaiTypography.bodySmall.copyWith(
+                    color: c.mutedForeground,
+                  ),
+                ),
+              if (showPercent)
+                Text(
+                  '$pct%',
+                  style: TenkaiTypography.labelMd.copyWith(
+                    color: c.mutedForeground,
+                  ),
+                ),
             ],
           ),
           const SizedBox(height: 6),
@@ -225,18 +173,18 @@ class TenkaiProgress extends StatelessWidget {
         LayoutBuilder(
           builder: (context, constraints) {
             return Container(
-              height: 1,
+              height: 2,
               width: constraints.maxWidth,
-              color: TenkaiColors.gray800,
+              color: c.border,
               child: animated
                   ? TweenAnimationBuilder<double>(
                       tween: Tween(begin: 0, end: value),
-                      duration: TenkaiDuration.glow,
+                      duration: TenkaiDuration.reveal,
                       curve: TenkaiCurves.spring,
                       builder: (_, v, __) =>
-                          _ProgressFill(v, constraints.maxWidth),
+                          _ProgressFill(v, constraints.maxWidth, c.accent),
                     )
-                  : _ProgressFill(value, constraints.maxWidth),
+                  : _ProgressFill(value, constraints.maxWidth, c.accent),
             );
           },
         ),
@@ -246,21 +194,17 @@ class TenkaiProgress extends StatelessWidget {
 }
 
 class _ProgressFill extends StatelessWidget {
-  const _ProgressFill(this.value, this.maxWidth);
+  const _ProgressFill(this.value, this.maxWidth, this.color);
   final double value;
   final double maxWidth;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: maxWidth * value.clamp(0.0, 1.0),
-      height: 1,
-      decoration: BoxDecoration(
-        color: TenkaiColors.white,
-        boxShadow: [
-          BoxShadow(color: TenkaiColors.white.withOpacity(0.4), blurRadius: 6),
-        ],
-      ),
+      height: 2,
+      color: color,
     );
   }
 }
@@ -268,48 +212,33 @@ class _ProgressFill extends StatelessWidget {
 // ── DIVIDER ──────────────────────────────────
 
 class TenkaiDivider extends StatelessWidget {
-  const TenkaiDivider({super.key, this.glow = false, this.label});
+  const TenkaiDivider({super.key, this.label});
 
-  final bool glow;
   final String? label;
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final c = context.tenkai;
 
     if (label != null) {
       return Row(
         children: [
-          Expanded(child: _line()),
+          Expanded(child: _line(c.border)),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12),
             child: Text(
               label!.toUpperCase(),
-              style: theme.textTheme.labelMedium,
+              style: TenkaiTypography.labelSm.copyWith(
+                color: c.mutedForeground,
+              ),
             ),
           ),
-          Expanded(child: _line()),
+          Expanded(child: _line(c.border)),
         ],
       );
     }
-    return _line();
+    return _line(c.border);
   }
 
-  Widget _line() {
-    if (glow) {
-      return Container(
-        height: 1,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Colors.transparent,
-              TenkaiColors.white.withOpacity(0.2),
-              Colors.transparent,
-            ],
-          ),
-        ),
-      );
-    }
-    return Container(height: 0.5, color: TenkaiColors.gray800);
-  }
+  Widget _line(Color color) => Container(height: 1, color: color);
 }

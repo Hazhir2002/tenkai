@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
 import '../sounds/tenkai_sound.dart';
+import '../theme/tenkai_semantic_colors.dart';
 import '../tokens/tenkai_tokens.dart';
 
-/// A small selectable pill. Selected = white fill on black text with a soft
-/// LED glow; unselected = outlined. Used for filters, day pickers, tags, etc.
+/// A small selectable pill. Selected = accent fill on accent-fg text;
+/// unselected = flat hairline outline. Used for filters, day pickers, tags.
+/// Flat — emphasis is fill + border, not glow.
 class TenkaiChip extends StatelessWidget {
   const TenkaiChip({
     super.key,
@@ -19,27 +21,26 @@ class TenkaiChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = context.tenkai;
     return GestureDetector(
       onTap: () {
         onTap();
         TenkaiSound.tap();
       },
       behavior: HitTestBehavior.opaque,
-      child: Container(
+      child: AnimatedContainer(
+        duration: TenkaiDuration.fast,
+        curve: TenkaiCurves.easeOut,
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
         decoration: BoxDecoration(
-          color: selected ? TenkaiColors.white : Colors.transparent,
-          borderRadius: BorderRadius.circular(TenkaiRadius.sharp),
-          border: Border.all(
-            color: selected ? TenkaiColors.white : TenkaiColors.gray700,
-            width: 0.5,
-          ),
-          boxShadow: selected ? TenkaiGlow.soft : null,
+          color: selected ? c.accent : Colors.transparent,
+          borderRadius: BorderRadius.circular(TenkaiRadius.badge),
+          border: Border.all(color: selected ? c.accent : c.border, width: 1),
         ),
         child: Text(
           label,
           style: TenkaiTypography.labelSm.copyWith(
-            color: selected ? TenkaiColors.black : TenkaiColors.gray400,
+            color: selected ? c.accentForeground : c.mutedForeground,
           ),
         ),
       ),

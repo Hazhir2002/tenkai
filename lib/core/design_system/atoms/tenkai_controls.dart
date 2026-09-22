@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
+import '../theme/tenkai_semantic_colors.dart';
 import '../tokens/tenkai_tokens.dart';
 import '../sounds/tenkai_sound.dart';
-import 'tenkai_glow.dart';
+
+// ─────────────────────────────────────────────
+// TENKAI · Atoms — Controls (flat)
+// Focus is the one place glow is mandatory: the border switches to --accent and
+// the focus-ring bloom appears. Toggles/checkboxes/radios/sliders carry no
+// ambient glow — emphasis is fill + border weight.
+// ─────────────────────────────────────────────
 
 class TenkaiInput extends StatefulWidget {
   const TenkaiInput({
@@ -54,40 +61,42 @@ class _TenkaiInputState extends State<TenkaiInput> {
   @override
   void initState() {
     super.initState();
-
     _ownsFocusNode = widget.focusNode == null;
     _focusNode = widget.focusNode ?? FocusNode();
-
-    _focusNode.addListener(() {
-      setState(() {});
-    });
+    _focusNode.addListener(() => setState(() {}));
   }
 
   @override
   void dispose() {
-    if (_ownsFocusNode) {
-      _focusNode.dispose();
-    }
+    if (_ownsFocusNode) _focusNode.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final c = context.tenkai;
+    final focused = _focusNode.hasFocus;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
         if (widget.label != null) ...[
-          Text(widget.label!.toUpperCase(), style: theme.textTheme.labelMedium),
+          Text(
+            widget.label!.toUpperCase(),
+            style: TenkaiTypography.labelMd.copyWith(color: c.mutedForeground),
+          ),
           const SizedBox(height: 6),
         ],
-        TenkaiGlowWrapper(
-          glowing: _focusNode.hasFocus,
-          intensity: TenkaiGlowIntensity.soft,
-          borderRadius: TenkaiRadius.md,
-          borderColor: Colors.transparent,
+        // The focus ring: a 1px accent border (via the TextField) plus the
+        // focus-glow bloom (the one mandatory glow).
+        AnimatedContainer(
+          duration: TenkaiDuration.fast,
+          curve: TenkaiCurves.easeOut,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(TenkaiRadius.control),
+            boxShadow: focused ? TenkaiGlow.focusOf(c.accent) : null,
+          ),
           child: TextField(
             controller: widget.controller,
             focusNode: _focusNode,
@@ -101,38 +110,21 @@ class _TenkaiInputState extends State<TenkaiInput> {
             textInputAction: widget.textInputAction,
             textAlignVertical: widget.textAlignVertical,
             autofocus: widget.autofocus,
-            style: TenkaiTypography.bodyMd,
-            cursorColor: TenkaiColors.white,
+            style: TenkaiTypography.bodyLg.copyWith(color: c.foreground),
+            cursorColor: c.accent,
             cursorWidth: 1.8,
             cursorHeight: 20,
             expands: widget.expands,
-            cursorRadius: Radius.circular(TenkaiRadius.md),
+            cursorRadius: const Radius.circular(TenkaiRadius.control),
             cursorOpacityAnimates: true,
             decoration: InputDecoration(
               hintText: widget.placeholder,
-              hintStyle: TenkaiTypography.bodyMd.copyWith(
-                color: TenkaiColors.gray600,
-                fontWeight: FontWeight.w300,
-              ),
-              filled: true,
-              contentPadding: EdgeInsets.symmetric(
+              contentPadding: const EdgeInsets.symmetric(
                 horizontal: 14, // between sm(8)/md(12) — deliberately tuned
                 vertical: TenkaiSpacing.md,
               ),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(TenkaiRadius.md),
-                borderSide: BorderSide(color: TenkaiColors.gray400),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(TenkaiRadius.md),
-                borderSide: BorderSide(color: TenkaiColors.gray400),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(TenkaiRadius.md),
-                borderSide: BorderSide(color: TenkaiColors.white, width: 0.5),
-              ),
               prefixIcon: widget.prefix,
-              prefixIconConstraints: BoxConstraints(
+              prefixIconConstraints: const BoxConstraints(
                 maxWidth: 32,
                 maxHeight: 32,
               ),
@@ -145,7 +137,7 @@ class _TenkaiInputState extends State<TenkaiInput> {
   }
 }
 
-// ── TOGGLE ───────────────────────────────────
+// ── TOGGLE (flat pill) ───────────────────────
 
 class TenkaiToggle extends StatefulWidget {
   const TenkaiToggle({
@@ -200,6 +192,7 @@ class _TenkaiToggleState extends State<TenkaiToggle>
 
   @override
   Widget build(BuildContext context) {
+    final c = context.tenkai;
     return GestureDetector(
       onTap: _toggle,
       child: Row(
@@ -213,26 +206,12 @@ class _TenkaiToggleState extends State<TenkaiToggle>
                 width: 44,
                 height: 24,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  color: TenkaiColors.gray800,
+                  borderRadius: BorderRadius.circular(TenkaiRadius.pill),
+                  color: Color.lerp(c.card, c.accent, t),
                   border: Border.all(
-                    color: Color.lerp(
-                      TenkaiColors.gray700,
-                      TenkaiColors.white,
-                      t,
-                    )!,
-                    width: 0.5,
+                    color: Color.lerp(c.border, c.accent, t)!,
+                    width: 1,
                   ),
-                  boxShadow: t > 0.2
-                      ? TenkaiGlow.soft
-                            .map(
-                              (s) => BoxShadow(
-                                color: s.color.withOpacity(s.color.opacity * t),
-                                blurRadius: s.blurRadius,
-                              ),
-                            )
-                            .toList()
-                      : null,
                 ),
                 child: Stack(
                   children: [
@@ -245,20 +224,10 @@ class _TenkaiToggleState extends State<TenkaiToggle>
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: Color.lerp(
-                            TenkaiColors.gray500,
-                            TenkaiColors.white,
+                            c.secondaryForeground,
+                            c.accentForeground,
                             t,
                           ),
-                          boxShadow: t > 0.5
-                              ? [
-                                  BoxShadow(
-                                    color: TenkaiColors.white.withOpacity(
-                                      0.6 * t,
-                                    ),
-                                    blurRadius: 8,
-                                  ),
-                                ]
-                              : null,
                         ),
                       ),
                     ),
@@ -271,7 +240,7 @@ class _TenkaiToggleState extends State<TenkaiToggle>
             const SizedBox(width: 10),
             Text(
               widget.label!,
-              style: TenkaiTypography.bodyMd.copyWith(fontSize: 13),
+              style: TenkaiTypography.bodySmall.copyWith(color: c.foreground),
             ),
           ],
         ],
@@ -280,7 +249,7 @@ class _TenkaiToggleState extends State<TenkaiToggle>
   }
 }
 
-// ── CHECKBOX ─────────────────────────────────
+// ── CHECKBOX (flat) ──────────────────────────
 
 class TenkaiCheckbox extends StatefulWidget {
   const TenkaiCheckbox({
@@ -335,6 +304,7 @@ class _TenkaiCheckboxState extends State<TenkaiCheckbox>
 
   @override
   Widget build(BuildContext context) {
+    final c = context.tenkai;
     return GestureDetector(
       onTap: _toggle,
       child: Row(
@@ -348,27 +318,17 @@ class _TenkaiCheckboxState extends State<TenkaiCheckbox>
                 width: 18,
                 height: 18,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(TenkaiRadius.sharp),
-                  color: Color.lerp(Colors.transparent, TenkaiColors.white, t),
+                  borderRadius: BorderRadius.circular(TenkaiRadius.check),
+                  color: Color.lerp(Colors.transparent, c.accent, t),
                   border: Border.all(
-                    color: Color.lerp(
-                      TenkaiColors.gray600,
-                      TenkaiColors.white,
-                      t,
-                    )!,
-                    width: 0.5,
+                    color: Color.lerp(c.border, c.accent, t)!,
+                    width: 1,
                   ),
-                  boxShadow: t > 0.3
-                      ? [
-                          BoxShadow(
-                            color: TenkaiColors.white.withOpacity(0.25 * t),
-                            blurRadius: 8,
-                          ),
-                        ]
-                      : null,
                 ),
                 child: t > 0.5
-                    ? CustomPaint(painter: _CheckmarkPainter(t))
+                    ? CustomPaint(
+                        painter: _CheckmarkPainter(t, c.accentForeground),
+                      )
                     : null,
               );
             },
@@ -377,7 +337,7 @@ class _TenkaiCheckboxState extends State<TenkaiCheckbox>
             const SizedBox(width: 10),
             Text(
               widget.label!,
-              style: TenkaiTypography.bodyMd.copyWith(fontSize: 13),
+              style: TenkaiTypography.bodySmall.copyWith(color: c.foreground),
             ),
           ],
         ],
@@ -387,13 +347,14 @@ class _TenkaiCheckboxState extends State<TenkaiCheckbox>
 }
 
 class _CheckmarkPainter extends CustomPainter {
-  _CheckmarkPainter(this.t);
+  _CheckmarkPainter(this.t, this.color);
   final double t;
+  final Color color;
 
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = TenkaiColors.black
+      ..color = color
       ..strokeWidth = 1.8
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke;
@@ -411,10 +372,10 @@ class _CheckmarkPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(_CheckmarkPainter old) => old.t != t;
+  bool shouldRepaint(_CheckmarkPainter old) => old.t != t || old.color != color;
 }
 
-// ── RADIO ────────────────────────────────────
+// ── RADIO (flat) ─────────────────────────────
 
 class TenkaiRadioGroup<T> extends StatelessWidget {
   const TenkaiRadioGroup({
@@ -432,6 +393,7 @@ class TenkaiRadioGroup<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = context.tenkai;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: List.generate(options.length, (i) {
@@ -458,27 +420,18 @@ class TenkaiRadioGroup<T> extends StatelessWidget {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: selected
-                          ? TenkaiColors.white
-                          : TenkaiColors.gray600,
-                      width: 0.5,
+                      color: selected ? c.accent : c.border,
+                      width: 1,
                     ),
-                    boxShadow: selected ? TenkaiGlow.soft : null,
                   ),
                   child: selected
                       ? Center(
                           child: Container(
-                            width: 6,
-                            height: 6,
+                            width: 8,
+                            height: 8,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color: TenkaiColors.white,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: TenkaiColors.white.withOpacity(0.8),
-                                  blurRadius: 6,
-                                ),
-                              ],
+                              color: c.accent,
                             ),
                           ),
                         )
@@ -487,7 +440,9 @@ class TenkaiRadioGroup<T> extends StatelessWidget {
                 const SizedBox(width: 10),
                 Text(
                   label,
-                  style: TenkaiTypography.bodyMd.copyWith(fontSize: 13),
+                  style: TenkaiTypography.bodySmall.copyWith(
+                    color: c.foreground,
+                  ),
                 ),
               ],
             ),
@@ -498,7 +453,7 @@ class TenkaiRadioGroup<T> extends StatelessWidget {
   }
 }
 
-// ── SLIDER ───────────────────────────────────
+// ── SLIDER (flat) ────────────────────────────
 
 class TenkaiSlider extends StatefulWidget {
   const TenkaiSlider({
@@ -531,7 +486,7 @@ class _TenkaiSliderState extends State<TenkaiSlider> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final c = context.tenkai;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -544,15 +499,15 @@ class _TenkaiSliderState extends State<TenkaiSlider> {
               if (widget.label != null)
                 Text(
                   widget.label!.toUpperCase(),
-                  style: theme.textTheme.labelMedium,
+                  style: TenkaiTypography.labelMd.copyWith(
+                    color: c.mutedForeground,
+                  ),
                 ),
               if (widget.showValue)
                 Text(
                   widget.valueFormatter?.call(widget.value) ??
                       widget.value.toStringAsFixed(0),
-                  style: TenkaiTypography.labelMd.copyWith(
-                    color: TenkaiColors.white,
-                  ),
+                  style: TenkaiTypography.labelMd.copyWith(color: c.foreground),
                 ),
             ],
           ),
@@ -561,12 +516,10 @@ class _TenkaiSliderState extends State<TenkaiSlider> {
         SliderTheme(
           data: SliderThemeData(
             trackHeight: 1,
-            activeTrackColor: TenkaiColors.white.withOpacity(
-              _dragging ? 0.9 : 0.6,
-            ),
-            inactiveTrackColor: TenkaiColors.gray700,
-            thumbColor: TenkaiColors.white,
-            thumbShape: _TenkaiThumbShape(_dragging),
+            activeTrackColor: c.accent,
+            inactiveTrackColor: c.border,
+            thumbColor: c.accent,
+            thumbShape: _TenkaiThumbShape(_dragging, c.accent, c.card),
             overlayShape: SliderComponentShape.noOverlay,
             trackShape: const RectangularSliderTrackShape(),
           ),
@@ -589,8 +542,10 @@ class _TenkaiSliderState extends State<TenkaiSlider> {
 }
 
 class _TenkaiThumbShape extends SliderComponentShape {
-  const _TenkaiThumbShape(this.active);
+  const _TenkaiThumbShape(this.active, this.color, this.ringColor);
   final bool active;
+  final Color color;
+  final Color ringColor;
 
   @override
   Size getPreferredSize(bool isEnabled, bool isDiscrete) => const Size(14, 14);
@@ -611,30 +566,8 @@ class _TenkaiThumbShape extends SliderComponentShape {
     required Size sizeWithOverflow,
   }) {
     final canvas = context.canvas;
-
-    if (active) {
-      canvas.drawCircle(
-        center,
-        18,
-        Paint()..color = TenkaiColors.white.withOpacity(0.08),
-      );
-      canvas.drawCircle(
-        center,
-        12,
-        Paint()..color = TenkaiColors.white.withOpacity(0.15),
-      );
-    }
-
-    canvas.drawCircle(center, 7, Paint()..color = TenkaiColors.white);
-
-    if (active) {
-      canvas.drawCircle(
-        center,
-        7,
-        Paint()
-          ..color = TenkaiColors.white.withOpacity(0.5)
-          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8),
-      );
-    }
+    // Flat thumb: a filled accent circle, slightly larger while dragging. No
+    // glow, no blur.
+    canvas.drawCircle(center, active ? 8 : 7, Paint()..color = color);
   }
 }

@@ -17,28 +17,18 @@ class StarRating extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = context.tenkai;
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: List.generate(5, (i) {
         final filled = i < rating;
-        final star = Container(
+        final star = Padding(
           padding: const EdgeInsets.all(2),
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            boxShadow: filled
-                ? [
-                    BoxShadow(
-                      color: TenkaiColors.white.withOpacity(0.35),
-                      blurRadius: 8,
-                    ),
-                  ]
-                : null,
-          ),
           child: CNIcon(
             symbol: CNSymbol(
               filled ? 'star.fill' : 'star',
               size: size,
-              color: filled ? TenkaiColors.white : TenkaiColors.gray600,
+              color: filled ? c.foreground : c.border,
             ),
           ),
         );

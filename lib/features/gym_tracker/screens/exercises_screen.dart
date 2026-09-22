@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:tenkai/core/design_system/tenkai.dart';
 import 'package:tenkai/features/gym_tracker/providers/exercise_provider.dart';
 
 class ExercisesScreen extends ConsumerWidget {
@@ -8,25 +9,56 @@ class ExercisesScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final exerciseState = ref.watch(exerciseProvider);
+    final c = context.tenkai;
 
     return Scaffold(
-      body: SafeArea(
-        child: Builder(
-          builder: (context) {
-            if (exerciseState.isLoading) {
-              return CircularProgressIndicator();
-            } else if (exerciseState.error != null) {
-              return Text(exerciseState.error!);
-            } else if (exerciseState.exercises != null) {
-              return ListView.builder(
-                itemBuilder: (_, index) =>
-                    Card(child: Text(exerciseState.exercises![index].name)),
-              );
-            } else {
-              return const SizedBox();
-            }
-          },
-        ),
+      backgroundColor: Colors.transparent,
+      extendBodyBehindAppBar: true,
+      appBar: const TenkaiAppBar(title: 'Exercises'),
+      body: Builder(
+        builder: (context) {
+          final topPad =
+              MediaQuery.of(context).padding.top + TenkaiAppBar.compactHeight;
+          if (exerciseState.isLoading) {
+            return Center(
+              child: SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 1.5,
+                  color: c.mutedForeground,
+                ),
+              ),
+            );
+          }
+          if (exerciseState.error != null) {
+            return const Center(
+              child: TenkaiEmptyState(title: 'Couldn\'t load exercises'),
+            );
+          }
+          final exercises = exerciseState.exercises;
+          if (exercises == null || exercises.isEmpty) {
+            return const Center(
+              child: TenkaiEmptyState(
+                title: 'No exercises yet',
+                description: 'Exercises you add will show up here.',
+              ),
+            );
+          }
+          return ListView.separated(
+            padding: EdgeInsets.fromLTRB(
+              TenkaiSpacing.lg,
+              topPad,
+              TenkaiSpacing.lg,
+              TenkaiSpacing.xl,
+            ),
+            itemCount: exercises.length,
+            separatorBuilder: (_, __) =>
+                const SizedBox(height: TenkaiSpacing.sm),
+            itemBuilder: (_, index) =>
+                TenkaiListRow(title: exercises[index].name),
+          );
+        },
       ),
     );
   }

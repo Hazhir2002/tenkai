@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tenkai/core/design_system/tenkai.dart';
+import 'package:tenkai/core/theme_mode_provider.dart';
+import 'package:tenkai/features/auth/providers/auth_provider.dart';
 import 'package:tenkai/features/profile/provider/user_stat_provider.dart';
 import 'package:tenkai/features/profile/widgets/add_stat_form.dart';
 import 'package:tenkai/features/profile/widgets/update_stat_form.dart';
@@ -13,79 +15,162 @@ class ProfileScreen extends ConsumerStatefulWidget {
 }
 
 class _ProfileScreenState extends ConsumerState<ProfileScreen> {
+  Future<void> _confirmLogout() async {
+    final shouldLogout = await showTenkaiDialog<bool>(
+      context: context,
+      title: 'Log out?',
+      description: 'You will need to sign in again to continue.',
+      actions: [
+        TenkaiButton(
+          label: 'Cancel',
+          variant: TenkaiButtonVariant.ghost,
+          size: TenkaiButtonSize.sm,
+          onPressed: () => Navigator.of(context).pop(false),
+        ),
+        TenkaiButton(
+          label: 'Log out',
+          variant: TenkaiButtonVariant.danger,
+          size: TenkaiButtonSize.sm,
+          onPressed: () => Navigator.of(context).pop(true),
+        ),
+      ],
+    );
+    if (shouldLogout ?? false) {
+      // The router guard redirects to /login once state is unauthenticated.
+      await ref.read(authProvider.notifier).logout();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final userStatState = ref.watch(userStatProvider);
+    final c = context.tenkai;
 
     return Scaffold(
       backgroundColor: Colors.transparent,
       extendBodyBehindAppBar: true,
-      appBar: TenkaiAppBar(
-        title: 'Profile',
-        showBackButton: false,
-        actions: [
-          TenkaiAppBarAction(
-            symbol: 'plus',
-            onPressed: () => showModalBottomSheet(
+      // appBar: TenkaiAppBar(
+      //   title: 'Profile',
+      //   showBackButton: false,
+      //   actions: [
+      //     TenkaiAppBarAction(
+      //       symbol: 'plus',
+      //       onPressed: () => showTenkaiSheet(
+      //         context: context,
+      //         title: 'Track a stat',
+      //         child: AddStatForm(),
+      //       ),
+      //     ),
+      //     TenkaiAppBarAction(
+      //       symbol: 'rectangle.portrait.and.arrow.right',
+      //       onPressed: _confirmLogout,
+      //     ),
+      //   ],
+      // ),
+      body: SafeArea(
+        child: Column(children: [Card(child: Text('asdfas'))]),
+      ),
+      // body: ListView(
+      //   padding: EdgeInsets.fromLTRB(
+      //     TenkaiSpacing.lg,
+      //     MediaQuery.of(context).padding.top + TenkaiAppBar.compactHeight,
+      //     TenkaiSpacing.lg,
+      //     TenkaiSpacing.xl,
+      //   ),
+      //   children: [
+      //     _sectionLabel('Appearance', c),
+      //     const SizedBox(height: TenkaiSpacing.sm),
+      //     const _ThemeModeSelector(),
+      //     const SizedBox(height: TenkaiSpacing.xl),
+      //     _sectionLabel('Tracked stats', c),
+      //     const SizedBox(height: TenkaiSpacing.sm),
+      //     _statsBody(userStatState, c),
+      //   ],
+      // ),
+    );
+  }
+
+  Widget _sectionLabel(String text, TenkaiSemanticColors c) => Text(
+    text.toUpperCase(),
+    style: TenkaiTypography.labelSm.copyWith(color: c.secondaryForeground),
+  );
+
+  Widget _statsBody(dynamic state, TenkaiSemanticColors c) {
+    if (state.isLoading) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: TenkaiSpacing.xl),
+        child: Center(
+          child: SizedBox(
+            width: 20,
+            height: 20,
+            child: CircularProgressIndicator(
+              strokeWidth: 1.5,
+              color: c.mutedForeground,
+            ),
+          ),
+        ),
+      );
+    }
+    final stats = state.userStats;
+    if (stats == null) {
+      return const TenkaiEmptyState(
+        title: 'Couldn\'t load your stats',
+        description:
+            'Something went wrong. Pull down or try again in a moment.',
+      );
+    }
+    if (stats.isEmpty) {
+      return const TenkaiEmptyState(
+        title: 'No stats yet',
+        description: 'Track a stat with the + button to see it here.',
+      );
+    }
+    return Column(
+      children: [
+        for (var i = 0; i < stats.length; i++) ...[
+          if (i > 0) const SizedBox(height: TenkaiSpacing.sm),
+          TenkaiListRow(
+            title: stats[i].title,
+            trailing: Text(
+              '${stats[i].value} ${stats[i].unit}',
+              style: TenkaiTypography.bodyMd.copyWith(color: c.mutedForeground),
+            ),
+            onTap: () => showTenkaiSheet(
               context: context,
-              builder: (context) => SizedBox(
-                height: 400,
-                child: Padding(
-                  padding: const EdgeInsets.all(TenkaiSpacing.lg),
-                  child: Center(child: AddStatForm()),
-                ),
-              ),
+              title: 'Update ${stats[i].title}',
+              child: UpdateStatForm(userStat: stats[i]),
             ),
           ),
         ],
+      ],
+    );
+  }
+}
+
+/// System / Light / Dark selector, persisted via [themeModeProvider].
+class _ThemeModeSelector extends ConsumerWidget {
+  const _ThemeModeSelector();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final mode = ref.watch(themeModeProvider);
+    final notifier = ref.read(themeModeProvider.notifier);
+
+    Widget chip(String label, ThemeMode value) => Padding(
+      padding: const EdgeInsets.only(right: TenkaiSpacing.sm),
+      child: TenkaiChip(
+        label: label,
+        selected: mode == value,
+        onTap: () => notifier.set(value),
       ),
-      body: Builder(
-        builder: (context) {
-          if (userStatState.isLoading) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (userStatState.userStats != null) {
-            final userStats = userStatState.userStats!;
-            return ListView.builder(
-              padding: EdgeInsets.only(
-                top:
-                    MediaQuery.of(context).padding.top +
-                    TenkaiAppBar.compactHeight,
-              ),
-              itemCount: userStats.length,
-              itemBuilder: (_, index) => GestureDetector(
-                onTap: () => showModalBottomSheet(
-                  context: context,
-                  builder: (context) => SizedBox(
-                    height: 400,
-                    child: Padding(
-                      padding: const EdgeInsets.all(TenkaiSpacing.lg),
-                      child: Center(
-                        child: UpdateStatForm(userStat: userStats[index]),
-                      ),
-                    ),
-                  ),
-                ),
-                child: Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(TenkaiSpacing.md),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(userStats[index].title),
-                        Text(
-                          '${userStats[index].value} ${userStats[index].unit}',
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            );
-          } else {
-            return const Text('Something Went wrong');
-          }
-        },
-      ),
+    );
+
+    return Row(
+      children: [
+        chip('System', ThemeMode.system),
+        chip('Light', ThemeMode.light),
+        chip('Dark', ThemeMode.dark),
+      ],
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../theme/tenkai_semantic_colors.dart';
 import '../tokens/tenkai_tokens.dart';
 
 // ─────────────────────────────────────────────
@@ -78,17 +79,15 @@ class _TenkaiGlowWrapperState extends State<TenkaiGlowWrapper>
 
   @override
   Widget build(BuildContext context) {
+    final fallbackBorder = context.tenkai.border;
+    final accent = context.tenkai.accent;
     return AnimatedBuilder(
       animation: _anim,
       builder: (context, child) {
         final t = _anim.value;
         final borderOpacity = widget.glowing
-            ? Color.lerp(
-                widget.borderColor ?? TenkaiColors.gray700,
-                TenkaiColors.white,
-                t,
-              )!
-            : (widget.borderColor ?? TenkaiColors.gray700);
+            ? Color.lerp(widget.borderColor ?? fallbackBorder, accent, t)!
+            : (widget.borderColor ?? fallbackBorder);
 
         return DecoratedBox(
           decoration: BoxDecoration(
@@ -104,139 +103,5 @@ class _TenkaiGlowWrapperState extends State<TenkaiGlowWrapper>
   }
 }
 
-/// Scanline LED grid — the hero ambient animation for backgrounds / headers
-class TenkaiLedGrid extends StatefulWidget {
-  const TenkaiLedGrid({
-    super.key,
-    this.columns = 24,
-    this.rows = 4,
-    this.dotSize = 6.0,
-    this.gap = 3.0,
-  });
-
-  final int columns;
-  final int rows;
-  final double dotSize;
-  final double gap;
-
-  @override
-  State<TenkaiLedGrid> createState() => _TenkaiLedGridState();
-}
-
-class _TenkaiLedGridState extends State<TenkaiLedGrid>
-    with TickerProviderStateMixin {
-  late List<double> _brightness;
-  late AnimationController _scanController;
-  late AnimationController _waveController;
-
-  @override
-  void initState() {
-    super.initState();
-    final total = widget.columns * widget.rows;
-    _brightness = List.filled(total, 0.05);
-
-    _scanController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 2400),
-    )..repeat();
-
-    _waveController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 600),
-    );
-
-    _scanController.addListener(_onScan);
-    _triggerRandomWave();
-  }
-
-  void _onScan() {
-    final col =
-        (_scanController.value * widget.columns).floor() % widget.columns;
-    setState(() {
-      for (var r = 0; r < widget.rows; r++) {
-        final idx = r * widget.columns + col;
-        if (idx < _brightness.length) {
-          _brightness[idx] = 0.35;
-        }
-        final prev =
-            r * widget.columns + ((col - 1 + widget.columns) % widget.columns);
-        if (prev < _brightness.length && _brightness[prev] > 0.06) {
-          _brightness[prev] = (_brightness[prev] - 0.04).clamp(0.05, 1.0);
-        }
-      }
-    });
-  }
-
-  void _triggerRandomWave() {
-    Future.delayed(
-      Duration(
-        milliseconds: 400 + (400 * (DateTime.now().millisecond / 1000)).round(),
-      ),
-      () {
-        if (!mounted) return;
-        final rand = DateTime.now().millisecondsSinceEpoch;
-        final center = rand % widget.columns;
-        final row = (rand ~/ widget.columns) % widget.rows;
-        for (var i = 0; i < widget.columns; i++) {
-          final dist = (i - center).abs();
-          if (dist <= 4) {
-            final delay = dist * 40;
-            Future.delayed(Duration(milliseconds: delay), () {
-              if (!mounted) return;
-              final idx = row * widget.columns + i;
-              setState(() => _brightness[idx] = 1.0 - dist * 0.18);
-              Future.delayed(const Duration(milliseconds: 320), () {
-                if (!mounted) return;
-                setState(() => _brightness[idx] = 0.05);
-              });
-            });
-          }
-        }
-        _triggerRandomWave();
-      },
-    );
-  }
-
-  @override
-  void dispose() {
-    _scanController.dispose();
-    _waveController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return Wrap(
-          spacing: widget.gap,
-          runSpacing: widget.gap,
-          children: List.generate(widget.columns * widget.rows, (i) {
-            final b = _brightness[i].clamp(0.0, 1.0);
-            return AnimatedContainer(
-              duration: const Duration(milliseconds: 180),
-              width: widget.dotSize,
-              height: widget.dotSize,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Color.lerp(TenkaiColors.gray800, TenkaiColors.white, b),
-                boxShadow: b > 0.4
-                    ? [
-                        BoxShadow(
-                          color: TenkaiColors.white.withOpacity(b * 0.7),
-                          blurRadius: 6,
-                        ),
-                        BoxShadow(
-                          color: TenkaiColors.white.withOpacity(b * 0.3),
-                          blurRadius: 12,
-                        ),
-                      ]
-                    : null,
-              ),
-            );
-          }),
-        );
-      },
-    );
-  }
-}
+// NOTE: `TenkaiLedGrid` (the ambient scanline animation) was retired — ambient
+// glow contradicts the flat system, where glow means "the one thing to act on."

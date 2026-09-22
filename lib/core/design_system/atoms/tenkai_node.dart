@@ -1,34 +1,37 @@
 import 'package:flutter/material.dart';
+import '../theme/tenkai_semantic_colors.dart';
 import '../tokens/tenkai_tokens.dart';
-import 'tenkai_glow.dart';
 
-/// A small glowing pill/dot marker — e.g. for timelines, diagrams, or
-/// node-based layouts.
+/// A small dot/pill marker — e.g. for timelines, diagrams, or node-based
+/// layouts (the habit stacking chain). Flat by default; [glowing] adds the
+/// restrained accent bloom that marks the single next/active node — one of the
+/// only two places glow is allowed.
 class TenkaiNode extends StatelessWidget {
   const TenkaiNode({
     super.key,
     this.size = 20,
-    this.color = TenkaiColors.white,
-    this.glowing = true,
+    this.color,
+    this.glowing = false,
   });
 
   final double size;
-  final Color color;
+  final Color? color;
   final bool glowing;
 
   @override
   Widget build(BuildContext context) {
-    return TenkaiGlowWrapper(
-      borderRadius: TenkaiRadius.pill,
-      glowing: glowing,
-      glowColor: color,
-      child: Container(
-        width: size,
-        height: size,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(TenkaiRadius.pill),
-          color: color,
-        ),
+    final dotColor = color ?? context.tenkai.accent;
+    return AnimatedContainer(
+      duration: TenkaiDuration.medium,
+      curve: TenkaiCurves.easeOut,
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: dotColor,
+        boxShadow: glowing
+            ? TenkaiGlow.build(TenkaiGlow.accentSteps, color: dotColor)
+            : null,
       ),
     );
   }

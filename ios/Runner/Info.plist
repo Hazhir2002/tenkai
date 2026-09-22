@@ -53,5 +53,15 @@
 	<string>Tenkai uses the camera to photograph book covers.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Tenkai lets you pick a book cover photo from your library.</string>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>Tenkai connects to your local development server on the same network.</string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<!-- The API is served over plain HTTP from a bare IP (no TLS/domain),
+		     which iOS App Transport Security blocks by default. Allow cleartext
+		     for development. Remove this once the backend is on HTTPS. -->
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
 </dict>
 </plist>
