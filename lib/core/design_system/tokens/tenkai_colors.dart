@@ -27,6 +27,7 @@ abstract final class TenkaiColors {
   static const zinc950 = Color(0xFF09090B);
 
   // Light-theme border helper that isn't in the zinc ramp.
+  static const border = Color(0xFF71717A);
   static const borderSoftLight = Color(0xFFF0F0F1);
 
   // ── Semantic status (dark theme values) ──

@@ -12,8 +12,10 @@ import 'package:tenkai/features/knowledge/data/book_dao.dart';
 import 'package:tenkai/features/knowledge/data/tables/book.dart';
 import 'package:tenkai/features/knowledge/data/tables/book_highlight.dart';
 import 'package:tenkai/features/knowledge/data/tables/reading_session.dart';
-import 'package:tenkai/features/profile/data/profile_dao.dart';
-import 'package:tenkai/features/profile/data/tables/user_stat.dart';
+import 'package:tenkai/features/user/data/user_dao.dart';
+import 'package:tenkai/features/user/data/tables/user_fear.dart';
+import 'package:tenkai/features/user/data/tables/user_stat.dart';
+import 'package:tenkai/features/user/models/user_fear_status.dart';
 
 part 'database.g.dart';
 
@@ -30,8 +32,9 @@ part 'database.g.dart';
     Books,
     ReadingSessions,
     BookHighlights,
+    UserFear,
   ],
-  daos: [ProfileDao, JournalDao, HabitDao, BookDao],
+  daos: [UserDao, JournalDao, HabitDao, BookDao],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
@@ -39,24 +42,24 @@ class AppDatabase extends _$AppDatabase {
   @override
   int get schemaVersion => 3;
 
-  @override
-  MigrationStrategy get migration => MigrationStrategy(
-    onCreate: (m) => m.createAll(),
-    onUpgrade: (m, from, to) async {
-      // v2 adds the habit tracker tables.
-      if (from < 2) {
-        await m.createTable(habits);
-        await m.createTable(habitSchedules);
-        await m.createTable(habitCompletions);
-      }
-      // v3 adds the book tracker tables.
-      if (from < 3) {
-        await m.createTable(books);
-        await m.createTable(readingSessions);
-        await m.createTable(bookHighlights);
-      }
-    },
-  );
+  // @override
+  // MigrationStrategy get migration => MigrationStrategy(
+  //   onCreate: (m) => m.createAll(),
+  //   onUpgrade: (m, from, to) async {
+  //     // v2 adds the habit tracker tables.
+  //     if (from < 2) {
+  //       await m.createTable(habits);
+  //       await m.createTable(habitSchedules);
+  //       await m.createTable(habitCompletions);
+  //     }
+  //     // v3 adds the book tracker tables.
+  //     if (from < 3) {
+  //       await m.createTable(books);
+  //       await m.createTable(readingSessions);
+  //       await m.createTable(bookHighlights);
+  //     }
+  //   },
+  // );
 
   static QueryExecutor _openConnection() {
     return driftDatabase(

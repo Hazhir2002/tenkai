@@ -24,8 +24,16 @@ abstract final class TenkaiTheme {
       brightness: brightness,
       scaffoldBackgroundColor: c.background,
       extensions: [c],
+      primaryColor: c.primary,
 
-      cardTheme: CardThemeData(color: c.card),
+      cardTheme: CardThemeData(
+        color: c.card,
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          side: BorderSide(color: c.border),
+          borderRadius: BorderRadius.circular(TenkaiRadius.md),
+        ),
+      ),
 
       // ── App bar ──
       appBarTheme: AppBarTheme(
@@ -63,10 +71,15 @@ abstract final class TenkaiTheme {
       // ── Divider (hairline) ──
       dividerTheme: DividerThemeData(color: c.border, thickness: 1, space: 0),
 
-      inputDecorationTheme: InputDecorationTheme(
+      inputDecorationTheme: InputDecorationThemeData(
         filled: false,
         hintStyle: TenkaiTypography.bodyLg.copyWith(color: c.mutedForeground),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+        floatingLabelAlignment: FloatingLabelAlignment.start,
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 14,
+          vertical: TenkaiSpacing.md,
+        ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(TenkaiRadius.control),
           borderSide: BorderSide(color: c.input, width: 1),
@@ -75,7 +88,15 @@ abstract final class TenkaiTheme {
           borderRadius: BorderRadius.circular(TenkaiRadius.control),
           borderSide: BorderSide(color: c.input, width: 1),
         ),
-        focusedBorder: null,
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(TenkaiRadius.control),
+          borderSide: BorderSide(color: c.input, width: 1),
+        ),
+        outlineBorder: BorderSide(),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(TenkaiRadius.control),
+          borderSide: BorderSide(color: c.destructive, width: 1),
+        ),
       ),
 
       // ── Bottom sheet (flat) ──
@@ -99,6 +120,70 @@ abstract final class TenkaiTheme {
         thumbColor: c.accent,
         trackHeight: 1,
         overlayShape: SliderComponentShape.noOverlay,
+      ),
+
+      chipTheme: ChipThemeData(
+        backgroundColor: TenkaiColors.white,
+        side: BorderSide(color: TenkaiColors.zinc200),
+        // shape:
+      ),
+
+      elevatedButtonTheme: ElevatedButtonThemeData(),
+
+      filledButtonTheme: FilledButtonThemeData(
+        style: ButtonStyle(
+          animationDuration: TenkaiDuration.medium,
+          enableFeedback: true,
+          textStyle: WidgetStatePropertyAll(TenkaiTypography.labelLg),
+          backgroundColor: WidgetStateProperty.fromMap({
+            // WidgetState.pressed: Colors.white,
+            WidgetState.any: c.primary,
+          }),
+          shape: WidgetStatePropertyAll(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(TenkaiRadius.md),
+            ),
+          ),
+        ),
+      ),
+
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: ButtonStyle(
+          animationDuration: TenkaiDuration.medium,
+          enableFeedback: true,
+          backgroundColor: WidgetStateProperty.fromMap({
+            // WidgetState.pressed: c.primary,
+            WidgetState.any: Colors.transparent,
+          }),
+          foregroundColor: WidgetStateProperty.fromMap({
+            WidgetState.any: c.foreground,
+          }),
+          textStyle: WidgetStatePropertyAll(TenkaiTypography.labelLg),
+          side: WidgetStateProperty.fromMap({
+            WidgetState.disabled: BorderSide(
+              color: c.border.withValues(alpha: 0.4),
+              width: 1,
+            ),
+            WidgetState.pressed: BorderSide(color: c.border, width: 2),
+            WidgetState.any: BorderSide(color: c.border, width: 1),
+          }),
+          shape: WidgetStatePropertyAll(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(TenkaiRadius.md),
+            ),
+          ),
+        ),
+      ),
+
+      navigationBarTheme: NavigationBarThemeData(
+        height: 60,
+        backgroundColor: c.card,
+        labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
+        overlayColor: WidgetStatePropertyAll(Colors.transparent),
+        indicatorColor: Colors.transparent,
+        indicatorShape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(TenkaiRadius.pill),
+        ),
       ),
 
       // ── Switch ──

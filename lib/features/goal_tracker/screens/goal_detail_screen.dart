@@ -40,21 +40,21 @@ class GoalDetailScreen extends ConsumerWidget {
     return Scaffold(
       backgroundColor: Colors.transparent,
       extendBodyBehindAppBar: true,
-      appBar: TenkaiAppBar(
-        title: goalAsync.valueOrNull?.title ?? 'Goal',
+      appBar: AppBar(
+        title: Text(goalAsync.valueOrNull?.title ?? 'Goal'),
         actions: [
-          if (goalAsync.hasValue) ...[
-            TenkaiAppBarAction(
-              symbol: 'pencil',
-              onPressed: () => _openEditSheet(context, goalAsync.value!),
-            ),
-            TenkaiAppBarAction(
-              symbol: goalAsync.value!.status == GoalStatus.archived
-                  ? 'arrow.uturn.backward'
-                  : 'archivebox',
-              onPressed: () => _toggleArchive(ref, goalAsync.value!),
-            ),
-          ],
+          // if (goalAsync.hasValue) ...[
+          //   AppBarAction(
+          //     symbol: 'pencil',
+          //     onPressed: () => _openEditSheet(context, goalAsync.value!),
+          //   ),
+          //   TenkaiAppBarAction(
+          //     symbol: goalAsync.value!.status == GoalStatus.archived
+          //         ? 'arrow.uturn.backward'
+          //         : 'archivebox',
+          //     onPressed: () => _toggleArchive(ref, goalAsync.value!),
+          //   ),
+          // ],
         ],
       ),
       body: goalAsync.when(
@@ -92,7 +92,7 @@ class _GoalDetailBody extends ConsumerWidget {
 
     return ListView(
       padding: EdgeInsets.only(
-        top: MediaQuery.of(context).padding.top + TenkaiAppBar.compactHeight,
+        top: MediaQuery.of(context).padding.top,
         left: TenkaiSpacing.lg,
         right: TenkaiSpacing.lg,
         bottom: TenkaiSpacing.xxxl,

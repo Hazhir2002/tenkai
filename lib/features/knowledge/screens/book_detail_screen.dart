@@ -30,22 +30,22 @@ class BookDetailScreen extends ConsumerWidget {
     return Scaffold(
       backgroundColor: Colors.transparent,
       extendBodyBehindAppBar: true,
-      appBar: TenkaiAppBar(
-        title: viewAsync.valueOrNull?.book.title ?? 'Book',
+      appBar: AppBar(
+        title: Text(viewAsync.valueOrNull?.book.title ?? 'Book'),
         actions: [
           if (viewAsync.valueOrNull != null) ...[
-            TenkaiAppBarAction(
-              symbol: 'pencil',
-              onPressed: () => showBookFormSheet(
-                context,
-                ref,
-                editing: viewAsync.value!.book,
-              ),
-            ),
-            TenkaiAppBarAction(
-              symbol: 'trash',
-              onPressed: () => _confirmDelete(context, ref, bookId),
-            ),
+            // TenkaiAppBarAction(
+            //   symbol: 'pencil',
+            //   onPressed: () => showBookFormSheet(
+            //     context,
+            //     ref,
+            //     editing: viewAsync.value!.book,
+            //   ),
+            // ),
+            // TenkaiAppBarAction(
+            //   symbol: 'trash',
+            //   onPressed: () => _confirmDelete(context, ref, bookId),
+            // ),
           ],
         ],
       ),
@@ -115,12 +115,12 @@ class _BookDetailBody extends ConsumerWidget {
     final badge = paceBadge(view.paceState);
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(
-        TenkaiSpacing.lg,
-        TenkaiAppBar.compactHeight + TenkaiSpacing.md,
-        TenkaiSpacing.lg,
-        120,
-      ),
+      // padding: const EdgeInsets.fromLTRB(
+      //   TenkaiSpacing.lg,
+      //   TenkaiAppBar.compactHeight + TenkaiSpacing.md,
+      //   TenkaiSpacing.lg,
+      //   120,
+      // ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

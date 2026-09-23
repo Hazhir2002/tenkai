@@ -7,12 +7,12 @@ class StatRepository {
   final AppDatabase _db;
 
   Future<UserStatData> addStat(UserStatCompanion entry) =>
-      _db.profileDao.addStat(entry);
+      _db.userDao.addStat(entry);
 
-  Future<List<UserStatData>> get allUserStats => _db.profileDao.allUserStats;
+  Future<List<UserStatData>> get allUserStats => _db.userDao.allUserStats;
 
   Future<UserStatData> updateStat(UserStatData entry) =>
-      _db.profileDao.updateStat(entry);
+      _db.userDao.updateStat(entry);
 }
 
 final statRepositoryProvider = Provider<StatRepository>(

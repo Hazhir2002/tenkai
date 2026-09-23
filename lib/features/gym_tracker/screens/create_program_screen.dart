@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tenkai/core/design_system/atoms/tenkai_button.dart';
 import 'package:tenkai/core/design_system/atoms/tenkai_controls.dart';
+import 'package:tenkai/core/design_system/atoms/tenkai_text_form_field.dart';
 import 'package:tenkai/core/design_system/tenkai.dart';
 import 'package:tenkai/features/gym_tracker/params/create_program_param.dart';
 import 'package:tenkai/features/gym_tracker/providers/program_provider.dart';
@@ -56,7 +57,7 @@ class _CreateProgramScreenState extends ConsumerState<CreateProgramScreen> {
               autovalidateMode: AutovalidateMode.onUnfocus,
               child: Column(
                 children: [
-                  TenkaiInput(
+                  TenkaiTextFormField(
                     controller: _nameController,
                     keyboardType: TextInputType.emailAddress,
                     textInputAction: TextInputAction.next,

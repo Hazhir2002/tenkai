@@ -69,37 +69,51 @@ class TenkaiSemanticColors extends ThemeExtension<TenkaiSemanticColors> {
   final Color sidebarRing;
 
   static const TenkaiSemanticColors dark = TenkaiSemanticColors(
-    background: Color(0xFF0A0A0A),
-    foreground: Color(0xFFFAFAFA),
-    card: Color(0xFF171717),
-    cardForeground: Color(0xFFFAFAFA),
-    popover: Color(0xFF171717),
-    popoverForeground: Color(0xFFFAFAFA),
-    primary: Color(0xFFE5E5E5),
-    primaryForeground: Color(0xFF171717),
-    secondary: Color(0xFF262626),
+    background: Color(0xFF090B0C),
+    foreground: Color(0xFFF9FBFB),
+
+    card: Color(0xFF161B1D),
+    cardForeground: Color(0xFFF9FBFB),
+
+    popover: Color(0xFF161B1D),
+    popoverForeground: Color(0xFFF9FBFB),
+
+    // Kept unchanged as requested
+    primary: Color(0xFF4FA6A0),
+    primaryForeground: Color(0xFFF0FDFA),
+
+    secondary: Color(0xFF27272A),
     secondaryForeground: Color(0xFFFAFAFA),
-    muted: Color(0xFF262626),
-    mutedForeground: Color(0xFFA1A1A1),
-    accent: Color(0xFF262626),
-    accentForeground: Color(0xFFFAFAFA),
+
+    muted: Color(0xFF22292B),
+    mutedForeground: Color(0xFF9CA8AB),
+
+    accent: Color(0xFF22292B),
+    accentForeground: Color(0xFFF9FBFB),
+
     destructive: Color(0xFFFF6467),
+
     border: Color(0x1AFFFFFF),
-    input: Color(0x24FFFFFF),
-    ring: Color(0xFF737373),
-    chart1: Color(0xFFD4D4D4),
-    chart2: Color(0xFF737373),
-    chart3: Color(0xFF404040),
-    chart4: Color(0xFF262626),
-    chart5: Color(0xFF171717),
-    sidebar: Color(0xFF171717),
-    sidebarForeground: Color(0xFFFAFAFA),
-    sidebarPrimary: Color(0xFF1447E6),
-    sidebarPrimaryForeground: Color(0xFFFAFAFA),
-    sidebarAccent: Color(0xFF262626),
-    sidebarAccentForeground: Color(0xFFFAFAFA),
+    input: Color(0x26FFFFFF),
+    ring: Color(0xFF67787C),
+
+    chart1: Color(0xFFD0D6D8),
+    chart2: Color(0xFF67787C),
+    chart3: Color(0xFF4B585B),
+    chart4: Color(0xFF394447),
+    chart5: Color(0xFF22292B),
+
+    sidebar: Color(0xFF161B1D),
+    sidebarForeground: Color(0xFFF9FBFB),
+
+    sidebarPrimary: Color(0xFF00BBA7),
+    sidebarPrimaryForeground: Color(0xFF022F2E),
+
+    sidebarAccent: Color(0xFF22292B),
+    sidebarAccentForeground: Color(0xFFF9FBFB),
+
     sidebarBorder: Color(0x1AFFFFFF),
-    sidebarRing: Color(0xFF737373),
+    sidebarRing: Color(0xFF67787C),
   );
 
   static const TenkaiSemanticColors light = TenkaiSemanticColors(
@@ -109,7 +123,7 @@ class TenkaiSemanticColors extends ThemeExtension<TenkaiSemanticColors> {
     cardForeground: Color(0xFF0A0A0A),
     popover: Color(0xFFFFFFFF),
     popoverForeground: Color(0xFF0A0A0A),
-    primary: Color(0xFF171717),
+    primary: Color(0xFFCCCCFF),
     primaryForeground: Color(0xFFFAFAFA),
     secondary: Color(0xFFF5F5F5),
     secondaryForeground: Color(0xFF171717),

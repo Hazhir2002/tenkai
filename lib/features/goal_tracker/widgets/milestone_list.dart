@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:tenkai/core/design_system/atoms/tenkai_text_form_field.dart';
 import 'package:tenkai/core/design_system/tenkai.dart';
 import 'package:tenkai/features/goal_tracker/models/goal.dart';
 import 'package:tenkai/features/goal_tracker/models/milestone.dart';
@@ -231,14 +232,14 @@ class _MilestoneFormState extends ConsumerState<_MilestoneForm> {
           ),
           const SizedBox(height: TenkaiSpacing.sm),
         ],
-        TenkaiInput(
+        TenkaiTextFormField(
           controller: _titleController,
           label: 'title',
           placeholder: 'e.g. Halfway',
           autofocus: true,
         ),
         const SizedBox(height: TenkaiSpacing.md),
-        TenkaiInput(
+        TenkaiTextFormField(
           controller: _targetController,
           label: 'target value',
           placeholder: '80',

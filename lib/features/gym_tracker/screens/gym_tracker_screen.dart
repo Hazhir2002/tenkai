@@ -10,11 +10,11 @@ class GymTrackerScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.transparent,
       extendBodyBehindAppBar: true,
-      appBar: const TenkaiAppBar(title: 'Gym'),
+      appBar: AppBar(title: Text('Gym')),
       body: ListView(
         padding: EdgeInsets.fromLTRB(
           TenkaiSpacing.lg,
-          MediaQuery.of(context).padding.top + TenkaiAppBar.compactHeight,
+          MediaQuery.of(context).padding.top,
           TenkaiSpacing.lg,
           TenkaiSpacing.xl,
         ),

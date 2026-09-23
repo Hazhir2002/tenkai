@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:tenkai/core/design_system/atoms/tenkai_text_form_field.dart';
 import 'package:tenkai/core/design_system/tenkai.dart';
 
 import '../models/habit_enums.dart';
@@ -54,14 +55,14 @@ class _HabitFormSheet extends HookConsumerWidget {
           children: [
             _label('Habit'),
             const SizedBox(height: 6),
-            TenkaiInput(
+            TenkaiTextFormField(
               placeholder: 'e.g. Meditate for 2 minutes',
               controller: titleController,
               onChanged: notifier.setTitle,
               textInputAction: TextInputAction.next,
             ),
             const SizedBox(height: 16),
-            TenkaiInput(
+            TenkaiTextFormField(
               label: 'Details (optional)',
               placeholder: 'What exactly will you do?',
               controller: descController,

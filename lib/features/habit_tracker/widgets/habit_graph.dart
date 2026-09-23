@@ -160,44 +160,50 @@ class _NodeRow extends StatelessWidget {
           Expanded(
             child: Opacity(
               opacity: dimmed ? 0.6 : 1.0,
-              child: Card(
-                // interactive: true,
-                // onTap: () => onTap(view),
-                // padding: const EdgeInsets.symmetric(
-                //   horizontal: 16,
-                //   vertical: 14,
-                // ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
+              child: GestureDetector(
+                onTap: () => onTap(view),
+                child: Card(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 14,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Expanded(
-                          child: Text(
-                            view.habit.title,
-                            style: TenkaiTypography.h3,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Hero(
+                                tag: 'habit-title-${view.habit.id}',
+                                child: Text(
+                                  view.habit.title,
+                                  style: TenkaiTypography.h3,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ),
+                            if (style.badgeLabel != null) ...[
+                              const SizedBox(width: 8),
+                              TenkaiBadge(
+                                label: style.badgeLabel!,
+                                variant: style.badgeVariant,
+                                dot: view.dayState == HabitDayState.next,
+                              ),
+                            ],
+                          ],
                         ),
-                        if (style.badgeLabel != null) ...[
-                          const SizedBox(width: 8),
-                          TenkaiBadge(
-                            label: style.badgeLabel!,
-                            variant: style.badgeVariant,
-                            dot: view.dayState == HabitDayState.next,
-                          ),
-                        ],
+                        const SizedBox(height: 6),
+                        Text(
+                          view.cueDescription(),
+                          style: TenkaiTypography.bodySmall,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ],
                     ),
-                    const SizedBox(height: 6),
-                    Text(
-                      view.cueDescription(),
-                      style: TenkaiTypography.bodySmall,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
+                  ),
                 ),
               ),
             ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:tenkai/core/design_system/atoms/tenkai_text_form_field.dart';
 import 'package:tenkai/core/design_system/tenkai.dart';
 import 'package:tenkai/features/goal_tracker/models/goal.dart';
 import 'package:tenkai/features/goal_tracker/params/log_value_param.dart';
@@ -128,7 +129,7 @@ class _LogValueFormState extends ConsumerState<LogValueForm> {
           ),
           const SizedBox(height: TenkaiSpacing.sm),
         ],
-        TenkaiInput(
+        TenkaiTextFormField(
           controller: _valueController,
           label: 'new value',
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
@@ -150,7 +151,7 @@ class _LogValueFormState extends ConsumerState<LogValueForm> {
           ),
         ],
         const SizedBox(height: TenkaiSpacing.md),
-        TenkaiInput(
+        TenkaiTextFormField(
           controller: _noteController,
           label: 'note',
           placeholder: 'Optional — how did it go?',

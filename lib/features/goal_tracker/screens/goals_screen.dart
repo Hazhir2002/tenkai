@@ -28,20 +28,18 @@ class GoalsScreen extends ConsumerWidget {
     return Scaffold(
       backgroundColor: Colors.transparent,
       extendBodyBehindAppBar: true,
-      appBar: TenkaiAppBar(
-        title: 'Goals',
-        showBackButton: false,
+      appBar: AppBar(
+        title: Text('Goals'),
+        // showBackButton: false,
         actions: [
-          TenkaiAppBarAction(
-            symbol: 'plus',
-            onPressed: () => _openCreateSheet(context),
-          ),
+          // TenkaiAppBarAction(
+          //   symbol: 'plus',
+          //   onPressed: () => _openCreateSheet(context),
+          // ),
         ],
       ),
       body: Padding(
-        padding: EdgeInsets.only(
-          top: MediaQuery.of(context).padding.top + TenkaiAppBar.compactHeight,
-        ),
+        padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
         child: Column(
           children: [
             GoalStatusFilter(

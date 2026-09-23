@@ -3,10 +3,10 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tenkai/core/design_system/atoms/tenkai_button.dart';
-import 'package:tenkai/core/design_system/atoms/tenkai_controls.dart';
 import 'package:tenkai/core/design_system/atoms/tenkai_form_error.dart';
 import 'package:tenkai/core/design_system/atoms/tenkai_icon.dart';
 import 'package:tenkai/core/design_system/atoms/tenkai_icon_button.dart';
+import 'package:tenkai/core/design_system/atoms/tenkai_text_form_field.dart';
 import 'package:tenkai/core/design_system/tokens/tenkai_duration.dart';
 import 'package:tenkai/core/validators/email_validator.dart';
 import 'package:tenkai/core/validators/password_validator.dart';
@@ -84,7 +84,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 TenkaiFormError(
                   errorMessage: _validationError ?? authState.errorMessage,
                 ),
-                TenkaiInput(
+                TenkaiTextFormField(
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
                   textInputAction: TextInputAction.next,
@@ -98,7 +98,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   placeholder: 'jane@example.com',
                 ),
                 const SizedBox(height: 8),
-                TenkaiInput(
+                TenkaiTextFormField(
                   focusNode: _passwordFocus,
                   controller: _passwordController,
                   obscureText: _obscurePassword,
@@ -109,9 +109,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     child: TenkaiIconButton(
                       size: TenkaiIconButtonSize.sm,
                       iconAsset: _obscurePassword ? 'padlock' : 'lock-slash',
-                      onPressed: () => setState(
-                        () => _obscurePassword = !_obscurePassword,
-                      ),
+                      onPressed: () =>
+                          setState(() => _obscurePassword = !_obscurePassword),
                     ),
                   ),
                   label: 'Password',

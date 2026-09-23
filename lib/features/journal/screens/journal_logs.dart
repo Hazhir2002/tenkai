@@ -20,7 +20,7 @@ class JournalLogsScreen extends ConsumerWidget {
     return Scaffold(
       backgroundColor: Colors.transparent,
       extendBodyBehindAppBar: true,
-      appBar: const TenkaiAppBar(title: 'Journal Logs'),
+      appBar: AppBar(title: Text('Journal Logs')),
       body: entriesAsync.when(
         loading: () => const Center(child: CupertinoActivityIndicator()),
         error: (err, _) => Center(
@@ -36,7 +36,7 @@ class JournalLogsScreen extends ConsumerWidget {
           return ListView.separated(
             padding: EdgeInsets.fromLTRB(
               20,
-              MediaQuery.of(context).padding.top + TenkaiAppBar.compactHeight,
+              MediaQuery.of(context).padding.top,
               20,
               32,
             ),

@@ -22,15 +22,15 @@ class KnowledgeDashboard extends HookConsumerWidget {
     return Scaffold(
       backgroundColor: Colors.transparent,
       extendBodyBehindAppBar: true,
-      appBar: const TenkaiAppBar(title: 'Knowledge', showBackButton: false),
+      appBar: AppBar(title: Text('Knowledge')),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(
-            TenkaiSpacing.lg,
-            TenkaiAppBar.compactHeight + TenkaiSpacing.md,
-            TenkaiSpacing.lg,
-            120,
-          ),
+          // padding: const EdgeInsets.fromLTRB(
+          //   TenkaiSpacing.lg,
+          //   TenkaiAppBar.compactHeight + TenkaiSpacing.md,
+          //   TenkaiSpacing.lg,
+          //   120,
+          // ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

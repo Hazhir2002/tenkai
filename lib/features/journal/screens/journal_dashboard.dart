@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:tenkai/core/design_system/atoms/tenkai_app_bar.dart';
 import 'package:tenkai/core/design_system/atoms/tenkai_record_button.dart';
+import 'package:tenkai/core/design_system/atoms/tenkai_text_form_field.dart';
 import 'package:tenkai/core/design_system/tenkai.dart';
 import 'package:tenkai/core/design_system/tokens/tenkai_duration.dart';
 
@@ -19,14 +19,14 @@ class JournalDashboard extends HookConsumerWidget {
 
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: TenkaiAppBar(
-        title: 'Journal',
-        showBackButton: false,
+      appBar: AppBar(
+        title: Text('Journal'),
+        // showBackButton: false,
         actions: [
-          TenkaiAppBarAction(
-            symbol: 'archivebox.fill',
-            onPressed: () => context.push('/journal/logs'),
-          ),
+          // TenkaiAppBarAction(
+          //   symbol: 'archivebox.fill',
+          //   onPressed: () => context.push('/journal/logs'),
+          // ),
         ],
       ),
       backgroundColor: Colors.transparent,
@@ -34,7 +34,6 @@ class JournalDashboard extends HookConsumerWidget {
         minimum: const EdgeInsets.only(
           left: TenkaiSpacing.lg,
           right: TenkaiSpacing.lg,
-          top: TenkaiAppBar.compactHeight,
         ),
         child: Column(
           children: [
@@ -168,7 +167,7 @@ class _ReviewSheet extends HookConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        TenkaiInput(
+        TenkaiTextFormField(
           controller: controller,
           maxLines: null,
           // expands: true,

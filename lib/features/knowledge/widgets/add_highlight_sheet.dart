@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tenkai/core/database.dart';
+import 'package:tenkai/core/design_system/atoms/tenkai_text_form_field.dart';
 import 'package:tenkai/core/design_system/tenkai.dart';
 import 'package:tenkai/core/providers.dart';
 
@@ -44,21 +45,21 @@ class _AddHighlightSheet extends HookConsumerWidget {
       children: [
         Text(book.title, style: TenkaiTypography.h3),
         const SizedBox(height: 16),
-        TenkaiInput(
+        TenkaiTextFormField(
           label: 'Page',
           placeholder: '${book.currentPage}',
           controller: pageCtrl,
           keyboardType: TextInputType.number,
         ),
         const SizedBox(height: 16),
-        TenkaiInput(
+        TenkaiTextFormField(
           label: 'Quote',
           placeholder: 'What stood out to you?',
           controller: quoteCtrl,
           maxLines: 3,
         ),
         const SizedBox(height: 16),
-        TenkaiInput(
+        TenkaiTextFormField(
           label: 'Note (optional)',
           placeholder: 'Why it mattered…',
           controller: noteCtrl,

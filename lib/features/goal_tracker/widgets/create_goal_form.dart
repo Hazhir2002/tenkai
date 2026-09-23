@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:tenkai/core/design_system/atoms/tenkai_text_form_field.dart';
 import 'package:tenkai/core/design_system/tenkai.dart';
 import 'package:tenkai/features/goal_tracker/models/goal.dart';
 import 'package:tenkai/features/goal_tracker/params/create_goal_param.dart';
@@ -169,7 +170,7 @@ class _CreateGoalFormState extends ConsumerState<CreateGoalForm> {
           ),
           const SizedBox(height: TenkaiSpacing.md),
         ],
-        TenkaiInput(
+        TenkaiTextFormField(
           controller: _titleController,
           label: 'title',
           placeholder: 'e.g. Bench press',
@@ -177,7 +178,7 @@ class _CreateGoalFormState extends ConsumerState<CreateGoalForm> {
           autofocus: !widget.isEditing,
         ),
         const SizedBox(height: TenkaiSpacing.md),
-        TenkaiInput(
+        TenkaiTextFormField(
           controller: _descriptionController,
           label: 'description',
           placeholder: 'Optional note',
@@ -188,7 +189,7 @@ class _CreateGoalFormState extends ConsumerState<CreateGoalForm> {
           children: [
             if (!widget.isEditing) ...[
               Expanded(
-                child: TenkaiInput(
+                child: TenkaiTextFormField(
                   controller: _initialController,
                   label: 'start',
                   placeholder: '60',
@@ -200,7 +201,7 @@ class _CreateGoalFormState extends ConsumerState<CreateGoalForm> {
               const SizedBox(width: TenkaiSpacing.md),
             ],
             Expanded(
-              child: TenkaiInput(
+              child: TenkaiTextFormField(
                 controller: _targetController,
                 label: 'target',
                 placeholder: '100',
@@ -211,7 +212,7 @@ class _CreateGoalFormState extends ConsumerState<CreateGoalForm> {
             ),
             const SizedBox(width: TenkaiSpacing.md),
             Expanded(
-              child: TenkaiInput(
+              child: TenkaiTextFormField(
                 controller: _unitController,
                 label: 'unit',
                 placeholder: 'kg',

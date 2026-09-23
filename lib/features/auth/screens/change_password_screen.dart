@@ -6,10 +6,10 @@ class ChangePasswordScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       backgroundColor: Colors.transparent,
       extendBodyBehindAppBar: true,
-      appBar: TenkaiAppBar(title: 'Change password'),
+      appBar: AppBar(title: Text('Change password')),
       body: Center(
         child: TenkaiEmptyState(
           title: 'Not available yet',

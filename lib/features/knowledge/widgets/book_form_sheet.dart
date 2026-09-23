@@ -6,6 +6,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:tenkai/core/database.dart';
+import 'package:tenkai/core/design_system/atoms/tenkai_text_form_field.dart';
 import 'package:tenkai/core/design_system/tenkai.dart';
 import 'package:tenkai/core/services/image_storage_service.dart';
 
@@ -80,14 +81,14 @@ class _BookFormSheet extends HookConsumerWidget {
 
         _label('Title'),
         const SizedBox(height: 6),
-        TenkaiInput(
+        TenkaiTextFormField(
           placeholder: 'Book title',
           controller: titleCtrl,
           onChanged: notifier.setTitle,
           textInputAction: TextInputAction.next,
         ),
         const SizedBox(height: 16),
-        TenkaiInput(
+        TenkaiTextFormField(
           label: 'Author (optional)',
           placeholder: 'Author',
           controller: authorCtrl,
@@ -97,7 +98,7 @@ class _BookFormSheet extends HookConsumerWidget {
         Row(
           children: [
             Expanded(
-              child: TenkaiInput(
+              child: TenkaiTextFormField(
                 label: 'Total pages',
                 placeholder: '320',
                 controller: totalCtrl,
@@ -107,7 +108,7 @@ class _BookFormSheet extends HookConsumerWidget {
             ),
             const SizedBox(width: 12),
             Expanded(
-              child: TenkaiInput(
+              child: TenkaiTextFormField(
                 label: 'Current page',
                 placeholder: '0',
                 controller: currentCtrl,
@@ -171,7 +172,7 @@ class _BookFormSheet extends HookConsumerWidget {
           ],
         ),
         const SizedBox(height: 16),
-        TenkaiInput(
+        TenkaiTextFormField(
           label: 'Or a daily page goal (optional)',
           placeholder: 'e.g. 10',
           controller: goalCtrl,

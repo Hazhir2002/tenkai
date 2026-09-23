@@ -14,11 +14,10 @@ class ProgramsScreen extends ConsumerWidget {
     return Scaffold(
       backgroundColor: Colors.transparent,
       extendBodyBehindAppBar: true,
-      appBar: const TenkaiAppBar(title: 'Programs'),
+      appBar: AppBar(title: Text('Programs')),
       body: Builder(
         builder: (context) {
-          final topPad =
-              MediaQuery.of(context).padding.top + TenkaiAppBar.compactHeight;
+          final topPad = MediaQuery.of(context).padding.top;
           if (programState.isLoading) {
             return Center(
               child: SizedBox(

@@ -1,11 +1,11 @@
 import 'package:cupertino_native_better/components/tab_bar.dart';
 import 'package:cupertino_native_better/style/sf_symbol.dart';
+import 'package:ficonsax/ficonsax.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:iconsax/iconsax.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:tenkai/core/design_system/tenkai.dart';
 
 class MainShellWrapper extends ConsumerStatefulWidget {
   final StatefulNavigationShell navigationShell;
@@ -24,7 +24,7 @@ class _MainShellWrapperState extends ConsumerState<MainShellWrapper> {
       // '/',
       // '/goals',
       '/habits',
-      '/profile',
+      '/user',
       // '/knowledge',
       // '/journal',
     ].contains(location);
@@ -52,19 +52,20 @@ class _MainShellWrapperState extends ConsumerState<MainShellWrapper> {
       extendBody: true,
       bottomNavigationBar: showBottomBar
           ? NavigationBar(
+              animationDuration: TenkaiDuration.medium,
               labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
               selectedIndex: widget.navigationShell.currentIndex,
               onDestinationSelected: _onItemTap,
               destinations: [
                 NavigationDestination(
-                  selectedIcon: Icon(Iconsax.user),
-                  icon: Icon(Iconsax.user),
+                  selectedIcon: Icon(IconsaxBold.bubble),
+                  icon: Icon(IconsaxOutline.bubble),
                   label: 'habits',
                 ),
                 NavigationDestination(
-                  selectedIcon: Icon(LucideIcons.user),
-                  icon: Icon(LucideIcons.user),
-                  label: 'profile',
+                  selectedIcon: Icon(IconsaxBold.user),
+                  icon: Icon(IconsaxOutline.user),
+                  label: 'fears',
                 ),
               ],
               // currentIndex: widget.navigationShell.currentIndex,

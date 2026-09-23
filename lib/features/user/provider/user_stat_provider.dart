@@ -1,6 +1,6 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tenkai/core/database.dart';
-import 'package:tenkai/features/profile/repositories/state_repository.dart';
+import 'package:tenkai/features/user/repositories/state_repository.dart';
 
 class UserStatState {
   final List<UserStatData>? userStats;

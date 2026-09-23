@@ -15,7 +15,6 @@ export 'atoms/tenkai_button.dart';
 export 'atoms/tenkai_chip.dart';
 export 'atoms/tenkai_controls.dart';
 export 'atoms/tenkai_display.dart';
-export 'atoms/tenkai_app_bar.dart';
 export 'atoms/tenkai_icon.dart';
 export 'atoms/tenkai_logo.dart';
 export 'atoms/tenkai_icon_button.dart';

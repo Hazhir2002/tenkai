@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:tenkai/core/design_system/atoms/tenkai_text_form_field.dart';
 import 'package:tenkai/core/design_system/tenkai.dart';
 import 'package:tenkai/features/task_tracker/enums/task_status.dart';
 import 'package:tenkai/features/task_tracker/params/create_task_param.dart';
@@ -77,7 +78,7 @@ class _CreateTaskFormState extends ConsumerState<CreateTaskForm> {
         children: [
           Text('New Task', style: TenkaiTypography.h2),
           const SizedBox(height: TenkaiSpacing.lg),
-          TenkaiInput(
+          TenkaiTextFormField(
             controller: _titleController,
             label: 'title',
             placeholder: 'What needs doing?',
@@ -94,7 +95,7 @@ class _CreateTaskFormState extends ConsumerState<CreateTaskForm> {
             ),
           ],
           const SizedBox(height: TenkaiSpacing.md),
-          TenkaiInput(
+          TenkaiTextFormField(
             controller: _contextController,
             label: 'context',
             placeholder: '@home, @work…',

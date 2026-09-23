@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:tenkai/core/design_system/atoms/tenkai_text_form_field.dart';
 import 'package:tenkai/core/design_system/tenkai.dart';
 import 'package:tenkai/core/validators/confirm_password_validator.dart';
 import 'package:tenkai/core/validators/email_validator.dart';
@@ -111,7 +112,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 TenkaiFormError(
                   errorMessage: _validationError ?? authState.errorMessage,
                 ),
-                TenkaiInput(
+                TenkaiTextFormField(
                   controller: _nameController,
                   textInputAction: TextInputAction.next,
                   autofillHints: const [AutofillHints.newUsername],
@@ -124,7 +125,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   placeholder: 'heisenberg',
                 ),
                 const SizedBox(height: 8),
-                TenkaiInput(
+                TenkaiTextFormField(
                   controller: _emailController,
                   focusNode: _emailFocus,
                   keyboardType: TextInputType.emailAddress,
@@ -135,7 +136,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   placeholder: 'jane@example.com',
                 ),
                 const SizedBox(height: 8),
-                TenkaiInput(
+                TenkaiTextFormField(
                   controller: _passwordController,
                   focusNode: _passwordFocus,
                   obscureText: _obscurePassword,
@@ -148,14 +149,13 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     child: TenkaiIconButton(
                       size: TenkaiIconButtonSize.sm,
                       iconAsset: _obscurePassword ? 'padlock' : 'lock-slash',
-                      onPressed: () => setState(
-                        () => _obscurePassword = !_obscurePassword,
-                      ),
+                      onPressed: () =>
+                          setState(() => _obscurePassword = !_obscurePassword),
                     ),
                   ),
                 ),
                 const SizedBox(height: 8),
-                TenkaiInput(
+                TenkaiTextFormField(
                   controller: _confirmController,
                   focusNode: _confirmFocus,
                   obscureText: _obscureConfirm,
@@ -167,9 +167,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     child: TenkaiIconButton(
                       size: TenkaiIconButtonSize.sm,
                       iconAsset: _obscureConfirm ? 'padlock' : 'lock-slash',
-                      onPressed: () => setState(
-                        () => _obscureConfirm = !_obscureConfirm,
-                      ),
+                      onPressed: () =>
+                          setState(() => _obscureConfirm = !_obscureConfirm),
                     ),
                   ),
                 ),

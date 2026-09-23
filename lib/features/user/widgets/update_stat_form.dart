@@ -5,8 +5,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tenkai/core/database.dart';
 import 'package:tenkai/core/design_system/atoms/tenkai_button.dart';
 import 'package:tenkai/core/design_system/atoms/tenkai_controls.dart';
-import 'package:tenkai/features/profile/provider/user_stat_provider.dart';
-import 'package:tenkai/features/profile/repositories/state_repository.dart';
+import 'package:tenkai/core/design_system/atoms/tenkai_text_form_field.dart';
+import 'package:tenkai/features/user/provider/user_stat_provider.dart';
+import 'package:tenkai/features/user/repositories/state_repository.dart';
 
 class UpdateStatForm extends ConsumerStatefulWidget {
   final UserStatData userStat;
@@ -41,7 +42,7 @@ class _UpdateStatFormState extends ConsumerState<UpdateStatForm> {
       autovalidateMode: AutovalidateMode.onUnfocus,
       child: Column(
         children: [
-          TenkaiInput(
+          TenkaiTextFormField(
             controller: _titleController,
             keyboardType: TextInputType.name,
             textInputAction: TextInputAction.next,
@@ -49,9 +50,9 @@ class _UpdateStatFormState extends ConsumerState<UpdateStatForm> {
             label: 'title',
           ),
           const SizedBox(height: 12),
-          TenkaiInput(controller: _unitController, label: 'unit'),
+          TenkaiTextFormField(controller: _unitController, label: 'unit'),
           const SizedBox(height: 12),
-          TenkaiInput(
+          TenkaiTextFormField(
             controller: _valueController,
             label: 'value',
             keyboardType: TextInputType.number,

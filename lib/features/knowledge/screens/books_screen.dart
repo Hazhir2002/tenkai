@@ -21,13 +21,13 @@ class BooksScreen extends HookConsumerWidget {
     return Scaffold(
       backgroundColor: Colors.transparent,
       extendBodyBehindAppBar: true,
-      appBar: TenkaiAppBar(
-        title: 'Books',
+      appBar: AppBar(
+        title: Text('Books'),
         actions: [
-          TenkaiAppBarAction(
-            symbol: 'plus',
-            onPressed: () => showBookFormSheet(context, ref),
-          ),
+          // TenkaiAppBarAction(
+          //   symbol: 'plus',
+          //   onPressed: () => showBookFormSheet(context, ref),
+          // ),
         ],
       ),
       body: SafeArea(
@@ -45,12 +45,12 @@ class BooksScreen extends HookConsumerWidget {
                 : views.where((v) => v.status == filter.value).toList();
 
             return SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(
-                TenkaiSpacing.lg,
-                TenkaiAppBar.compactHeight + TenkaiSpacing.md,
-                TenkaiSpacing.lg,
-                120,
-              ),
+              // padding: const EdgeInsets.fromLTRB(
+              //   TenkaiSpacing.lg,
+              //   TenkaiAppBar.compactHeight + TenkaiSpacing.md,
+              //   TenkaiSpacing.lg,
+              //   120,
+              // ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

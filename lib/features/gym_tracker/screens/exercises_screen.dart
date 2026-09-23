@@ -14,11 +14,10 @@ class ExercisesScreen extends ConsumerWidget {
     return Scaffold(
       backgroundColor: Colors.transparent,
       extendBodyBehindAppBar: true,
-      appBar: const TenkaiAppBar(title: 'Exercises'),
+      appBar: AppBar(title: Text('Exercises')),
       body: Builder(
         builder: (context) {
-          final topPad =
-              MediaQuery.of(context).padding.top + TenkaiAppBar.compactHeight;
+          final topPad = MediaQuery.of(context).padding.top;
           if (exerciseState.isLoading) {
             return Center(
               child: SizedBox(
