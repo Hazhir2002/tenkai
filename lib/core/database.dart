@@ -1,6 +1,10 @@
 import 'package:drift/drift.dart';
 import 'package:drift_flutter/drift_flutter.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:tenkai/features/fitness/data/fitness_dao.dart';
+import 'package:tenkai/features/fitness/data/tables/program_session.dart';
+import 'package:tenkai/features/fitness/data/tables/program.dart';
+import 'package:tenkai/features/fitness/data/tables/session_exercise.dart';
 
 import 'package:tenkai/features/habit_tracker/data/habit_dao.dart';
 import 'package:tenkai/features/habit_tracker/data/tables/habit.dart';
@@ -33,30 +37,26 @@ part 'database.g.dart';
     ReadingSessions,
     BookHighlights,
     UserFear,
+    Programs,
+    ProgramSessions,
+    SessionExercises,
   ],
-  daos: [UserDao, JournalDao, HabitDao, BookDao],
+  daos: [UserDao, JournalDao, HabitDao, BookDao, FitnessDao],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 1;
 
   // @override
   // MigrationStrategy get migration => MigrationStrategy(
   //   onCreate: (m) => m.createAll(),
   //   onUpgrade: (m, from, to) async {
-  //     // v2 adds the habit tracker tables.
   //     if (from < 2) {
-  //       await m.createTable(habits);
-  //       await m.createTable(habitSchedules);
-  //       await m.createTable(habitCompletions);
-  //     }
-  //     // v3 adds the book tracker tables.
-  //     if (from < 3) {
-  //       await m.createTable(books);
-  //       await m.createTable(readingSessions);
-  //       await m.createTable(bookHighlights);
+  //       await m.createTable(programs);
+  //       await m.createTable(programSessions);
+  //       await m.createTable(sessionExercises);
   //     }
   //   },
   // );

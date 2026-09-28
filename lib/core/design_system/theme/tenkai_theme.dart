@@ -186,6 +186,10 @@ abstract final class TenkaiTheme {
         ),
       ),
 
+      progressIndicatorTheme: ProgressIndicatorThemeData(
+        color: c.primary,
+        strokeCap: StrokeCap.round,
+      ),
       // ── Switch ──
       // switchTheme: SwitchThemeData(
       //   thumbColor: WidgetStateProperty.resolveWith((states) {

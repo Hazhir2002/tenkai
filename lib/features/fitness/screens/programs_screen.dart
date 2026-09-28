@@ -1,24 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tenkai/core/design_system/tenkai.dart';
-import 'package:tenkai/features/gym_tracker/providers/exercise_provider.dart';
+import 'package:tenkai/features/fitness/providers/fitness_provider.dart';
+import 'package:tenkai/features/fitness/screens/create_program_screen.dart';
+import 'package:tenkai/features/fitness/widgets/program_form.dart';
 
-class ExercisesScreen extends ConsumerWidget {
-  const ExercisesScreen({super.key});
+class ProgramsScreen extends ConsumerWidget {
+  const ProgramsScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final exerciseState = ref.watch(exerciseProvider);
+    final programState = ref.watch(fitnessProvider);
     final c = context.tenkai;
 
     return Scaffold(
       backgroundColor: Colors.transparent,
       extendBodyBehindAppBar: true,
-      appBar: AppBar(title: Text('Exercises')),
+      appBar: AppBar(title: Text('Programs')),
       body: Builder(
         builder: (context) {
           final topPad = MediaQuery.of(context).padding.top;
-          if (exerciseState.isLoading) {
+          if (programState.isLoading) {
             return Center(
               child: SizedBox(
                 width: 20,
@@ -30,17 +32,27 @@ class ExercisesScreen extends ConsumerWidget {
               ),
             );
           }
-          if (exerciseState.error != null) {
+          if (programState.error != null) {
             return const Center(
-              child: TenkaiEmptyState(title: 'Couldn\'t load exercises'),
+              child: TenkaiEmptyState(title: 'Couldn\'t load programs'),
             );
           }
-          final exercises = exerciseState.exercises;
-          if (exercises == null || exercises.isEmpty) {
-            return const Center(
+          final programs = programState.programs;
+          if (programs == null || programs.isEmpty) {
+            return Center(
               child: TenkaiEmptyState(
-                title: 'No exercises yet',
-                description: 'Exercises you add will show up here.',
+                title: 'No programs yet',
+                description: 'Programs you create will show up here.',
+                action: FilledButton(
+                  onPressed: () => {
+                    showTenkaiSheet(
+                      context: context,
+                      title: 'Create program',
+                      child: ProgramForm(),
+                    ),
+                  },
+                  child: Text("Create program"),
+                ),
               ),
             );
           }
@@ -51,11 +63,11 @@ class ExercisesScreen extends ConsumerWidget {
               TenkaiSpacing.lg,
               TenkaiSpacing.xl,
             ),
-            itemCount: exercises.length,
+            itemCount: programs.length,
             separatorBuilder: (_, __) =>
                 const SizedBox(height: TenkaiSpacing.sm),
             itemBuilder: (_, index) =>
-                TenkaiListRow(title: exercises[index].name),
+                TenkaiListRow(title: programs[index].title),
           );
         },
       ),

@@ -6,6 +6,9 @@ import 'package:tenkai/features/auth/providers/auth_provider.dart';
 import 'package:tenkai/features/auth/screens/login_screen.dart';
 import 'package:tenkai/features/auth/screens/register_screen.dart';
 import 'package:tenkai/features/auth/screens/splash_screen.dart';
+import 'package:tenkai/features/fitness/screens/exercises_screen.dart';
+import 'package:tenkai/features/fitness/screens/fitness_screen.dart';
+import 'package:tenkai/features/fitness/screens/programs_screen.dart';
 import 'package:tenkai/features/user/screens/fears_screen.dart';
 import 'package:tenkai/features/habit_tracker/models/habit_view.dart';
 import 'package:tenkai/features/habit_tracker/screens/habit_dashboard.dart';
@@ -66,6 +69,24 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                     builder: (context, state) =>
                         HabitScreen(habitView: state.extra as HabitView),
                   ),
+                ],
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/fitness',
+                builder: (context, state) => const FitnessScreen(),
+                routes: [
+                  GoRoute(
+                    path: '/programs',
+                    builder: (context, state) => const ProgramsScreen(),
+                  ),
+                  // GoRoute(
+                  //   path: '/exercises',
+                  //   builder: (context, state) => const ExercisesScreen(),
+                  // ),
                 ],
               ),
             ],

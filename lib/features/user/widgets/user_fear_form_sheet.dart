@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:tenkai/core/design_system/atoms/tenkai_controls.dart';
+import 'package:tenkai/core/database.dart';
 import 'package:tenkai/core/design_system/atoms/tenkai_text_form_field.dart';
 import 'package:tenkai/core/design_system/molecules/tenkai_molecules.dart';
+import 'package:tenkai/core/design_system/tokens/tenkai_spacing.dart';
+import 'package:tenkai/features/user/provider/user_fear_provider.dart';
 
 Future<void> showUserFearFormSheet(
   BuildContext context,
@@ -30,6 +32,11 @@ class _UserFearFormSheet extends ConsumerStatefulWidget {
 class _UserFearFormSheetState extends ConsumerState<_UserFearFormSheet> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
+  String? title;
+  String? description;
+  String? why;
+  String? solution;
+
   @override
   Widget build(BuildContext contex) {
     return ConstrainedBox(
@@ -41,10 +48,42 @@ class _UserFearFormSheetState extends ConsumerState<_UserFearFormSheet> {
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: TenkaiSpacing.md,
             children: [
               TenkaiTextFormField(
+                isRequired: true,
                 label: 'Title',
                 placeholder: 'e.g. Busy places',
+                onSaved: (value) => title = value,
+              ),
+              TenkaiTextFormField(
+                label: 'Description',
+                placeholder: 'e.g. when there are too many people',
+                maxLines: 3,
+                onSaved: (value) => description = value,
+              ),
+              TenkaiTextFormField(
+                label: 'Why',
+                isRequired: true,
+                placeholder: 'e.g. I feel like everybody is looking at me',
+                onSaved: (value) => why = value,
+              ),
+              TenkaiTextFormField(
+                label: 'Solution',
+                placeholder: 'e.g. Try to be in public places more',
+                onSaved: (value) => solution = value,
+              ),
+              const SizedBox(height: TenkaiSpacing.md),
+              SizedBox(
+                width: double.infinity,
+                child: FilledButton(
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      // ref.read(userFearProvider.notifier).addFear(entry);
+                    }
+                  },
+                  child: const Text('Add'),
+                ),
               ),
             ],
           ),

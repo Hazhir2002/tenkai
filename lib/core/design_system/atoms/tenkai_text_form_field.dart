@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tenkai/core/design_system/theme/tenkai_semantic_colors.dart';
-import 'package:tenkai/core/design_system/tokens/tenkai_radius.dart';
 import 'package:tenkai/core/design_system/tokens/tenkai_spacing.dart';
+import 'package:tenkai/core/validators/required_validatory.dart';
 
 class TenkaiTextFormField extends StatefulWidget {
   const TenkaiTextFormField({
@@ -23,6 +23,9 @@ class TenkaiTextFormField extends StatefulWidget {
     this.expands = false,
     this.textAlignVertical,
     this.autofocus = false,
+    this.validator,
+    this.isRequired = false,
+    this.onSaved,
   });
 
   final String? label;
@@ -42,58 +45,73 @@ class TenkaiTextFormField extends StatefulWidget {
   final bool expands;
   final TextAlignVertical? textAlignVertical;
   final bool autofocus;
+  final String? Function(String?)? validator;
+  final bool isRequired;
+  final void Function(String?)? onSaved;
 
   @override
   State<TenkaiTextFormField> createState() => _TenkaiTextFormFieldState();
 }
 
 class _TenkaiTextFormFieldState extends State<TenkaiTextFormField> {
-  late final FocusNode _focusNode;
-  late final bool _ownsFocusNode;
+  // late final FocusNode _focusNode;
+  // late final bool _ownsFocusNode;
 
-  @override
-  void initState() {
-    super.initState();
-    _ownsFocusNode = widget.focusNode == null;
-    _focusNode = widget.focusNode ?? FocusNode();
-    _focusNode.addListener(() => setState(() {}));
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   _ownsFocusNode = widget.focusNode == null;
+  //   _focusNode = widget.focusNode ?? FocusNode();
+  //   _focusNode.addListener(() => setState(() {}));
+  // }
 
-  @override
-  void dispose() {
-    if (_ownsFocusNode) _focusNode.dispose();
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   if (_ownsFocusNode) _focusNode.dispose();
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final c = context.tenkai;
-    final focused = _focusNode.hasFocus;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: TenkaiSpacing.xs,
       mainAxisSize: MainAxisSize.min,
       children: [
-        if (widget.label != null) ...[
-          Text(
-            widget.label!.toUpperCase(),
-            style: theme.textTheme.labelMedium?.copyWith(
-              color: c.mutedForeground,
+        if (widget.label != null)
+          Text.rich(
+            TextSpan(
+              children: [
+                TextSpan(
+                  text: widget.label!.toUpperCase(),
+                  style: theme.textTheme.labelMedium?.copyWith(
+                    color: c.mutedForeground,
+                  ),
+                ),
+                if (widget.isRequired)
+                  TextSpan(
+                    text: ' *',
+                    style: theme.textTheme.labelMedium?.copyWith(
+                      color: c.mutedForeground,
+                    ),
+                  ),
+              ],
             ),
           ),
-          const SizedBox(height: 6),
-        ],
         // The focus ring: a 1px accent border (via the TextField) plus the
         // focus-glow bloom (the one mandatory glow).
         TextFormField(
           controller: widget.controller,
-          focusNode: _focusNode,
+          focusNode: widget.focusNode,
           obscureText: widget.obscureText,
           keyboardType: widget.keyboardType,
           enabled: widget.enabled,
           maxLines: widget.maxLines,
           onChanged: widget.onChanged,
+          onSaved: widget.onSaved,
           // onSubmitted: widget.onSubmitted,
           autofillHints: widget.autofillHints,
           textInputAction: widget.textInputAction,
@@ -106,7 +124,25 @@ class _TenkaiTextFormFieldState extends State<TenkaiTextFormField> {
             hintText: widget.placeholder,
             prefixIcon: widget.prefix,
             suffixIcon: widget.suffix,
+            errorStyle: theme.textTheme.labelMedium?.copyWith(
+              color: c.destructive,
+            ),
           ),
+          validator: (value) {
+            if (widget.isRequired) {
+              final result = requiredValidator(value, widget.label ?? 'Field');
+              if (result == null && widget.validator != null) {
+                return widget.validator!(value);
+              } else {
+                return result;
+              }
+            } else {
+              if (widget.validator != null) {
+                return widget.validator!(value);
+              }
+              return null;
+            }
+          },
         ),
       ],
     );

@@ -1,5 +1,3 @@
-import 'package:cupertino_native_better/components/tab_bar.dart';
-import 'package:cupertino_native_better/style/sf_symbol.dart';
 import 'package:ficonsax/ficonsax.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -21,15 +19,12 @@ class _MainShellWrapperState extends ConsumerState<MainShellWrapper> {
   Widget build(BuildContext context) {
     final String location = GoRouterState.of(context).uri.toString();
     final bool showBottomBar = [
-      // '/',
-      // '/goals',
       '/habits',
+      '/fitness',
       '/user',
-      // '/knowledge',
-      // '/journal',
     ].contains(location);
 
-    void _onItemTap(int index) {
+    void onItemTap(int index) {
       HapticFeedback.mediumImpact();
       widget.navigationShell.goBranch(
         index,
@@ -39,15 +34,7 @@ class _MainShellWrapperState extends ConsumerState<MainShellWrapper> {
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      // body: IndexedStack(
-      //   index: widget.navigationShell.currentIndex,
-      //   children: const [
-      //     HabitDashboard(),
-      //     ProfileScreen(),
-      //     KnowledgeDashboard(),
-      //     JournalDashboard(),
-      //   ],
-      // ),
+
       body: widget.navigationShell,
       extendBody: true,
       bottomNavigationBar: showBottomBar
@@ -55,7 +42,7 @@ class _MainShellWrapperState extends ConsumerState<MainShellWrapper> {
               animationDuration: TenkaiDuration.medium,
               labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
               selectedIndex: widget.navigationShell.currentIndex,
-              onDestinationSelected: _onItemTap,
+              onDestinationSelected: onItemTap,
               destinations: [
                 NavigationDestination(
                   selectedIcon: Icon(IconsaxBold.bubble),
@@ -63,13 +50,16 @@ class _MainShellWrapperState extends ConsumerState<MainShellWrapper> {
                   label: 'habits',
                 ),
                 NavigationDestination(
+                  selectedIcon: Icon(IconsaxBold.health),
+                  icon: Icon(IconsaxOutline.health),
+                  label: 'fitness',
+                ),
+                NavigationDestination(
                   selectedIcon: Icon(IconsaxBold.user),
                   icon: Icon(IconsaxOutline.user),
                   label: 'fears',
                 ),
               ],
-              // currentIndex: widget.navigationShell.currentIndex,
-              // onTap: _onItemTap,
             )
           : null,
     );

@@ -1,13 +1,12 @@
+import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:tenkai/core/design_system/atoms/tenkai_button.dart';
-import 'package:tenkai/core/design_system/atoms/tenkai_controls.dart';
+import 'package:tenkai/core/database.dart';
 import 'package:tenkai/core/design_system/atoms/tenkai_text_form_field.dart';
 import 'package:tenkai/core/design_system/tenkai.dart';
-import 'package:tenkai/features/gym_tracker/params/create_program_param.dart';
-import 'package:tenkai/features/gym_tracker/providers/program_provider.dart';
+import 'package:tenkai/features/fitness/providers/fitness_provider.dart';
 
 class CreateProgramScreen extends ConsumerStatefulWidget {
   const CreateProgramScreen({super.key});
@@ -19,11 +18,11 @@ class CreateProgramScreen extends ConsumerStatefulWidget {
 
 class _CreateProgramScreenState extends ConsumerState<CreateProgramScreen> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _titleController = TextEditingController();
 
   @override
   void dispose() {
-    _nameController.dispose();
+    _titleController.dispose();
     super.dispose();
   }
 
@@ -31,8 +30,10 @@ class _CreateProgramScreenState extends ConsumerState<CreateProgramScreen> {
     if (_formKey.currentState!.validate()) {
       FocusScope.of(context).unfocus();
       await ref
-          .read(programProvider.notifier)
-          .createProgram(CreateProgramParam(name: _nameController.text));
+          .read(fitnessProvider.notifier)
+          .createProgram(
+            ProgramsCompanion(title: Value(_titleController.text)),
+          );
       if (mounted) {
         context.pop();
       } else {
@@ -45,7 +46,7 @@ class _CreateProgramScreenState extends ConsumerState<CreateProgramScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final programState = ref.watch(programProvider);
+    final programState = ref.watch(fitnessProvider);
 
     return Scaffold(
       body: Padding(
@@ -58,7 +59,7 @@ class _CreateProgramScreenState extends ConsumerState<CreateProgramScreen> {
               child: Column(
                 children: [
                   TenkaiTextFormField(
-                    controller: _nameController,
+                    controller: _titleController,
                     keyboardType: TextInputType.emailAddress,
                     textInputAction: TextInputAction.next,
                     autofillHints: const [AutofillHints.email],
