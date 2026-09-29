@@ -129,7 +129,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       children: [
         for (var i = 0; i < stats.length; i++) ...[
           if (i > 0) const SizedBox(height: TenkaiSpacing.sm),
-          TenkaiListRow(
+          ListTile(
             title: stats[i].title,
             trailing: Text(
               '${stats[i].value} ${stats[i].unit}',

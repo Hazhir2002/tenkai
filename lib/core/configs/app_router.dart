@@ -8,6 +8,7 @@ import 'package:tenkai/features/auth/screens/register_screen.dart';
 import 'package:tenkai/features/auth/screens/splash_screen.dart';
 import 'package:tenkai/features/fitness/screens/exercises_screen.dart';
 import 'package:tenkai/features/fitness/screens/fitness_screen.dart';
+import 'package:tenkai/features/fitness/screens/program_detail_screen.dart';
 import 'package:tenkai/features/fitness/screens/programs_screen.dart';
 import 'package:tenkai/features/user/screens/fears_screen.dart';
 import 'package:tenkai/features/habit_tracker/models/habit_view.dart';
@@ -82,6 +83,14 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                   GoRoute(
                     path: '/programs',
                     builder: (context, state) => const ProgramsScreen(),
+                    routes: [
+                      GoRoute(
+                        path: ':id',
+                        builder: (context, state) => ProgramDetailScreen(
+                          programId: int.parse(state.pathParameters['id']!),
+                        ),
+                      ),
+                    ],
                   ),
                   // GoRoute(
                   //   path: '/exercises',

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tenkai/core/design_system/tenkai.dart';
 import 'package:tenkai/features/fitness/providers/fitness_provider.dart';
@@ -66,8 +67,11 @@ class ProgramsScreen extends ConsumerWidget {
             itemCount: programs.length,
             separatorBuilder: (_, __) =>
                 const SizedBox(height: TenkaiSpacing.sm),
-            itemBuilder: (_, index) =>
-                TenkaiListRow(title: programs[index].title),
+            itemBuilder: (_, index) => ListTile(
+              title: Text(programs[index].title),
+              onTap: () =>
+                  context.push('/fitness/programs/${programs[index].id}'),
+            ),
           );
         },
       ),

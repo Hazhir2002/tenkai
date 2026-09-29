@@ -33,14 +33,14 @@ class FitnessScreen extends StatelessWidget {
                 Expanded(child: Card()),
               ],
             ),
-            TenkaiListRow(
-              title: 'Exercises',
+            ListTile(
+              title: Text('Exercises'),
               trailing: const Icon(Icons.chevron_right, size: 18),
               onTap: () => context.push('/fitness/exercises'),
             ),
             const SizedBox(height: TenkaiSpacing.sm),
-            TenkaiListRow(
-              title: 'Programs',
+            ListTile(
+              title: Text('Programs'),
               trailing: const Icon(Icons.chevron_right, size: 18),
               onTap: () => context.push('/fitness/programs'),
             ),
