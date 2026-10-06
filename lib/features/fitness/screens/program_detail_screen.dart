@@ -1,5 +1,6 @@
 import 'package:ficonsax/ficonsax.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tenkai/core/design_system/atoms/tenkai_data_display.dart';
 import 'package:tenkai/core/design_system/molecules/tenkai_molecules.dart';
@@ -83,6 +84,9 @@ class _ProgramDetailScreenState extends ConsumerState<ProgramDetailScreen> {
                   (ps) => Card(
                     child: ListTile(
                       title: Text(ps.title),
+                      onTap: () => context.push(
+                        '/fitness/programs/${ps.programId}/${ps.id}',
+                      ),
                       trailing: IconButton(
                         onPressed: () => {
                           ref

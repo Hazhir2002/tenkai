@@ -20,13 +20,21 @@ class FitnessDao extends DatabaseAccessor<AppDatabase> with _$FitnessDaoMixin {
             ..orderBy([(t) => OrderingTerm.asc(t.hierarchy)]))
           .get();
 
-  Future<List<SessionExercise>> getAllSessionExercises() => (select(
-    sessionExercises,
-  )..orderBy([(t) => OrderingTerm.asc(t.hierarchy)])).get();
+  Future<List<SessionExercise>> getAllSessionExercises(int programSessionId) =>
+      (select(sessionExercises)
+            ..where((tbl) => tbl.sessionId.equals(programSessionId))
+            ..orderBy([(t) => OrderingTerm.asc(t.hierarchy)]))
+          .get();
 
   Future<Program> createProgram(ProgramsCompanion entry) {
     return transaction(() async {
       return await into(programs).insertReturning(entry);
+    });
+  }
+
+  Future<int> deleteProgram(int id) {
+    return transaction(() async {
+      return (delete(programs)..where((t) => t.id.equals(id))).go();
     });
   }
 
@@ -47,6 +55,12 @@ class FitnessDao extends DatabaseAccessor<AppDatabase> with _$FitnessDaoMixin {
   ) {
     return transaction(() async {
       return await into(sessionExercises).insertReturning(entry);
+    });
+  }
+
+  Future<int> deleteSessionExercise(int id) {
+    return transaction(() async {
+      return (delete(sessionExercises)..where((t) => t.id.equals(id))).go();
     });
   }
 }

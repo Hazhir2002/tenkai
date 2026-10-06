@@ -91,7 +91,7 @@ class BookDetailScreen extends ConsumerWidget {
     );
     if (confirmed != true) return;
     await ref.read(appDataBaseProvider).bookDao.deleteBook(id);
-    await ref.read(notificationServiceProvider).cancelBook(id);
+    // await ref.read(notificationServiceProvider).cancelBook(id);
     if (context.mounted) context.pop();
   }
 }

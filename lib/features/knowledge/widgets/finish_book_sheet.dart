@@ -67,7 +67,7 @@ class _FinishBookSheet extends HookConsumerWidget {
                     ? null
                     : reviewCtrl.text.trim(),
               );
-              await ref.read(notificationServiceProvider).cancelBook(book.id);
+              // await ref.read(notificationServiceProvider).cancelBook(book.id);
               if (context.mounted) Navigator.of(context).pop();
             },
           ),

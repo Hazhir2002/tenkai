@@ -26,6 +26,8 @@ class TenkaiTextFormField extends StatefulWidget {
     this.validator,
     this.isRequired = false,
     this.onSaved,
+    this.readOnly = false,
+    this.onTap,
   });
 
   final String? label;
@@ -48,6 +50,8 @@ class TenkaiTextFormField extends StatefulWidget {
   final String? Function(String?)? validator;
   final bool isRequired;
   final void Function(String?)? onSaved;
+  final void Function()? onTap;
+  final bool readOnly;
 
   @override
   State<TenkaiTextFormField> createState() => _TenkaiTextFormFieldState();
@@ -112,6 +116,8 @@ class _TenkaiTextFormFieldState extends State<TenkaiTextFormField> {
           maxLines: widget.maxLines,
           onChanged: widget.onChanged,
           onSaved: widget.onSaved,
+          readOnly: widget.readOnly,
+          onTap: widget.onTap,
           // onSubmitted: widget.onSubmitted,
           autofillHints: widget.autofillHints,
           textInputAction: widget.textInputAction,

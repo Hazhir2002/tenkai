@@ -1,3 +1,5 @@
+import 'package:drift/drift.dart';
+import 'package:flutter/material.dart' show TimeOfDay;
 import 'package:tenkai/core/database.dart';
 
 class ProgramSessionModel extends ProgramSession {
@@ -10,6 +12,8 @@ class ProgramSessionModel extends ProgramSession {
     required super.title,
     required super.programId,
     required super.hierarchy,
+    super.dayOfWeek,
+    super.timeOfDay,
     this.sessionExercises,
   });
 
@@ -24,6 +28,8 @@ class ProgramSessionModel extends ProgramSession {
       title: programSession.title,
       programId: programSession.programId,
       hierarchy: programSession.hierarchy,
+      dayOfWeek: programSession.dayOfWeek,
+      timeOfDay: programSession.timeOfDay,
       sessionExercises: sessionExercises,
     );
   }
@@ -37,6 +43,8 @@ class ProgramSessionModel extends ProgramSession {
     bool? isActive,
     int? programId,
     int? hierarchy,
+    Value<int?> dayOfWeek = const Value.absent(),
+    Value<TimeOfDay?> timeOfDay = const Value.absent(),
     List<SessionExercise>? sessionExercises,
   }) {
     return ProgramSessionModel(
@@ -46,6 +54,8 @@ class ProgramSessionModel extends ProgramSession {
       title: title ?? this.title,
       programId: programId ?? this.programId,
       hierarchy: hierarchy ?? this.hierarchy,
+      dayOfWeek: dayOfWeek.present ? dayOfWeek.value : this.dayOfWeek,
+      timeOfDay: timeOfDay.present ? timeOfDay.value : this.timeOfDay,
       sessionExercises: sessionExercises ?? this.sessionExercises,
     );
   }

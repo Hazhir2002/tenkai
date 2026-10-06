@@ -28,9 +28,9 @@ class HabitScreen extends ConsumerWidget {
       await db.habitDao.markHabitDone(habitView.habit.id, dateKeyFor());
       // Schedule follow-up reminders for anything stacked after this habit.
       final all = await db.habitDao.getAllHabits();
-      await ref
-          .read(notificationServiceProvider)
-          .scheduleAfterCueReminders(habitView.habit.id, all);
+      // await ref
+      //     .read(notificationServiceProvider)
+      //     .scheduleAfterCueReminders(habitView.habit.id, all);
       if (context.mounted) Navigator.of(context).pop();
     }
 

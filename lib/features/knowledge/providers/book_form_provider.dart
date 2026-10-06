@@ -119,8 +119,7 @@ class BookFormNotifier extends Notifier<BookFormState> {
   void setStatus(BookStatus v) => state = state.copyWith(status: v);
   void setDeadline(DateTime? v) => state = state.copyWith(deadline: v);
   void setDailyGoal(int? v) => state = state.copyWith(dailyPageGoal: v);
-  void setReminderEnabled(bool v) =>
-      state = state.copyWith(reminderEnabled: v);
+  void setReminderEnabled(bool v) => state = state.copyWith(reminderEnabled: v);
   void setReminderTime(int hour, int minute) =>
       state = state.copyWith(reminderHour: hour, reminderMinute: minute);
 
@@ -130,7 +129,7 @@ class BookFormNotifier extends Notifier<BookFormState> {
     if (!state.isValid) return null;
     state = state.copyWith(saving: true);
     final db = ref.read(appDataBaseProvider);
-    final notifications = ref.read(notificationServiceProvider);
+    // final notifications = ref.read(notificationServiceProvider);
 
     final author = state.author.trim().isEmpty ? null : state.author.trim();
     final int bookId;
@@ -174,10 +173,10 @@ class BookFormNotifier extends Notifier<BookFormState> {
 
     final book = await db.bookDao.getBook(bookId);
     if (book != null && book.reminderEnabled) {
-      await notifications.requestPermissionIfNeeded();
+      // await notifications.requestPermissionIfNeeded();
     }
     if (book != null) {
-      await notifications.syncBookReminder(book);
+      // await notifications.syncBookReminder(book);
     }
 
     state = state.copyWith(saving: false);
@@ -185,5 +184,6 @@ class BookFormNotifier extends Notifier<BookFormState> {
   }
 }
 
-final bookFormProvider =
-    NotifierProvider<BookFormNotifier, BookFormState>(BookFormNotifier.new);
+final bookFormProvider = NotifierProvider<BookFormNotifier, BookFormState>(
+  BookFormNotifier.new,
+);

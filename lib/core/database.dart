@@ -20,6 +20,7 @@ import 'package:tenkai/features/user/data/user_dao.dart';
 import 'package:tenkai/features/user/data/tables/user_fear.dart';
 import 'package:tenkai/features/user/data/tables/user_stat.dart';
 import 'package:tenkai/features/user/models/user_fear_status.dart';
+import 'package:flutter/material.dart' show TimeOfDay;
 
 part 'database.g.dart';
 
@@ -47,19 +48,23 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 4;
 
-  // @override
-  // MigrationStrategy get migration => MigrationStrategy(
-  //   onCreate: (m) => m.createAll(),
-  //   onUpgrade: (m, from, to) async {
-  //     if (from < 2) {
-  //       await m.createTable(programs);
-  //       await m.createTable(programSessions);
-  //       await m.createTable(sessionExercises);
-  //     }
-  //   },
-  // );
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+    onCreate: (m) => m.createAll(),
+    onUpgrade: (m, from, to) async {
+      if (from < 3) {
+        await m.dropColumn(sessionExercises, 'day_of_week');
+        await m.dropColumn(sessionExercises, 'time_of_day');
+        await m.addColumn(programSessions, programSessions.dayOfWeek);
+        await m.addColumn(programSessions, programSessions.timeOfDay);
+      }
+      if (from < 4) {
+        await m.alterTable(TableMigration(sessionExercises));
+      }
+    },
+  );
 
   static QueryExecutor _openConnection() {
     return driftDatabase(

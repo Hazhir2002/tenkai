@@ -2,21 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tenkai/core/configs/app_router.dart';
 import 'package:tenkai/core/design_system/tenkai.dart';
+import 'package:tenkai/core/notifications/tenkai_notifications.dart';
 import 'package:tenkai/core/services/notification_service.dart';
 import 'package:tenkai/core/services/storage_service.dart';
 import 'package:tenkai/core/theme_mode_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // Load the persisted theme mode before the first frame so there's no flash.
   final storedThemeMode = await StorageService().getThemeMode();
-
-  // Share a single container so the notification service instance initialized
-  // here is the same one the app reads via [notificationServiceProvider].
+  await TenkaiNotifications.initialize();
+  await TenkaiNotifications.ensurePermission();
   final container = ProviderContainer(
     overrides: [initialThemeModeProvider.overrideWithValue(storedThemeMode)],
   );
-  await container.read(notificationServiceProvider).initialize();
+  // await container.read(notificationServiceProvider).initialize();
 
   runApp(
     UncontrolledProviderScope(container: container, child: const TenkaiApp()),

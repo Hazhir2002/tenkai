@@ -9,7 +9,11 @@ import '../models/habit_view.dart';
 
 /// A single editable schedule slot in the create/edit form.
 class ScheduleSlotDraft {
-  const ScheduleSlotDraft({this.weekday, required this.hour, required this.minute});
+  const ScheduleSlotDraft({
+    this.weekday,
+    required this.hour,
+    required this.minute,
+  });
 
   /// 1..7 (Mon..Sun), or null for daily.
   final int? weekday;
@@ -84,7 +88,9 @@ class HabitFormState {
       description: description ?? this.description,
       status: status ?? this.status,
       cueType: cueType ?? this.cueType,
-      cueHabitId: cueHabitId == _sentinel ? this.cueHabitId : cueHabitId as int?,
+      cueHabitId: cueHabitId == _sentinel
+          ? this.cueHabitId
+          : cueHabitId as int?,
       slots: slots ?? this.slots,
       reminderEnabled: reminderEnabled ?? this.reminderEnabled,
       reminderOffsetMinutes:
@@ -133,7 +139,10 @@ class HabitFormNotifier extends Notifier<HabitFormState> {
 
   void addSlot([ScheduleSlotDraft? slot]) {
     state = state.copyWith(
-      slots: [...state.slots, slot ?? const ScheduleSlotDraft(hour: 8, minute: 0)],
+      slots: [
+        ...state.slots,
+        slot ?? const ScheduleSlotDraft(hour: 8, minute: 0),
+      ],
     );
   }
 
@@ -154,7 +163,7 @@ class HabitFormNotifier extends Notifier<HabitFormState> {
     if (!state.isValid) return null;
     state = state.copyWith(saving: true);
     final db = ref.read(appDataBaseProvider);
-    final notifications = ref.read(notificationServiceProvider);
+    // final notifications = ref.read(notificationServiceProvider);
 
     final isTimeCued = state.cueType == HabitCueType.time;
     final scheduleCompanions = <HabitSchedulesCompanion>[
@@ -189,8 +198,9 @@ class HabitFormNotifier extends Notifier<HabitFormState> {
     } else {
       habitId = await db.habitDao.createHabit(
         title: state.title.trim(),
-        description:
-            state.description.trim().isEmpty ? null : state.description.trim(),
+        description: state.description.trim().isEmpty
+            ? null
+            : state.description.trim(),
         status: state.status.dbValue,
         cueType: state.cueType.dbValue,
         cueHabitId: isTimeCued ? null : state.cueHabitId,
@@ -204,10 +214,10 @@ class HabitFormNotifier extends Notifier<HabitFormState> {
     final schedules = await db.habitDao.getSchedulesFor(habitId);
     if (habit != null && habit.reminderEnabled) {
       // Ensure permission before scheduling (prompts on first use).
-      await notifications.requestPermissionIfNeeded();
+      // await notifications.requestPermissionIfNeeded();
     }
     if (habit != null) {
-      await notifications.syncHabit(habit, schedules);
+      // await notifications.syncHabit(habit, schedules);
     }
 
     state = state.copyWith(saving: false);
@@ -215,5 +225,6 @@ class HabitFormNotifier extends Notifier<HabitFormState> {
   }
 }
 
-final habitFormProvider =
-    NotifierProvider<HabitFormNotifier, HabitFormState>(HabitFormNotifier.new);
+final habitFormProvider = NotifierProvider<HabitFormNotifier, HabitFormState>(
+  HabitFormNotifier.new,
+);

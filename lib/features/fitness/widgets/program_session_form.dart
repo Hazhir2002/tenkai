@@ -19,6 +19,15 @@ class _ProgramSessionFormState extends ConsumerState<ProgramSessionForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   String? title;
+  int? dayOfWeek;
+  TimeOfDay? timeOfDay;
+  final timeController = TextEditingController();
+
+  @override
+  void dispose() {
+    timeController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +43,37 @@ class _ProgramSessionFormState extends ConsumerState<ProgramSessionForm> {
               label: 'Title',
               placeholder: 'e.g. Leg day',
               onSaved: (value) => title = value,
+            ),
+            SegmentedButton<int>(
+              showSelectedIcon: false,
+              emptySelectionAllowed: true,
+              segments: const [
+                ButtonSegment(value: 1, label: Text('M')),
+                ButtonSegment(value: 2, label: Text('T')),
+                ButtonSegment(value: 3, label: Text('W')),
+                ButtonSegment(value: 4, label: Text('T')),
+                ButtonSegment(value: 5, label: Text('F')),
+                ButtonSegment(value: 6, label: Text('S')),
+                ButtonSegment(value: 7, label: Text('S')),
+              ],
+              selected: {if (dayOfWeek != null) dayOfWeek!},
+              onSelectionChanged: (s) => setState(() => dayOfWeek = s.first),
+            ),
+            TenkaiTextFormField(
+              label: 'Time',
+              readOnly: true,
+              controller: timeController,
+              onTap: () async {
+                final picked = await showTimePicker(
+                  context: context,
+                  initialTime:
+                      timeOfDay ?? const TimeOfDay(hour: 16, minute: 0),
+                );
+                if (picked != null) {
+                  timeOfDay = picked;
+                  timeController.text = picked.format(context);
+                }
+              },
             ),
             const SizedBox(height: TenkaiSpacing.md),
             SizedBox(
@@ -54,6 +94,8 @@ class _ProgramSessionFormState extends ConsumerState<ProgramSessionForm> {
                           ProgramSessionsCompanion(
                             title: Value(title!),
                             programId: Value(widget.programId),
+                            timeOfDay: Value(timeOfDay),
+                            dayOfWeek: Value(dayOfWeek),
                             hierarchy: Value(
                               programSessions != null
                                   ? programSessions.length

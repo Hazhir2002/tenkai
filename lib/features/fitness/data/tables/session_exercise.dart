@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart';
+
 import 'package:tenkai/core/table_mixin.dart';
 import 'program_session.dart';
 
@@ -10,5 +11,5 @@ class SessionExercises extends Table with TableMixin {
   IntColumn get repsStart => integer().nullable()();
   IntColumn get repsEnd => integer().nullable()();
   IntColumn get durationSec => integer().nullable()();
-  IntColumn get hierarchy => integer().unique()();
+  IntColumn get hierarchy => integer()();
 }

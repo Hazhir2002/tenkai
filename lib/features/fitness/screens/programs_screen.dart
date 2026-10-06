@@ -1,9 +1,9 @@
+import 'package:ficonsax/ficonsax.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tenkai/core/design_system/tenkai.dart';
 import 'package:tenkai/features/fitness/providers/fitness_provider.dart';
-import 'package:tenkai/features/fitness/screens/create_program_screen.dart';
 import 'package:tenkai/features/fitness/widgets/program_form.dart';
 
 class ProgramsScreen extends ConsumerWidget {
@@ -13,6 +13,7 @@ class ProgramsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final programState = ref.watch(fitnessProvider);
     final c = context.tenkai;
+    final theme = Theme.of(context);
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -71,6 +72,17 @@ class ProgramsScreen extends ConsumerWidget {
               title: Text(programs[index].title),
               onTap: () =>
                   context.push('/fitness/programs/${programs[index].id}'),
+              trailing: IconButton(
+                onPressed: () => {
+                  ref
+                      .read(fitnessProvider.notifier)
+                      .deleteProgram(programs[index].id),
+                },
+                icon: Icon(
+                  IconsaxOutline.trash,
+                  color: theme.colorScheme.error,
+                ),
+              ),
             ),
           );
         },

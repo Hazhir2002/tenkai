@@ -4878,6 +4878,29 @@ class $ProgramSessionsTable extends ProgramSessions
     requiredDuringInsert: true,
     defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'),
   );
+  static const VerificationMeta _dayOfWeekMeta = const VerificationMeta(
+    'dayOfWeek',
+  );
+  @override
+  late final GeneratedColumn<int> dayOfWeek = GeneratedColumn<int>(
+    'day_of_week',
+    aliasedName,
+    true,
+    check: () => ComparableExpr(dayOfWeek).isBetweenValues(1, 7),
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(1),
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<TimeOfDay?, int> timeOfDay =
+      GeneratedColumn<int>(
+        'time_of_day',
+        aliasedName,
+        true,
+        check: () => ComparableExpr(timeOfDay).isBetweenValues(0, 1439),
+        type: DriftSqlType.int,
+        requiredDuringInsert: false,
+      ).withConverter<TimeOfDay?>($ProgramSessionsTable.$convertertimeOfDayn);
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -4886,6 +4909,8 @@ class $ProgramSessionsTable extends ProgramSessions
     title,
     programId,
     hierarchy,
+    dayOfWeek,
+    timeOfDay,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -4938,6 +4963,12 @@ class $ProgramSessionsTable extends ProgramSessions
     } else if (isInserting) {
       context.missing(_hierarchyMeta);
     }
+    if (data.containsKey('day_of_week')) {
+      context.handle(
+        _dayOfWeekMeta,
+        dayOfWeek.isAcceptableOrUnknown(data['day_of_week']!, _dayOfWeekMeta),
+      );
+    }
     return context;
   }
 
@@ -4971,6 +5002,16 @@ class $ProgramSessionsTable extends ProgramSessions
         DriftSqlType.int,
         data['${effectivePrefix}hierarchy'],
       )!,
+      dayOfWeek: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}day_of_week'],
+      ),
+      timeOfDay: $ProgramSessionsTable.$convertertimeOfDayn.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.int,
+          data['${effectivePrefix}time_of_day'],
+        ),
+      ),
     );
   }
 
@@ -4978,6 +5019,11 @@ class $ProgramSessionsTable extends ProgramSessions
   $ProgramSessionsTable createAlias(String alias) {
     return $ProgramSessionsTable(attachedDatabase, alias);
   }
+
+  static TypeConverter<TimeOfDay, int> $convertertimeOfDay =
+      const TimeOfDayConverter();
+  static TypeConverter<TimeOfDay?, int?> $convertertimeOfDayn =
+      NullAwareTypeConverter.wrap($convertertimeOfDay);
 }
 
 class ProgramSession extends DataClass implements Insertable<ProgramSession> {
@@ -4987,6 +5033,8 @@ class ProgramSession extends DataClass implements Insertable<ProgramSession> {
   final String title;
   final int programId;
   final int hierarchy;
+  final int? dayOfWeek;
+  final TimeOfDay? timeOfDay;
   const ProgramSession({
     required this.id,
     required this.createdAt,
@@ -4994,6 +5042,8 @@ class ProgramSession extends DataClass implements Insertable<ProgramSession> {
     required this.title,
     required this.programId,
     required this.hierarchy,
+    this.dayOfWeek,
+    this.timeOfDay,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -5004,6 +5054,14 @@ class ProgramSession extends DataClass implements Insertable<ProgramSession> {
     map['title'] = Variable<String>(title);
     map['program_id'] = Variable<int>(programId);
     map['hierarchy'] = Variable<int>(hierarchy);
+    if (!nullToAbsent || dayOfWeek != null) {
+      map['day_of_week'] = Variable<int>(dayOfWeek);
+    }
+    if (!nullToAbsent || timeOfDay != null) {
+      map['time_of_day'] = Variable<int>(
+        $ProgramSessionsTable.$convertertimeOfDayn.toSql(timeOfDay),
+      );
+    }
     return map;
   }
 
@@ -5015,6 +5073,12 @@ class ProgramSession extends DataClass implements Insertable<ProgramSession> {
       title: Value(title),
       programId: Value(programId),
       hierarchy: Value(hierarchy),
+      dayOfWeek: dayOfWeek == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dayOfWeek),
+      timeOfDay: timeOfDay == null && nullToAbsent
+          ? const Value.absent()
+          : Value(timeOfDay),
     );
   }
 
@@ -5030,6 +5094,8 @@ class ProgramSession extends DataClass implements Insertable<ProgramSession> {
       title: serializer.fromJson<String>(json['title']),
       programId: serializer.fromJson<int>(json['programId']),
       hierarchy: serializer.fromJson<int>(json['hierarchy']),
+      dayOfWeek: serializer.fromJson<int?>(json['dayOfWeek']),
+      timeOfDay: serializer.fromJson<TimeOfDay?>(json['timeOfDay']),
     );
   }
   @override
@@ -5042,6 +5108,8 @@ class ProgramSession extends DataClass implements Insertable<ProgramSession> {
       'title': serializer.toJson<String>(title),
       'programId': serializer.toJson<int>(programId),
       'hierarchy': serializer.toJson<int>(hierarchy),
+      'dayOfWeek': serializer.toJson<int?>(dayOfWeek),
+      'timeOfDay': serializer.toJson<TimeOfDay?>(timeOfDay),
     };
   }
 
@@ -5052,6 +5120,8 @@ class ProgramSession extends DataClass implements Insertable<ProgramSession> {
     String? title,
     int? programId,
     int? hierarchy,
+    Value<int?> dayOfWeek = const Value.absent(),
+    Value<TimeOfDay?> timeOfDay = const Value.absent(),
   }) => ProgramSession(
     id: id ?? this.id,
     createdAt: createdAt ?? this.createdAt,
@@ -5059,6 +5129,8 @@ class ProgramSession extends DataClass implements Insertable<ProgramSession> {
     title: title ?? this.title,
     programId: programId ?? this.programId,
     hierarchy: hierarchy ?? this.hierarchy,
+    dayOfWeek: dayOfWeek.present ? dayOfWeek.value : this.dayOfWeek,
+    timeOfDay: timeOfDay.present ? timeOfDay.value : this.timeOfDay,
   );
   ProgramSession copyWithCompanion(ProgramSessionsCompanion data) {
     return ProgramSession(
@@ -5068,6 +5140,8 @@ class ProgramSession extends DataClass implements Insertable<ProgramSession> {
       title: data.title.present ? data.title.value : this.title,
       programId: data.programId.present ? data.programId.value : this.programId,
       hierarchy: data.hierarchy.present ? data.hierarchy.value : this.hierarchy,
+      dayOfWeek: data.dayOfWeek.present ? data.dayOfWeek.value : this.dayOfWeek,
+      timeOfDay: data.timeOfDay.present ? data.timeOfDay.value : this.timeOfDay,
     );
   }
 
@@ -5079,14 +5153,24 @@ class ProgramSession extends DataClass implements Insertable<ProgramSession> {
           ..write('updatedAt: $updatedAt, ')
           ..write('title: $title, ')
           ..write('programId: $programId, ')
-          ..write('hierarchy: $hierarchy')
+          ..write('hierarchy: $hierarchy, ')
+          ..write('dayOfWeek: $dayOfWeek, ')
+          ..write('timeOfDay: $timeOfDay')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, createdAt, updatedAt, title, programId, hierarchy);
+  int get hashCode => Object.hash(
+    id,
+    createdAt,
+    updatedAt,
+    title,
+    programId,
+    hierarchy,
+    dayOfWeek,
+    timeOfDay,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -5096,7 +5180,9 @@ class ProgramSession extends DataClass implements Insertable<ProgramSession> {
           other.updatedAt == this.updatedAt &&
           other.title == this.title &&
           other.programId == this.programId &&
-          other.hierarchy == this.hierarchy);
+          other.hierarchy == this.hierarchy &&
+          other.dayOfWeek == this.dayOfWeek &&
+          other.timeOfDay == this.timeOfDay);
 }
 
 class ProgramSessionsCompanion extends UpdateCompanion<ProgramSession> {
@@ -5106,6 +5192,8 @@ class ProgramSessionsCompanion extends UpdateCompanion<ProgramSession> {
   final Value<String> title;
   final Value<int> programId;
   final Value<int> hierarchy;
+  final Value<int?> dayOfWeek;
+  final Value<TimeOfDay?> timeOfDay;
   const ProgramSessionsCompanion({
     this.id = const Value.absent(),
     this.createdAt = const Value.absent(),
@@ -5113,6 +5201,8 @@ class ProgramSessionsCompanion extends UpdateCompanion<ProgramSession> {
     this.title = const Value.absent(),
     this.programId = const Value.absent(),
     this.hierarchy = const Value.absent(),
+    this.dayOfWeek = const Value.absent(),
+    this.timeOfDay = const Value.absent(),
   });
   ProgramSessionsCompanion.insert({
     this.id = const Value.absent(),
@@ -5121,6 +5211,8 @@ class ProgramSessionsCompanion extends UpdateCompanion<ProgramSession> {
     required String title,
     required int programId,
     required int hierarchy,
+    this.dayOfWeek = const Value.absent(),
+    this.timeOfDay = const Value.absent(),
   }) : title = Value(title),
        programId = Value(programId),
        hierarchy = Value(hierarchy);
@@ -5131,6 +5223,8 @@ class ProgramSessionsCompanion extends UpdateCompanion<ProgramSession> {
     Expression<String>? title,
     Expression<int>? programId,
     Expression<int>? hierarchy,
+    Expression<int>? dayOfWeek,
+    Expression<int>? timeOfDay,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -5139,6 +5233,8 @@ class ProgramSessionsCompanion extends UpdateCompanion<ProgramSession> {
       if (title != null) 'title': title,
       if (programId != null) 'program_id': programId,
       if (hierarchy != null) 'hierarchy': hierarchy,
+      if (dayOfWeek != null) 'day_of_week': dayOfWeek,
+      if (timeOfDay != null) 'time_of_day': timeOfDay,
     });
   }
 
@@ -5149,6 +5245,8 @@ class ProgramSessionsCompanion extends UpdateCompanion<ProgramSession> {
     Value<String>? title,
     Value<int>? programId,
     Value<int>? hierarchy,
+    Value<int?>? dayOfWeek,
+    Value<TimeOfDay?>? timeOfDay,
   }) {
     return ProgramSessionsCompanion(
       id: id ?? this.id,
@@ -5157,6 +5255,8 @@ class ProgramSessionsCompanion extends UpdateCompanion<ProgramSession> {
       title: title ?? this.title,
       programId: programId ?? this.programId,
       hierarchy: hierarchy ?? this.hierarchy,
+      dayOfWeek: dayOfWeek ?? this.dayOfWeek,
+      timeOfDay: timeOfDay ?? this.timeOfDay,
     );
   }
 
@@ -5181,6 +5281,14 @@ class ProgramSessionsCompanion extends UpdateCompanion<ProgramSession> {
     if (hierarchy.present) {
       map['hierarchy'] = Variable<int>(hierarchy.value);
     }
+    if (dayOfWeek.present) {
+      map['day_of_week'] = Variable<int>(dayOfWeek.value);
+    }
+    if (timeOfDay.present) {
+      map['time_of_day'] = Variable<int>(
+        $ProgramSessionsTable.$convertertimeOfDayn.toSql(timeOfDay.value),
+      );
+    }
     return map;
   }
 
@@ -5192,7 +5300,9 @@ class ProgramSessionsCompanion extends UpdateCompanion<ProgramSession> {
           ..write('updatedAt: $updatedAt, ')
           ..write('title: $title, ')
           ..write('programId: $programId, ')
-          ..write('hierarchy: $hierarchy')
+          ..write('hierarchy: $hierarchy, ')
+          ..write('dayOfWeek: $dayOfWeek, ')
+          ..write('timeOfDay: $timeOfDay')
           ..write(')'))
         .toString();
   }
@@ -5321,7 +5431,6 @@ class $SessionExercisesTable extends SessionExercises
     false,
     type: DriftSqlType.int,
     requiredDuringInsert: true,
-    defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'),
   );
   @override
   List<GeneratedColumn> get $columns => [
@@ -9471,6 +9580,8 @@ typedef $$ProgramSessionsTableCreateCompanionBuilder =
       required String title,
       required int programId,
       required int hierarchy,
+      Value<int?> dayOfWeek,
+      Value<TimeOfDay?> timeOfDay,
     });
 typedef $$ProgramSessionsTableUpdateCompanionBuilder =
     ProgramSessionsCompanion Function({
@@ -9480,6 +9591,8 @@ typedef $$ProgramSessionsTableUpdateCompanionBuilder =
       Value<String> title,
       Value<int> programId,
       Value<int> hierarchy,
+      Value<int?> dayOfWeek,
+      Value<TimeOfDay?> timeOfDay,
     });
 
 final class $$ProgramSessionsTableReferences
@@ -9562,6 +9675,17 @@ class $$ProgramSessionsTableFilterComposer
     column: $table.hierarchy,
     builder: (column) => ColumnFilters(column),
   );
+
+  ColumnFilters<int> get dayOfWeek => $composableBuilder(
+    column: $table.dayOfWeek,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<TimeOfDay?, TimeOfDay, int> get timeOfDay =>
+      $composableBuilder(
+        column: $table.timeOfDay,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
 
   $$ProgramsTableFilterComposer get programId {
     final $$ProgramsTableFilterComposer composer = $composerBuilder(
@@ -9646,6 +9770,16 @@ class $$ProgramSessionsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get dayOfWeek => $composableBuilder(
+    column: $table.dayOfWeek,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get timeOfDay => $composableBuilder(
+    column: $table.timeOfDay,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   $$ProgramsTableOrderingComposer get programId {
     final $$ProgramsTableOrderingComposer composer = $composerBuilder(
       composer: this,
@@ -9693,6 +9827,12 @@ class $$ProgramSessionsTableAnnotationComposer
 
   GeneratedColumn<int> get hierarchy =>
       $composableBuilder(column: $table.hierarchy, builder: (column) => column);
+
+  GeneratedColumn<int> get dayOfWeek =>
+      $composableBuilder(column: $table.dayOfWeek, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<TimeOfDay?, int> get timeOfDay =>
+      $composableBuilder(column: $table.timeOfDay, builder: (column) => column);
 
   $$ProgramsTableAnnotationComposer get programId {
     final $$ProgramsTableAnnotationComposer composer = $composerBuilder(
@@ -9779,6 +9919,8 @@ class $$ProgramSessionsTableTableManager
                 Value<String> title = const Value.absent(),
                 Value<int> programId = const Value.absent(),
                 Value<int> hierarchy = const Value.absent(),
+                Value<int?> dayOfWeek = const Value.absent(),
+                Value<TimeOfDay?> timeOfDay = const Value.absent(),
               }) => ProgramSessionsCompanion(
                 id: id,
                 createdAt: createdAt,
@@ -9786,6 +9928,8 @@ class $$ProgramSessionsTableTableManager
                 title: title,
                 programId: programId,
                 hierarchy: hierarchy,
+                dayOfWeek: dayOfWeek,
+                timeOfDay: timeOfDay,
               ),
           createCompanionCallback:
               ({
@@ -9795,6 +9939,8 @@ class $$ProgramSessionsTableTableManager
                 required String title,
                 required int programId,
                 required int hierarchy,
+                Value<int?> dayOfWeek = const Value.absent(),
+                Value<TimeOfDay?> timeOfDay = const Value.absent(),
               }) => ProgramSessionsCompanion.insert(
                 id: id,
                 createdAt: createdAt,
@@ -9802,6 +9948,8 @@ class $$ProgramSessionsTableTableManager
                 title: title,
                 programId: programId,
                 hierarchy: hierarchy,
+                dayOfWeek: dayOfWeek,
+                timeOfDay: timeOfDay,
               ),
           withReferenceMapper: (p0) => p0
               .map(

@@ -33,9 +33,9 @@ class _HabitDetailSheet extends ConsumerWidget {
     await db.habitDao.markHabitDone(view.habit.id, dateKeyFor());
     // Schedule follow-up reminders for anything stacked after this habit.
     final all = await db.habitDao.getAllHabits();
-    await ref
-        .read(notificationServiceProvider)
-        .scheduleAfterCueReminders(view.habit.id, all);
+    // await ref
+    //     .read(notificationServiceProvider)
+    //     .scheduleAfterCueReminders(view.habit.id, all);
     if (context.mounted) Navigator.of(context).pop();
   }
 
@@ -49,7 +49,7 @@ class _HabitDetailSheet extends ConsumerWidget {
 
   Future<void> _delete(BuildContext context, WidgetRef ref) async {
     await ref.read(appDataBaseProvider).habitDao.deleteHabit(view.habit.id);
-    await ref.read(notificationServiceProvider).cancelHabit(view.habit.id);
+    // await ref.read(notificationServiceProvider).cancelHabit(view.habit.id);
     if (context.mounted) {
       Navigator.of(context).pop();
       showTenkaiToast(
