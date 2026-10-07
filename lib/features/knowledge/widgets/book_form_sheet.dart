@@ -122,12 +122,12 @@ class _BookFormSheet extends HookConsumerWidget {
 
         _label('Shelf'),
         const SizedBox(height: 8),
-        TenkaiRadioGroup<BookStatus>(
-          options: BookStatus.values,
-          labels: BookStatus.values.map((s) => s.label).toList(),
-          value: form.status,
-          onChanged: notifier.setStatus,
-        ),
+        // TenkaiRadioGroup<BookStatus>(
+        //   options: BookStatus.values,
+        //   labels: BookStatus.values.map((s) => s.label).toList(),
+        //   value: form.status,
+        //   onChanged: notifier.setStatus,
+        // ),
         const SizedBox(height: 20),
         const TenkaiDivider(),
         const SizedBox(height: 16),

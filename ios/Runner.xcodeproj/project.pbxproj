@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 70;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -93,7 +93,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		4258C3FE30751577000B4ECD /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		4258C3FE30751577000B4ECD /* Exceptions for "tenkai_widget" folder in "tenkai_widgetExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -103,7 +103,18 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		4258C3E930751576000B4ECD /* tenkai_widget */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (4258C3FE30751577000B4ECD /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = tenkai_widget; sourceTree = "<group>"; };
+		4258C3E930751576000B4ECD /* tenkai_widget */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				4258C3FE30751577000B4ECD /* Exceptions for "tenkai_widget" folder in "tenkai_widgetExtension" target */,
+			);
+			explicitFileTypes = {
+			};
+			explicitFolders = (
+			);
+			path = tenkai_widget;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -255,8 +266,6 @@
 				4258C3E930751576000B4ECD /* tenkai_widget */,
 			);
 			name = tenkai_widgetExtension;
-			packageProductDependencies = (
-			);
 			productName = tenkai_widgetExtension;
 			productReference = 4258C3E430751576000B4ECD /* tenkai_widgetExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
@@ -271,9 +280,9 @@
 				97C146EB1CF9000F007C117D /* Frameworks */,
 				97C146EC1CF9000F007C117D /* Resources */,
 				9705A1C41CF9048500538489 /* Embed Frameworks */,
+				4258C3FA30751577000B4ECD /* Embed Foundation Extensions */,
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
 				CCF772C1277DEB1CC86F0E02 /* [CP] Embed Pods Frameworks */,
-				4258C3FA30751577000B4ECD /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
@@ -441,13 +450,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;

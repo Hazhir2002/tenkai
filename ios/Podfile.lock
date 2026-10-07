@@ -24,6 +24,8 @@ PODS:
     - Flutter
   - health (13.3.2):
     - Flutter
+  - home_widget (0.0.1):
+    - Flutter
   - image_picker_ios (0.0.1):
     - Flutter
   - IosAwnCore (0.10.0)
@@ -43,6 +45,7 @@ DEPENDENCIES:
   - flutter_secure_storage_darwin (from `.symlinks/plugins/flutter_secure_storage_darwin/darwin`)
   - flutter_soloud (from `.symlinks/plugins/flutter_soloud/ios`)
   - health (from `.symlinks/plugins/health/ios`)
+  - home_widget (from `.symlinks/plugins/home_widget/ios`)
   - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
   - speech_to_text (from `.symlinks/plugins/speech_to_text/darwin`)
 
@@ -71,6 +74,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_soloud/ios"
   health:
     :path: ".symlinks/plugins/health/ios"
+  home_widget:
+    :path: ".symlinks/plugins/home_widget/ios"
   image_picker_ios:
     :path: ".symlinks/plugins/image_picker_ios/ios"
   speech_to_text:
@@ -88,6 +93,7 @@ SPEC CHECKSUMS:
   flutter_secure_storage_darwin: acdb3f316ed05a3e68f856e0353b133eec373a23
   flutter_soloud: 272cc604453b6ca135f274045fb259e7c6426122
   health: 72947bca89ee7906256d6f650db061ca4b2f92c7
+  home_widget: 54b4f6b36ed8d64cfee594a476225c35c3e45091
   image_picker_ios: e0ece4aa2a75771a7de3fa735d26d90817041326
   IosAwnCore: 653786a911089012092ce831f2945cd339855a89
   speech_to_text: 3b313d98516d3d0406cea424782ec25470c59d19

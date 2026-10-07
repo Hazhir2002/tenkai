@@ -58,17 +58,17 @@ class BooksScreen extends HookConsumerWidget {
                     scrollDirection: Axis.horizontal,
                     child: Row(
                       children: [
-                        TenkaiChip(
-                          label: 'All',
+                        ChoiceChip(
+                          label: Text('All'),
                           selected: filter.value == null,
-                          onTap: () => filter.value = null,
+                          onSelected: (value) => filter.value = null,
                         ),
                         for (final s in BookStatus.values) ...[
                           const SizedBox(width: 8),
-                          TenkaiChip(
-                            label: s.label,
+                          ChoiceChip(
+                            label: Text(s.label),
                             selected: filter.value == s,
-                            onTap: () => filter.value = s,
+                            onSelected: (value) => filter.value = s,
                           ),
                         ],
                       ],

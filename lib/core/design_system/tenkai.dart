@@ -12,7 +12,6 @@ export 'tokens/tenkai_tokens.dart';
 // Atoms
 export 'atoms/tenkai_glow.dart';
 export 'atoms/tenkai_button.dart';
-export 'atoms/tenkai_chip.dart';
 export 'atoms/tenkai_controls.dart';
 export 'atoms/tenkai_display.dart';
 export 'atoms/tenkai_icon.dart';

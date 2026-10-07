@@ -123,8 +123,31 @@ abstract final class TenkaiTheme {
       ),
 
       chipTheme: ChipThemeData(
-        backgroundColor: TenkaiColors.white,
-        side: BorderSide(color: TenkaiColors.zinc200),
+        showCheckmark: false,
+        labelStyle: TenkaiTypography.labelSm.copyWith(
+          color: c.primaryForeground,
+        ),
+        secondaryLabelStyle: TenkaiTypography.labelSm.copyWith(
+          color: c.primaryForeground,
+        ),
+        labelPadding: EdgeInsets.symmetric(
+          horizontal: TenkaiSpacing.xs,
+          vertical: 0,
+        ),
+        padding: EdgeInsets.symmetric(
+          horizontal: TenkaiSpacing.xs,
+          vertical: 0,
+        ),
+        backgroundColor: c.background,
+        selectedColor: c.primary,
+        shape: RoundedRectangleBorder(
+          side: BorderSide.none,
+          borderRadius: BorderRadius.circular(TenkaiRadius.sm),
+        ),
+        color: WidgetStateProperty<Color>.fromMap({
+          WidgetState.any: Colors.red,
+        }),
+        side: BorderSide(color: c.input, width: 1),
         // shape:
       ),
 
@@ -190,45 +213,22 @@ abstract final class TenkaiTheme {
         color: c.primary,
         strokeCap: StrokeCap.round,
       ),
-      // ── Switch ──
-      // switchTheme: SwitchThemeData(
-      //   thumbColor: WidgetStateProperty.resolveWith((states) {
-      //     return states.contains(WidgetState.selected)
-      //         ? c.accentFg
-      //         : c.fgSubtle;
-      //   }),
-      //   trackColor: WidgetStateProperty.resolveWith((states) {
-      //     return states.contains(WidgetState.selected)
-      //         ? c.accent
-      //         : c.surfaceMuted;
-      //   }),
-      // ),
+      radioTheme: RadioThemeData(
+        splashRadius: TenkaiRadius.md,
+        side: BorderSide(color: c.input),
+        visualDensity: VisualDensity.compact,
+      ),
+      listTileTheme: ListTileThemeData(
+        horizontalTitleGap: TenkaiSpacing.sm,
+        dense: true,
+        enableFeedback: true,
+        contentPadding: EdgeInsets.all(TenkaiSpacing.xs),
+        titleTextStyle: TenkaiTypography.labelLg,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(TenkaiRadius.md),
+        ),
+      ),
 
-      // // ── Checkbox ──
-      // checkboxTheme: CheckboxThemeData(
-      //   fillColor: WidgetStateProperty.resolveWith((states) {
-      //     return states.contains(WidgetState.selected)
-      //         ? c.accent
-      //         : Colors.transparent;
-      //   }),
-      //   checkColor: WidgetStateProperty.all(c.accentFg),
-      //   shape: RoundedRectangleBorder(
-      //     borderRadius: BorderRadius.circular(TenkaiRadius.check),
-      //   ),
-      //   side: BorderSide(color: c.borderStrong, width: 1),
-      // ),
-
-      // // ── Snackbar (flat, hairline) ──
-      // snackBarTheme: SnackBarThemeData(
-      //   backgroundColor: c.surfaceMuted,
-      //   contentTextStyle: TenkaiTypography.bodyMd.copyWith(color: c.fg),
-      //   elevation: 0,
-      //   shape: RoundedRectangleBorder(
-      //     borderRadius: BorderRadius.circular(TenkaiRadius.card),
-      //     side: BorderSide(color: c.border, width: 1),
-      //   ),
-      //   behavior: SnackBarBehavior.floating,
-      // ),
       pageTransitionsTheme: const PageTransitionsTheme(
         builders: <TargetPlatform, PageTransitionsBuilder>{
           TargetPlatform.android: TenkaiPageTransitionBuilder(),

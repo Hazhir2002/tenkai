@@ -158,10 +158,10 @@ class _ThemeModeSelector extends ConsumerWidget {
 
     Widget chip(String label, ThemeMode value) => Padding(
       padding: const EdgeInsets.only(right: TenkaiSpacing.sm),
-      child: TenkaiChip(
-        label: label,
+      child: ChoiceChip(
+        label: Text(label),
         selected: mode == value,
-        onTap: () => notifier.set(value),
+        onSelected: (isSelected) => notifier.set(value),
       ),
     );
 

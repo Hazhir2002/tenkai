@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart' show Value;
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tenkai/core/database.dart';
+import 'package:tenkai/core/notifications/tenkai_notifications.dart';
 import 'package:tenkai/core/providers.dart';
 import 'package:tenkai/core/services/notification_service.dart';
 
@@ -217,6 +218,7 @@ class HabitFormNotifier extends Notifier<HabitFormState> {
       // await notifications.requestPermissionIfNeeded();
     }
     if (habit != null) {
+      // await TenkaiNotifications.scheduleHabitReminder(id: habit.id, hour: habit., title: title, body: body)
       // await notifications.syncHabit(habit, schedules);
     }
 

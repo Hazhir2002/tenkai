@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tenkai/core/design_system/tenkai.dart';
 import 'package:tenkai/core/providers.dart';
@@ -7,7 +8,7 @@ import 'package:tenkai/core/services/notification_service.dart';
 import '../models/habit_enums.dart';
 import '../models/habit_view.dart';
 import '../providers/habits_provider.dart';
-import 'habit_form_sheet.dart';
+import 'habit_form.dart';
 
 /// Opens the detail sheet for a habit node: shows its cue and today's status,
 /// and lets the user mark it done, edit, or delete it.
@@ -130,7 +131,8 @@ class _HabitDetailSheet extends ConsumerWidget {
                 variant: TenkaiButtonVariant.ghost,
                 onPressed: () {
                   Navigator.of(context).pop();
-                  showHabitFormSheet(context, ref, editing: view);
+                  context.push('/habits/new');
+                  // showHabitFormSheet(context, ref, editing: view);
                 },
               ),
             ),

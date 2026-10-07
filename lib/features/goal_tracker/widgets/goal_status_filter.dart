@@ -22,17 +22,17 @@ class GoalStatusFilter extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: TenkaiSpacing.lg),
         children: [
-          TenkaiChip(
-            label: 'All',
+          ChoiceChip(
+            label: Text('All'),
             selected: selected == null,
-            onTap: () => onSelected(null),
+            onSelected: (value) => onSelected(null),
           ),
           for (final status in GoalStatus.values) ...[
             const SizedBox(width: TenkaiSpacing.sm),
-            TenkaiChip(
-              label: status.label,
+            ChoiceChip(
+              label: Text(status.label),
               selected: selected == status,
-              onTap: () => onSelected(status),
+              onSelected: (value) => onSelected(status),
             ),
           ],
         ],

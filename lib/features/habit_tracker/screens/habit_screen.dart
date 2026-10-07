@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tenkai/core/design_system/atoms/tenkai_button.dart';
 import 'package:tenkai/core/design_system/atoms/tenkai_display.dart';
@@ -10,7 +11,7 @@ import 'package:tenkai/core/services/notification_service.dart';
 import 'package:tenkai/features/habit_tracker/models/habit_enums.dart';
 import 'package:tenkai/features/habit_tracker/models/habit_view.dart';
 import 'package:tenkai/features/habit_tracker/providers/habits_provider.dart';
-import 'package:tenkai/features/habit_tracker/widgets/habit_form_sheet.dart';
+import 'package:tenkai/features/habit_tracker/widgets/habit_form.dart';
 
 class HabitScreen extends ConsumerWidget {
   final HabitView habitView;
@@ -72,7 +73,8 @@ class HabitScreen extends ConsumerWidget {
           IconButton(
             onPressed: () {
               Navigator.of(context).pop();
-              showHabitFormSheet(context, ref, editing: habitView);
+              // showHabitFormSheet(context, ref, editing: habitView);
+              context.push('/habits/new');
             },
             icon: Icon(Icons.edit_square),
           ),

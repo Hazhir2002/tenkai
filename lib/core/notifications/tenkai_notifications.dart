@@ -7,6 +7,7 @@ abstract final class TenkaiNotifications {
 
   static const int _welcomeId = 1;
   static const int _programSessionId = 10;
+  static const int _habitId = 100;
 
   static bool _initialized = false;
 
@@ -47,6 +48,40 @@ abstract final class TenkaiNotifications {
       title: 'Welcome',
       body: 'Tenkai will be your assistant from now on',
     );
+  }
+
+  static Future<void> scheduleHabitReminder({
+    required int id,
+    required int hour,
+    int minute = 0,
+    required String title,
+    required String body,
+  }) async {
+    try {
+      await AwesomeNotifications().createNotification(
+        content: NotificationContent(
+          id: id * _habitId,
+          channelKey: _channelKey,
+          title: title,
+          body: body,
+          notificationLayout: NotificationLayout.Default,
+          wakeUpScreen: true,
+        ),
+        schedule: NotificationCalendar(
+          hour: hour,
+          minute: minute,
+          second: 0,
+          millisecond: 0,
+          repeats: true,
+          allowWhileIdle: true,
+        ),
+      );
+      debugPrint(
+        '[TenkaiNotifications] created habit reminder hour: $hour:$minute',
+      );
+    } catch (err) {
+      debugPrint('[TenkaiNotifications] ❌ schedule($_habitId) failed: $err');
+    }
   }
 
   static Future<void> scheduleProgramSessionReminder({

@@ -4,11 +4,9 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tenkai/core/design_system/tenkai.dart';
 
-import '../models/habit_enums.dart';
 import '../models/habit_view.dart';
 import '../providers/habits_provider.dart';
-import '../widgets/habit_detail_sheet.dart';
-import '../widgets/habit_form_sheet.dart';
+import '../widgets/habit_form.dart';
 import '../widgets/habit_graph.dart';
 
 class HabitDashboard extends HookConsumerWidget {
@@ -24,7 +22,8 @@ class HabitDashboard extends HookConsumerWidget {
         title: Text('Habits'),
         actions: [
           IconButton(
-            onPressed: () => showHabitFormSheet(context, ref),
+            // onPressed: () => showHabitFormSheet(context, ref),
+            onPressed: () => context.push('/habits/new'),
             icon: Icon(Icons.add),
           ),
         ],
@@ -40,7 +39,7 @@ class HabitDashboard extends HookConsumerWidget {
           ),
           data: (roots) {
             if (roots.isEmpty) {
-              return _EmptyState(onAdd: () => showHabitFormSheet(context, ref));
+              return _EmptyState(onAdd: () => context.push('/habits/new'));
             }
             final all = _flatten(roots);
             return SingleChildScrollView(
