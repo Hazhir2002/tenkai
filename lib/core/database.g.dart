@@ -709,6 +709,30 @@ class $HabitsTable extends Habits with TableInfo<$HabitsTable, Habit> {
       'PRIMARY KEY AUTOINCREMENT',
     ),
   );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
   static const VerificationMeta _titleMeta = const VerificationMeta('title');
   @override
   late final GeneratedColumn<String> title = GeneratedColumn<String>(
@@ -784,17 +808,6 @@ class $HabitsTable extends Habits with TableInfo<$HabitsTable, Habit> {
     ),
     defaultValue: const Constant(true),
   );
-  static const VerificationMeta _reminderOffsetMinutesMeta =
-      const VerificationMeta('reminderOffsetMinutes');
-  @override
-  late final GeneratedColumn<int> reminderOffsetMinutes = GeneratedColumn<int>(
-    'reminder_offset_minutes',
-    aliasedName,
-    false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-    defaultValue: const Constant(0),
-  );
   static const VerificationMeta _sortOrderMeta = const VerificationMeta(
     'sortOrder',
   );
@@ -807,43 +820,18 @@ class $HabitsTable extends Habits with TableInfo<$HabitsTable, Habit> {
     requiredDuringInsert: false,
     defaultValue: const Constant(0),
   );
-  static const VerificationMeta _createdAtMeta = const VerificationMeta(
-    'createdAt',
-  );
-  @override
-  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
-    'created_at',
-    aliasedName,
-    false,
-    type: DriftSqlType.dateTime,
-    requiredDuringInsert: false,
-    defaultValue: currentDateAndTime,
-  );
-  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
-    'updatedAt',
-  );
-  @override
-  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
-    'updated_at',
-    aliasedName,
-    false,
-    type: DriftSqlType.dateTime,
-    requiredDuringInsert: false,
-    defaultValue: currentDateAndTime,
-  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
+    createdAt,
+    updatedAt,
     title,
     description,
     status,
     cueType,
     cueHabitId,
     reminderEnabled,
-    reminderOffsetMinutes,
     sortOrder,
-    createdAt,
-    updatedAt,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -859,6 +847,18 @@ class $HabitsTable extends Habits with TableInfo<$HabitsTable, Habit> {
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
     }
     if (data.containsKey('title')) {
       context.handle(
@@ -907,31 +907,10 @@ class $HabitsTable extends Habits with TableInfo<$HabitsTable, Habit> {
         ),
       );
     }
-    if (data.containsKey('reminder_offset_minutes')) {
-      context.handle(
-        _reminderOffsetMinutesMeta,
-        reminderOffsetMinutes.isAcceptableOrUnknown(
-          data['reminder_offset_minutes']!,
-          _reminderOffsetMinutesMeta,
-        ),
-      );
-    }
     if (data.containsKey('sort_order')) {
       context.handle(
         _sortOrderMeta,
         sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
-      );
-    }
-    if (data.containsKey('created_at')) {
-      context.handle(
-        _createdAtMeta,
-        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
-      );
-    }
-    if (data.containsKey('updated_at')) {
-      context.handle(
-        _updatedAtMeta,
-        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
       );
     }
     return context;
@@ -946,6 +925,14 @@ class $HabitsTable extends Habits with TableInfo<$HabitsTable, Habit> {
       id: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}id'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
       )!,
       title: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
@@ -971,21 +958,9 @@ class $HabitsTable extends Habits with TableInfo<$HabitsTable, Habit> {
         DriftSqlType.bool,
         data['${effectivePrefix}reminder_enabled'],
       )!,
-      reminderOffsetMinutes: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}reminder_offset_minutes'],
-      )!,
       sortOrder: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}sort_order'],
-      )!,
-      createdAt: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}created_at'],
-      )!,
-      updatedAt: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}updated_at'],
       )!,
     );
   }
@@ -998,6 +973,8 @@ class $HabitsTable extends Habits with TableInfo<$HabitsTable, Habit> {
 
 class Habit extends DataClass implements Insertable<Habit> {
   final int id;
+  final DateTime createdAt;
+  final DateTime updatedAt;
   final String title;
   final String? description;
 
@@ -1010,29 +987,25 @@ class Habit extends DataClass implements Insertable<Habit> {
   /// When [cueType] is `afterHabit`, the habit this one stacks onto.
   final int? cueHabitId;
   final bool reminderEnabled;
-
-  /// Delay (minutes) before reminding once the cue habit is completed.
-  final int reminderOffsetMinutes;
   final int sortOrder;
-  final DateTime createdAt;
-  final DateTime updatedAt;
   const Habit({
     required this.id,
+    required this.createdAt,
+    required this.updatedAt,
     required this.title,
     this.description,
     required this.status,
     required this.cueType,
     this.cueHabitId,
     required this.reminderEnabled,
-    required this.reminderOffsetMinutes,
     required this.sortOrder,
-    required this.createdAt,
-    required this.updatedAt,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
     map['title'] = Variable<String>(title);
     if (!nullToAbsent || description != null) {
       map['description'] = Variable<String>(description);
@@ -1043,16 +1016,15 @@ class Habit extends DataClass implements Insertable<Habit> {
       map['cue_habit_id'] = Variable<int>(cueHabitId);
     }
     map['reminder_enabled'] = Variable<bool>(reminderEnabled);
-    map['reminder_offset_minutes'] = Variable<int>(reminderOffsetMinutes);
     map['sort_order'] = Variable<int>(sortOrder);
-    map['created_at'] = Variable<DateTime>(createdAt);
-    map['updated_at'] = Variable<DateTime>(updatedAt);
     return map;
   }
 
   HabitsCompanion toCompanion(bool nullToAbsent) {
     return HabitsCompanion(
       id: Value(id),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
       title: Value(title),
       description: description == null && nullToAbsent
           ? const Value.absent()
@@ -1063,10 +1035,7 @@ class Habit extends DataClass implements Insertable<Habit> {
           ? const Value.absent()
           : Value(cueHabitId),
       reminderEnabled: Value(reminderEnabled),
-      reminderOffsetMinutes: Value(reminderOffsetMinutes),
       sortOrder: Value(sortOrder),
-      createdAt: Value(createdAt),
-      updatedAt: Value(updatedAt),
     );
   }
 
@@ -1077,18 +1046,15 @@ class Habit extends DataClass implements Insertable<Habit> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return Habit(
       id: serializer.fromJson<int>(json['id']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
       title: serializer.fromJson<String>(json['title']),
       description: serializer.fromJson<String?>(json['description']),
       status: serializer.fromJson<String>(json['status']),
       cueType: serializer.fromJson<String>(json['cueType']),
       cueHabitId: serializer.fromJson<int?>(json['cueHabitId']),
       reminderEnabled: serializer.fromJson<bool>(json['reminderEnabled']),
-      reminderOffsetMinutes: serializer.fromJson<int>(
-        json['reminderOffsetMinutes'],
-      ),
       sortOrder: serializer.fromJson<int>(json['sortOrder']),
-      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
-      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
     );
   }
   @override
@@ -1096,47 +1062,46 @@ class Habit extends DataClass implements Insertable<Habit> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
       'title': serializer.toJson<String>(title),
       'description': serializer.toJson<String?>(description),
       'status': serializer.toJson<String>(status),
       'cueType': serializer.toJson<String>(cueType),
       'cueHabitId': serializer.toJson<int?>(cueHabitId),
       'reminderEnabled': serializer.toJson<bool>(reminderEnabled),
-      'reminderOffsetMinutes': serializer.toJson<int>(reminderOffsetMinutes),
       'sortOrder': serializer.toJson<int>(sortOrder),
-      'createdAt': serializer.toJson<DateTime>(createdAt),
-      'updatedAt': serializer.toJson<DateTime>(updatedAt),
     };
   }
 
   Habit copyWith({
     int? id,
+    DateTime? createdAt,
+    DateTime? updatedAt,
     String? title,
     Value<String?> description = const Value.absent(),
     String? status,
     String? cueType,
     Value<int?> cueHabitId = const Value.absent(),
     bool? reminderEnabled,
-    int? reminderOffsetMinutes,
     int? sortOrder,
-    DateTime? createdAt,
-    DateTime? updatedAt,
   }) => Habit(
     id: id ?? this.id,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
     title: title ?? this.title,
     description: description.present ? description.value : this.description,
     status: status ?? this.status,
     cueType: cueType ?? this.cueType,
     cueHabitId: cueHabitId.present ? cueHabitId.value : this.cueHabitId,
     reminderEnabled: reminderEnabled ?? this.reminderEnabled,
-    reminderOffsetMinutes: reminderOffsetMinutes ?? this.reminderOffsetMinutes,
     sortOrder: sortOrder ?? this.sortOrder,
-    createdAt: createdAt ?? this.createdAt,
-    updatedAt: updatedAt ?? this.updatedAt,
   );
   Habit copyWithCompanion(HabitsCompanion data) {
     return Habit(
       id: data.id.present ? data.id.value : this.id,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
       title: data.title.present ? data.title.value : this.title,
       description: data.description.present
           ? data.description.value
@@ -1149,12 +1114,7 @@ class Habit extends DataClass implements Insertable<Habit> {
       reminderEnabled: data.reminderEnabled.present
           ? data.reminderEnabled.value
           : this.reminderEnabled,
-      reminderOffsetMinutes: data.reminderOffsetMinutes.present
-          ? data.reminderOffsetMinutes.value
-          : this.reminderOffsetMinutes,
       sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
-      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
-      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
     );
   }
 
@@ -1162,16 +1122,15 @@ class Habit extends DataClass implements Insertable<Habit> {
   String toString() {
     return (StringBuffer('Habit(')
           ..write('id: $id, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
           ..write('title: $title, ')
           ..write('description: $description, ')
           ..write('status: $status, ')
           ..write('cueType: $cueType, ')
           ..write('cueHabitId: $cueHabitId, ')
           ..write('reminderEnabled: $reminderEnabled, ')
-          ..write('reminderOffsetMinutes: $reminderOffsetMinutes, ')
-          ..write('sortOrder: $sortOrder, ')
-          ..write('createdAt: $createdAt, ')
-          ..write('updatedAt: $updatedAt')
+          ..write('sortOrder: $sortOrder')
           ..write(')'))
         .toString();
   }
@@ -1179,127 +1138,116 @@ class Habit extends DataClass implements Insertable<Habit> {
   @override
   int get hashCode => Object.hash(
     id,
+    createdAt,
+    updatedAt,
     title,
     description,
     status,
     cueType,
     cueHabitId,
     reminderEnabled,
-    reminderOffsetMinutes,
     sortOrder,
-    createdAt,
-    updatedAt,
   );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is Habit &&
           other.id == this.id &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
           other.title == this.title &&
           other.description == this.description &&
           other.status == this.status &&
           other.cueType == this.cueType &&
           other.cueHabitId == this.cueHabitId &&
           other.reminderEnabled == this.reminderEnabled &&
-          other.reminderOffsetMinutes == this.reminderOffsetMinutes &&
-          other.sortOrder == this.sortOrder &&
-          other.createdAt == this.createdAt &&
-          other.updatedAt == this.updatedAt);
+          other.sortOrder == this.sortOrder);
 }
 
 class HabitsCompanion extends UpdateCompanion<Habit> {
   final Value<int> id;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
   final Value<String> title;
   final Value<String?> description;
   final Value<String> status;
   final Value<String> cueType;
   final Value<int?> cueHabitId;
   final Value<bool> reminderEnabled;
-  final Value<int> reminderOffsetMinutes;
   final Value<int> sortOrder;
-  final Value<DateTime> createdAt;
-  final Value<DateTime> updatedAt;
   const HabitsCompanion({
     this.id = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
     this.title = const Value.absent(),
     this.description = const Value.absent(),
     this.status = const Value.absent(),
     this.cueType = const Value.absent(),
     this.cueHabitId = const Value.absent(),
     this.reminderEnabled = const Value.absent(),
-    this.reminderOffsetMinutes = const Value.absent(),
     this.sortOrder = const Value.absent(),
-    this.createdAt = const Value.absent(),
-    this.updatedAt = const Value.absent(),
   });
   HabitsCompanion.insert({
     this.id = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
     required String title,
     this.description = const Value.absent(),
     this.status = const Value.absent(),
     this.cueType = const Value.absent(),
     this.cueHabitId = const Value.absent(),
     this.reminderEnabled = const Value.absent(),
-    this.reminderOffsetMinutes = const Value.absent(),
     this.sortOrder = const Value.absent(),
-    this.createdAt = const Value.absent(),
-    this.updatedAt = const Value.absent(),
   }) : title = Value(title);
   static Insertable<Habit> custom({
     Expression<int>? id,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
     Expression<String>? title,
     Expression<String>? description,
     Expression<String>? status,
     Expression<String>? cueType,
     Expression<int>? cueHabitId,
     Expression<bool>? reminderEnabled,
-    Expression<int>? reminderOffsetMinutes,
     Expression<int>? sortOrder,
-    Expression<DateTime>? createdAt,
-    Expression<DateTime>? updatedAt,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
       if (title != null) 'title': title,
       if (description != null) 'description': description,
       if (status != null) 'status': status,
       if (cueType != null) 'cue_type': cueType,
       if (cueHabitId != null) 'cue_habit_id': cueHabitId,
       if (reminderEnabled != null) 'reminder_enabled': reminderEnabled,
-      if (reminderOffsetMinutes != null)
-        'reminder_offset_minutes': reminderOffsetMinutes,
       if (sortOrder != null) 'sort_order': sortOrder,
-      if (createdAt != null) 'created_at': createdAt,
-      if (updatedAt != null) 'updated_at': updatedAt,
     });
   }
 
   HabitsCompanion copyWith({
     Value<int>? id,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
     Value<String>? title,
     Value<String?>? description,
     Value<String>? status,
     Value<String>? cueType,
     Value<int?>? cueHabitId,
     Value<bool>? reminderEnabled,
-    Value<int>? reminderOffsetMinutes,
     Value<int>? sortOrder,
-    Value<DateTime>? createdAt,
-    Value<DateTime>? updatedAt,
   }) {
     return HabitsCompanion(
       id: id ?? this.id,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
       title: title ?? this.title,
       description: description ?? this.description,
       status: status ?? this.status,
       cueType: cueType ?? this.cueType,
       cueHabitId: cueHabitId ?? this.cueHabitId,
       reminderEnabled: reminderEnabled ?? this.reminderEnabled,
-      reminderOffsetMinutes:
-          reminderOffsetMinutes ?? this.reminderOffsetMinutes,
       sortOrder: sortOrder ?? this.sortOrder,
-      createdAt: createdAt ?? this.createdAt,
-      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 
@@ -1308,6 +1256,12 @@ class HabitsCompanion extends UpdateCompanion<Habit> {
     final map = <String, Expression>{};
     if (id.present) {
       map['id'] = Variable<int>(id.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
     }
     if (title.present) {
       map['title'] = Variable<String>(title.value);
@@ -1327,19 +1281,8 @@ class HabitsCompanion extends UpdateCompanion<Habit> {
     if (reminderEnabled.present) {
       map['reminder_enabled'] = Variable<bool>(reminderEnabled.value);
     }
-    if (reminderOffsetMinutes.present) {
-      map['reminder_offset_minutes'] = Variable<int>(
-        reminderOffsetMinutes.value,
-      );
-    }
     if (sortOrder.present) {
       map['sort_order'] = Variable<int>(sortOrder.value);
-    }
-    if (createdAt.present) {
-      map['created_at'] = Variable<DateTime>(createdAt.value);
-    }
-    if (updatedAt.present) {
-      map['updated_at'] = Variable<DateTime>(updatedAt.value);
     }
     return map;
   }
@@ -1348,16 +1291,15 @@ class HabitsCompanion extends UpdateCompanion<Habit> {
   String toString() {
     return (StringBuffer('HabitsCompanion(')
           ..write('id: $id, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
           ..write('title: $title, ')
           ..write('description: $description, ')
           ..write('status: $status, ')
           ..write('cueType: $cueType, ')
           ..write('cueHabitId: $cueHabitId, ')
           ..write('reminderEnabled: $reminderEnabled, ')
-          ..write('reminderOffsetMinutes: $reminderOffsetMinutes, ')
-          ..write('sortOrder: $sortOrder, ')
-          ..write('createdAt: $createdAt, ')
-          ..write('updatedAt: $updatedAt')
+          ..write('sortOrder: $sortOrder')
           ..write(')'))
         .toString();
   }
@@ -6404,30 +6346,28 @@ typedef $$JournalEntriesTableProcessedTableManager =
 typedef $$HabitsTableCreateCompanionBuilder =
     HabitsCompanion Function({
       Value<int> id,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
       required String title,
       Value<String?> description,
       Value<String> status,
       Value<String> cueType,
       Value<int?> cueHabitId,
       Value<bool> reminderEnabled,
-      Value<int> reminderOffsetMinutes,
       Value<int> sortOrder,
-      Value<DateTime> createdAt,
-      Value<DateTime> updatedAt,
     });
 typedef $$HabitsTableUpdateCompanionBuilder =
     HabitsCompanion Function({
       Value<int> id,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
       Value<String> title,
       Value<String?> description,
       Value<String> status,
       Value<String> cueType,
       Value<int?> cueHabitId,
       Value<bool> reminderEnabled,
-      Value<int> reminderOffsetMinutes,
       Value<int> sortOrder,
-      Value<DateTime> createdAt,
-      Value<DateTime> updatedAt,
     });
 
 final class $$HabitsTableReferences
@@ -6504,6 +6444,16 @@ class $$HabitsTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
   ColumnFilters<String> get title => $composableBuilder(
     column: $table.title,
     builder: (column) => ColumnFilters(column),
@@ -6529,23 +6479,8 @@ class $$HabitsTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<int> get reminderOffsetMinutes => $composableBuilder(
-    column: $table.reminderOffsetMinutes,
-    builder: (column) => ColumnFilters(column),
-  );
-
   ColumnFilters<int> get sortOrder => $composableBuilder(
     column: $table.sortOrder,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<DateTime> get createdAt => $composableBuilder(
-    column: $table.createdAt,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
-    column: $table.updatedAt,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -6637,6 +6572,16 @@ class $$HabitsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get title => $composableBuilder(
     column: $table.title,
     builder: (column) => ColumnOrderings(column),
@@ -6662,23 +6607,8 @@ class $$HabitsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<int> get reminderOffsetMinutes => $composableBuilder(
-    column: $table.reminderOffsetMinutes,
-    builder: (column) => ColumnOrderings(column),
-  );
-
   ColumnOrderings<int> get sortOrder => $composableBuilder(
     column: $table.sortOrder,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
-    column: $table.createdAt,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
-    column: $table.updatedAt,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -6718,6 +6648,12 @@ class $$HabitsTableAnnotationComposer
   GeneratedColumn<int> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
 
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
   GeneratedColumn<String> get title =>
       $composableBuilder(column: $table.title, builder: (column) => column);
 
@@ -6737,19 +6673,8 @@ class $$HabitsTableAnnotationComposer
     builder: (column) => column,
   );
 
-  GeneratedColumn<int> get reminderOffsetMinutes => $composableBuilder(
-    column: $table.reminderOffsetMinutes,
-    builder: (column) => column,
-  );
-
   GeneratedColumn<int> get sortOrder =>
       $composableBuilder(column: $table.sortOrder, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get createdAt =>
-      $composableBuilder(column: $table.createdAt, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get updatedAt =>
-      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
 
   $$HabitsTableAnnotationComposer get cueHabitId {
     final $$HabitsTableAnnotationComposer composer = $composerBuilder(
@@ -6858,54 +6783,50 @@ class $$HabitsTableTableManager
           updateCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
                 Value<String> title = const Value.absent(),
                 Value<String?> description = const Value.absent(),
                 Value<String> status = const Value.absent(),
                 Value<String> cueType = const Value.absent(),
                 Value<int?> cueHabitId = const Value.absent(),
                 Value<bool> reminderEnabled = const Value.absent(),
-                Value<int> reminderOffsetMinutes = const Value.absent(),
                 Value<int> sortOrder = const Value.absent(),
-                Value<DateTime> createdAt = const Value.absent(),
-                Value<DateTime> updatedAt = const Value.absent(),
               }) => HabitsCompanion(
                 id: id,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
                 title: title,
                 description: description,
                 status: status,
                 cueType: cueType,
                 cueHabitId: cueHabitId,
                 reminderEnabled: reminderEnabled,
-                reminderOffsetMinutes: reminderOffsetMinutes,
                 sortOrder: sortOrder,
-                createdAt: createdAt,
-                updatedAt: updatedAt,
               ),
           createCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
                 required String title,
                 Value<String?> description = const Value.absent(),
                 Value<String> status = const Value.absent(),
                 Value<String> cueType = const Value.absent(),
                 Value<int?> cueHabitId = const Value.absent(),
                 Value<bool> reminderEnabled = const Value.absent(),
-                Value<int> reminderOffsetMinutes = const Value.absent(),
                 Value<int> sortOrder = const Value.absent(),
-                Value<DateTime> createdAt = const Value.absent(),
-                Value<DateTime> updatedAt = const Value.absent(),
               }) => HabitsCompanion.insert(
                 id: id,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
                 title: title,
                 description: description,
                 status: status,
                 cueType: cueType,
                 cueHabitId: cueHabitId,
                 reminderEnabled: reminderEnabled,
-                reminderOffsetMinutes: reminderOffsetMinutes,
                 sortOrder: sortOrder,
-                createdAt: createdAt,
-                updatedAt: updatedAt,
               ),
           withReferenceMapper: (p0) => p0
               .map(

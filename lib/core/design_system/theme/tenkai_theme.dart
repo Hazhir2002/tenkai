@@ -25,6 +25,19 @@ abstract final class TenkaiTheme {
       scaffoldBackgroundColor: c.background,
       extensions: [c],
       primaryColor: c.primary,
+      colorScheme: ColorScheme(
+        brightness: brightness,
+        primary: c.primary,
+        onPrimary: c.foreground,
+        secondary: c.secondary,
+        onSecondary: c.secondaryForeground,
+        secondaryContainer: c.muted,
+        error: c.destructive,
+        onError: c.foreground,
+        surface: c.background,
+        onSurface: c.foreground,
+        surfaceContainer: c.card,
+      ),
 
       cardTheme: CardThemeData(
         color: c.card,
@@ -73,12 +86,13 @@ abstract final class TenkaiTheme {
 
       inputDecorationTheme: InputDecorationThemeData(
         filled: false,
-        hintStyle: TenkaiTypography.bodyLg.copyWith(color: c.mutedForeground),
+        isDense: true,
+        hintStyle: TenkaiTypography.bodyMd.copyWith(color: c.mutedForeground),
         floatingLabelBehavior: FloatingLabelBehavior.always,
         floatingLabelAlignment: FloatingLabelAlignment.start,
         contentPadding: const EdgeInsets.symmetric(
-          horizontal: 14,
-          vertical: TenkaiSpacing.md,
+          horizontal: TenkaiSpacing.md,
+          vertical: TenkaiSpacing.sm,
         ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(TenkaiRadius.control),
@@ -97,6 +111,7 @@ abstract final class TenkaiTheme {
           borderRadius: BorderRadius.circular(TenkaiRadius.control),
           borderSide: BorderSide(color: c.destructive, width: 1),
         ),
+        suffixIconConstraints: BoxConstraints(maxWidth: 45, maxHeight: 45),
       ),
 
       // ── Bottom sheet (flat) ──
@@ -153,14 +168,21 @@ abstract final class TenkaiTheme {
 
       elevatedButtonTheme: ElevatedButtonThemeData(),
 
+      textButtonTheme: TextButtonThemeData(
+        style: ButtonStyle(
+          foregroundColor: WidgetStatePropertyAll(c.foreground),
+        ),
+      ),
+
       filledButtonTheme: FilledButtonThemeData(
         style: ButtonStyle(
           animationDuration: TenkaiDuration.medium,
           enableFeedback: true,
           textStyle: WidgetStatePropertyAll(TenkaiTypography.labelLg),
           backgroundColor: WidgetStateProperty.fromMap({
+            WidgetState.disabled: c.muted,
             // WidgetState.pressed: Colors.white,
-            WidgetState.any: c.primary,
+            // WidgetState.any: c.primary,
           }),
           shape: WidgetStatePropertyAll(
             RoundedRectangleBorder(
@@ -214,6 +236,9 @@ abstract final class TenkaiTheme {
         strokeCap: StrokeCap.round,
       ),
       radioTheme: RadioThemeData(
+        fillColor: WidgetStateProperty.fromMap({
+          WidgetState.selected: c.primary,
+        }),
         splashRadius: TenkaiRadius.md,
         side: BorderSide(color: c.input),
         visualDensity: VisualDensity.compact,
@@ -222,21 +247,94 @@ abstract final class TenkaiTheme {
         horizontalTitleGap: TenkaiSpacing.sm,
         dense: true,
         enableFeedback: true,
-        contentPadding: EdgeInsets.all(TenkaiSpacing.xs),
+        contentPadding: EdgeInsets.symmetric(
+          vertical: TenkaiSpacing.xs,
+          horizontal: TenkaiSpacing.md,
+        ),
         titleTextStyle: TenkaiTypography.labelLg,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(TenkaiRadius.md),
         ),
       ),
 
-      pageTransitionsTheme: const PageTransitionsTheme(
-        builders: <TargetPlatform, PageTransitionsBuilder>{
-          TargetPlatform.android: TenkaiPageTransitionBuilder(),
-          TargetPlatform.iOS: TenkaiPageTransitionBuilder(),
-          TargetPlatform.macOS: TenkaiPageTransitionBuilder(),
-          TargetPlatform.windows: TenkaiPageTransitionBuilder(),
-          TargetPlatform.linux: TenkaiPageTransitionBuilder(),
-        },
+      switchTheme: SwitchThemeData(
+        trackColor: WidgetStateColor.fromMap({
+          WidgetState.selected: c.primaryForeground,
+          WidgetState.any: c.muted,
+        }),
+        thumbColor: WidgetStateColor.fromMap({
+          WidgetState.selected: c.primary,
+          WidgetState.any: c.mutedForeground,
+        }),
+      ),
+
+      checkboxTheme: CheckboxThemeData(
+        checkColor: WidgetStateColor.fromMap({WidgetState.any: c.primary}),
+        fillColor: WidgetStateColor.fromMap({WidgetState.any: c.muted}),
+        shape: RoundedRectangleBorder(
+          side: BorderSide.none,
+          borderRadius: BorderRadius.circular(TenkaiRadius.check),
+        ),
+        visualDensity: VisualDensity.compact,
+        side: BorderSide.none,
+      ),
+
+      menuTheme: MenuThemeData(
+        style: MenuStyle(backgroundColor: WidgetStatePropertyAll(Colors.red)),
+      ),
+
+      menuButtonTheme: MenuButtonThemeData(
+        style: ButtonStyle(
+          animationDuration: TenkaiDuration.medium,
+          enableFeedback: true,
+          textStyle: WidgetStatePropertyAll(TenkaiTypography.labelLg),
+          shape: WidgetStatePropertyAll(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(TenkaiRadius.md),
+            ),
+          ),
+        ),
+      ),
+
+      dropdownMenuTheme: DropdownMenuThemeData(
+        // inputDecorationTheme: InputDecorationThemeData(
+        //   filled: false,
+        //   isDense: true,
+        //   hintStyle: TenkaiTypography.bodyMd.copyWith(color: c.mutedForeground),
+        //   floatingLabelBehavior: FloatingLabelBehavior.always,
+        //   floatingLabelAlignment: FloatingLabelAlignment.start,
+        //   contentPadding: const EdgeInsets.symmetric(
+        //     horizontal: TenkaiSpacing.md,
+        //     vertical: TenkaiSpacing.sm,
+        //   ),
+        //   border: OutlineInputBorder(
+        //     borderRadius: BorderRadius.circular(TenkaiRadius.control),
+        //     borderSide: BorderSide(color: c.input, width: 1),
+        //   ),
+        //   enabledBorder: OutlineInputBorder(
+        //     borderRadius: BorderRadius.circular(TenkaiRadius.control),
+        //     borderSide: BorderSide(color: c.input, width: 1),
+        //   ),
+        //   focusedBorder: OutlineInputBorder(
+        //     borderRadius: BorderRadius.circular(TenkaiRadius.control),
+        //     borderSide: BorderSide(color: c.input, width: 1),
+        //   ),
+        //   outlineBorder: BorderSide(),
+        //   errorBorder: OutlineInputBorder(
+        //     borderRadius: BorderRadius.circular(TenkaiRadius.control),
+        //     borderSide: BorderSide(color: c.destructive, width: 1),
+        //   ),
+        // ),
+        menuStyle: MenuStyle(
+          backgroundColor: WidgetStatePropertyAll(c.card),
+          visualDensity: VisualDensity.compact,
+          padding: WidgetStatePropertyAll(EdgeInsets.all(TenkaiSpacing.xs)),
+          shape: WidgetStatePropertyAll(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(TenkaiRadius.md),
+            ),
+          ),
+        ),
       ),
     );
   }

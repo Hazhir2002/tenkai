@@ -3,7 +3,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tenkai/core/configs/app_router.dart';
 import 'package:tenkai/core/design_system/tenkai.dart';
 import 'package:tenkai/core/notifications/tenkai_notifications.dart';
-import 'package:tenkai/core/services/notification_service.dart';
 import 'package:tenkai/core/services/storage_service.dart';
 import 'package:tenkai/core/tenkai_widget.dart';
 import 'package:tenkai/core/theme_mode_provider.dart';

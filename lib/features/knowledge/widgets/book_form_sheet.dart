@@ -184,10 +184,10 @@ class _BookFormSheet extends HookConsumerWidget {
         const SizedBox(height: 16),
 
         // Reminder
-        TenkaiToggle(
+        Switch(
           value: form.reminderEnabled,
           onChanged: notifier.setReminderEnabled,
-          label: 'Daily reading reminder',
+          // label: 'Daily reading reminder',
         ),
         if (form.reminderEnabled) ...[
           const SizedBox(height: 12),

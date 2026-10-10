@@ -12,6 +12,8 @@ import 'package:tenkai/features/fitness/screens/program_detail_screen.dart';
 import 'package:tenkai/features/fitness/screens/program_session_detail_screen.dart';
 import 'package:tenkai/features/fitness/screens/programs_screen.dart';
 import 'package:tenkai/features/habit_tracker/screens/habit_form_screen.dart';
+import 'package:tenkai/features/knowledge/screens/books_screen.dart';
+import 'package:tenkai/features/knowledge/screens/knowledge_dashboard.dart';
 import 'package:tenkai/features/user/screens/fears_screen.dart';
 import 'package:tenkai/features/habit_tracker/models/habit_view.dart';
 import 'package:tenkai/features/habit_tracker/screens/habit_dashboard.dart';
@@ -118,6 +120,20 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                   //   path: '/exercises',
                   //   builder: (context, state) => const ExercisesScreen(),
                   // ),
+                ],
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/knowledge',
+                builder: (context, state) => const KnowledgeDashboard(),
+                routes: [
+                  GoRoute(
+                    path: '/books',
+                    builder: (context, state) => const BooksScreen(),
+                  ),
                 ],
               ),
             ],
