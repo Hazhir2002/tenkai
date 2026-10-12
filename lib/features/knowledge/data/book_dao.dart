@@ -12,124 +12,65 @@ part 'book_dao.g.dart';
 class BookDao extends DatabaseAccessor<AppDatabase> with _$BookDaoMixin {
   BookDao(super.db);
 
-  // ---- Books ----
-
-  Stream<List<Book>> watchAllBooks() => (select(books)
-        ..orderBy([(t) => OrderingTerm.desc(t.updatedAt)]))
-      .watch();
-
-  Stream<Book?> watchBook(int id) =>
-      (select(books)..where((t) => t.id.equals(id))).watchSingleOrNull();
+  Future<List<Book>> getAllBooks() =>
+      (select(books)..orderBy([(t) => OrderingTerm.asc(t.createdAt)])).get();
 
   Future<Book?> getBook(int id) =>
-      (select(books)..where((t) => t.id.equals(id))).getSingleOrNull();
+      (select(books)..where((tbl) => tbl.id.equals(id))).getSingle();
 
-  Future<int> createBook({
-    required String title,
-    String? author,
-    String? coverImagePath,
-    required int totalPages,
-    int currentPage = 0,
-    String status = 'reading',
-    DateTime? deadline,
-    int? dailyPageGoal,
-    bool reminderEnabled = false,
-    int? reminderHour,
-    int? reminderMinute,
-  }) {
-    return into(books).insert(
-      BooksCompanion.insert(
-        title: title,
-        author: Value(author),
-        coverImagePath: Value(coverImagePath),
-        totalPages: totalPages,
-        currentPage: Value(currentPage),
-        status: Value(status),
-        deadline: Value(deadline),
-        dailyPageGoal: Value(dailyPageGoal),
-        reminderEnabled: Value(reminderEnabled),
-        reminderHour: Value(reminderHour),
-        reminderMinute: Value(reminderMinute),
-        startedAt: Value(status == 'reading' ? DateTime.now() : null),
-      ),
-    );
-  }
-
-  Future<void> updateBook(Book book) =>
-      update(books).replace(book.copyWith(updatedAt: DateTime.now()));
-
-  Future<int> deleteBook(int id) =>
-      (delete(books)..where((t) => t.id.equals(id))).go();
-
-  /// Marks a book finished with an optional rating/review.
-  Future<void> finishBook(int id, {int? rating, String? review}) async {
-    final book = await getBook(id);
-    if (book == null) return;
-    await updateBook(
-      book.copyWith(
-        status: 'finished',
-        currentPage: book.totalPages,
-        rating: Value(rating),
-        review: Value(review),
-        finishedAt: Value(DateTime.now()),
-      ),
-    );
-  }
-
-  // ---- Reading sessions ----
-
-  Stream<List<ReadingSession>> watchSessionsForBook(int bookId) =>
+  Future<List<ReadingSession>> getAllReadingSessions(int bookId) =>
       (select(readingSessions)
-            ..where((t) => t.bookId.equals(bookId))
-            ..orderBy([(t) => OrderingTerm.desc(t.createdAt)]))
-          .watch();
+            ..where((tbl) => tbl.bookId.equals(bookId))
+            ..orderBy([(t) => OrderingTerm.asc(t.createdAt)]))
+          .get();
 
-  Stream<List<ReadingSession>> watchAllSessions() =>
-      select(readingSessions).watch();
-
-  /// Records a progress update and advances the book's [currentPage] in one
-  /// transaction. Marks the book finished when it reaches the last page.
-  Future<int> addSession({
-    required int bookId,
-    required int startPage,
-    required int endPage,
-    String? summary,
-    String source = 'typed',
-    required String dateKey,
-  }) {
+  Future<Book> createBook(BooksCompanion entry) {
     return transaction(() async {
-      final sessionId = await into(readingSessions).insert(
-        ReadingSessionsCompanion.insert(
-          bookId: bookId,
-          startPage: startPage,
-          endPage: endPage,
-          summary: Value(summary),
-          source: Value(source),
-          dateKey: dateKey,
-        ),
-      );
-      final book = await getBook(bookId);
-      if (book != null) {
-        final finished = endPage >= book.totalPages;
-        await update(books).replace(
-          book.copyWith(
-            currentPage: endPage.clamp(0, book.totalPages),
-            status: finished ? 'finished' : book.status,
-            finishedAt: finished
-                ? Value(book.finishedAt ?? DateTime.now())
-                : Value(book.finishedAt),
-            updatedAt: DateTime.now(),
-          ),
-        );
-      }
-      return sessionId;
+      return await into(books).insertReturning(entry);
     });
   }
 
-  Future<int> deleteSession(int id) =>
-      (delete(readingSessions)..where((t) => t.id.equals(id))).go();
+  Future<Book> updateBook(BooksCompanion entry) {
+    return transaction(() async {
+      final updatedBooks = await (update(
+        books,
+      )..where((b) => b.id.equals(entry.id.value))).writeReturning(entry);
 
-  // ---- Highlights ----
+      return updatedBooks.first;
+    });
+  }
+
+  Future<int> deleteBook(int id) {
+    return transaction(() async {
+      return (delete(books)..where((t) => t.id.equals(id))).go();
+    });
+  }
+
+  Future<ReadingSession> createReadingSession(ReadingSessionsCompanion entry) {
+    return transaction(() async {
+      return await into(readingSessions).insertReturning(entry);
+    });
+  }
+
+  Future<int> deleteReadingSession(int id) {
+    return transaction(() async {
+      return (delete(readingSessions)..where((t) => t.id.equals(id))).go();
+    });
+  }
+
+  Future<void> finishBook(int id, {int? rating, String? review}) async {
+    final book = await getBook(id);
+    if (book == null) return;
+    // await updateBook(
+    //   book.copyWith(
+    //     status: 'finished',
+    //     currentPage: book.totalPages,
+    //     rating: Value(rating),
+    //     review: Value(review),
+    //     finishedAt: Value(DateTime.now()),
+    //   ),
+    // );
+  }
 
   Stream<List<BookHighlight>> watchHighlightsForBook(int bookId) =>
       (select(bookHighlights)

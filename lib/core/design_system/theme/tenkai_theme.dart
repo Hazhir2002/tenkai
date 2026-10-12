@@ -234,6 +234,8 @@ abstract final class TenkaiTheme {
       progressIndicatorTheme: ProgressIndicatorThemeData(
         color: c.primary,
         strokeCap: StrokeCap.round,
+        borderRadius: BorderRadius.circular(TenkaiRadius.pill),
+        linearTrackColor: c.border,
       ),
       radioTheme: RadioThemeData(
         fillColor: WidgetStateProperty.fromMap({
@@ -297,34 +299,6 @@ abstract final class TenkaiTheme {
       ),
 
       dropdownMenuTheme: DropdownMenuThemeData(
-        // inputDecorationTheme: InputDecorationThemeData(
-        //   filled: false,
-        //   isDense: true,
-        //   hintStyle: TenkaiTypography.bodyMd.copyWith(color: c.mutedForeground),
-        //   floatingLabelBehavior: FloatingLabelBehavior.always,
-        //   floatingLabelAlignment: FloatingLabelAlignment.start,
-        //   contentPadding: const EdgeInsets.symmetric(
-        //     horizontal: TenkaiSpacing.md,
-        //     vertical: TenkaiSpacing.sm,
-        //   ),
-        //   border: OutlineInputBorder(
-        //     borderRadius: BorderRadius.circular(TenkaiRadius.control),
-        //     borderSide: BorderSide(color: c.input, width: 1),
-        //   ),
-        //   enabledBorder: OutlineInputBorder(
-        //     borderRadius: BorderRadius.circular(TenkaiRadius.control),
-        //     borderSide: BorderSide(color: c.input, width: 1),
-        //   ),
-        //   focusedBorder: OutlineInputBorder(
-        //     borderRadius: BorderRadius.circular(TenkaiRadius.control),
-        //     borderSide: BorderSide(color: c.input, width: 1),
-        //   ),
-        //   outlineBorder: BorderSide(),
-        //   errorBorder: OutlineInputBorder(
-        //     borderRadius: BorderRadius.circular(TenkaiRadius.control),
-        //     borderSide: BorderSide(color: c.destructive, width: 1),
-        //   ),
-        // ),
         menuStyle: MenuStyle(
           backgroundColor: WidgetStatePropertyAll(c.card),
           visualDensity: VisualDensity.compact,
@@ -334,6 +308,16 @@ abstract final class TenkaiTheme {
               borderRadius: BorderRadius.circular(TenkaiRadius.md),
             ),
           ),
+        ),
+      ),
+
+      snackBarTheme: SnackBarThemeData(
+        backgroundColor: c.card,
+        behavior: SnackBarBehavior.floating,
+        contentTextStyle: TenkaiTypography.bodyMd.copyWith(color: c.foreground),
+        shape: RoundedRectangleBorder(
+          side: BorderSide(color: c.border),
+          borderRadius: BorderRadius.circular(TenkaiRadius.md),
         ),
       ),
     );

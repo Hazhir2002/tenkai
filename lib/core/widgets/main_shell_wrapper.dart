@@ -56,8 +56,8 @@ class _MainShellWrapperState extends ConsumerState<MainShellWrapper> {
                   label: 'fitness',
                 ),
                 NavigationDestination(
-                  selectedIcon: Icon(IconsaxBold.book),
-                  icon: Icon(IconsaxOutline.book),
+                  selectedIcon: Icon(IconsaxBold.book_1),
+                  icon: Icon(IconsaxOutline.book_1),
                   label: 'knowledge',
                 ),
                 NavigationDestination(

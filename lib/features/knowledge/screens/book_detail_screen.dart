@@ -1,4 +1,4 @@
-import 'package:cupertino_native_better/cupertino_native_better.dart';
+import 'package:ficonsax/ficonsax.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -7,58 +7,298 @@ import 'package:intl/intl.dart';
 import 'package:tenkai/core/database.dart';
 import 'package:tenkai/core/design_system/tenkai.dart';
 import 'package:tenkai/core/providers.dart';
-import 'package:tenkai/core/services/notification_service.dart';
+import 'package:tenkai/core/widgets/tenkai_metric_card.dart';
+import 'package:tenkai/features/knowledge/models/book_model.dart';
+import 'package:tenkai/features/knowledge/providers/book_provider.dart';
 
 import '../models/book_enums.dart';
-import '../models/book_view.dart';
 import '../providers/books_provider.dart';
 import '../widgets/add_highlight_sheet.dart';
 import '../widgets/book_card.dart';
-import '../widgets/book_form_sheet.dart';
+import '../widgets/book_form.dart';
 import '../widgets/book_pace_chart.dart';
 import '../widgets/finish_book_sheet.dart';
 import '../widgets/update_progress_sheet.dart';
 
-class BookDetailScreen extends ConsumerWidget {
+class BookDetailScreen extends ConsumerStatefulWidget {
   const BookDetailScreen({super.key, required this.bookId});
   final int bookId;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final viewAsync = ref.watch(bookViewProvider(bookId));
+  ConsumerState<BookDetailScreen> createState() => _BookDetailScreenState();
+}
+
+class _BookDetailScreenState extends ConsumerState<BookDetailScreen> {
+  bool _isEditing = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    final book = ref
+        .watch(bookProvider)
+        .books
+        .where((book) => book.id == widget.bookId)
+        .first;
+
+    final readingSessions = book.readingSessions;
+    final computedBook = BookModel.compute(
+      book,
+      readingSessions ?? [],
+      DateTime.now(),
+    );
+    final highlightsAsync = ref.watch(
+      highlightsForBookProvider(computedBook.id),
+    );
+    final badge = paceBadge(computedBook.paceState);
 
     return Scaffold(
       backgroundColor: Colors.transparent,
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: Text(viewAsync.valueOrNull?.book.title ?? 'Book'),
+        title: Text(computedBook.title),
         actions: [
-          if (viewAsync.valueOrNull != null) ...[
-            // TenkaiAppBarAction(
-            //   symbol: 'pencil',
-            //   onPressed: () => showBookFormSheet(
-            //     context,
-            //     ref,
-            //     editing: viewAsync.value!.book,
-            //   ),
-            // ),
-            // TenkaiAppBarAction(
-            //   symbol: 'trash',
-            //   onPressed: () => _confirmDelete(context, ref, bookId),
-            // ),
-          ],
+          IconButton(
+            icon: Icon(_isEditing ? Icons.close_outlined : IconsaxOutline.edit),
+            onPressed: () {
+              setState(() {
+                _isEditing = !_isEditing;
+              });
+            },
+          ),
+          _isEditing
+              ? SizedBox()
+              : IconButton(
+                  icon: Icon(IconsaxOutline.trash),
+                  onPressed: () => _confirmDelete(context, ref, widget.bookId),
+                ),
         ],
       ),
       body: SafeArea(
-        child: viewAsync.when(
-          loading: () => const Center(child: CupertinoActivityIndicator()),
-          error: (err, _) => Center(child: Text('Couldn\'t load book: $err')),
-          data: (view) {
-            if (view == null) {
-              return const Center(child: Text('Book not found'));
-            }
-            return _BookDetailBody(view: view);
-          },
+        minimum: EdgeInsets.all(TenkaiSpacing.md),
+        child: AnimatedSwitcher(
+          duration: TenkaiDuration.medium,
+          child: _isEditing
+              ? BookForm(
+                  editing: computedBook,
+                  onUpdate: () {
+                    setState(() {
+                      _isEditing = false;
+                    });
+                  },
+                )
+              : SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Center(
+                        child: Column(
+                          children: [
+                            BookCover(
+                              path: computedBook.coverImagePath,
+                              width: 140,
+                              height: 196,
+                            ),
+                            const SizedBox(height: 16),
+                            Text(
+                              computedBook.title,
+                              style: theme.textTheme.headlineMedium,
+                              textAlign: TextAlign.center,
+                            ),
+                            if (computedBook.author != null &&
+                                computedBook.author!.isNotEmpty) ...[
+                              const SizedBox(height: 4),
+                              Text(
+                                computedBook.author!,
+                                style: theme.textTheme.bodySmall,
+                              ),
+                            ],
+                            const SizedBox(height: 10),
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Chip(
+                                  label: Text(computedBook.bookStatus.label),
+                                ),
+                                if (badge != null) ...[
+                                  const SizedBox(width: 8),
+                                  badge,
+                                ],
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: TenkaiSpacing.xl),
+                      Column(
+                        spacing: TenkaiSpacing.sm,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                '${computedBook.currentPage} / ${computedBook.totalPages} pages',
+                                style: theme.textTheme.labelSmall,
+                              ),
+                              Text(
+                                '${(computedBook.percent * 100).floor()}%',
+                                style: theme.textTheme.labelSmall,
+                              ),
+                            ],
+                          ),
+                          LinearProgressIndicator(value: computedBook.percent),
+                        ],
+                      ),
+                      if (computedBook.hasTarget) ...[
+                        const SizedBox(height: TenkaiSpacing.xl),
+                        BookPaceChart(view: computedBook),
+                      ],
+                      const SizedBox(height: TenkaiSpacing.xl),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: TenkaiMetricCard(
+                              label: 'Streak',
+                              value: '${computedBook.streakDays}',
+                              subtext: computedBook.streakDays == 1
+                                  ? 'day'
+                                  : 'days',
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: TenkaiMetricCard(
+                              label: 'This week',
+                              value: '${computedBook.pagesThisWeek}',
+                              subtext: 'pages',
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: TenkaiMetricCard(
+                              label: 'Avg / day',
+                              value: computedBook.avgPagesPerDay
+                                  .toStringAsFixed(1),
+                              subtext: 'pages',
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: TenkaiMetricCard(
+                              label: 'Projected finish',
+                              value: computedBook.projectedFinish != null
+                                  ? DateFormat(
+                                      'MMM d',
+                                    ).format(computedBook.projectedFinish!)
+                                  : '—',
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: TenkaiSpacing.xl),
+                      if (computedBook.bookStatus != BookStatus.finished) ...[
+                        SizedBox(
+                          width: double.infinity,
+                          child: FilledButton(
+                            child: Text('Update progress'),
+                            onPressed: () =>
+                                _updateProgress(context, ref, computedBook),
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: OutlinedButton(
+                                child: Text('Add highlight'),
+                                onPressed: () => showAddHighlightSheet(
+                                  context,
+                                  ref,
+                                  computedBook,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: OutlinedButton(
+                                child: Text('Mark finished'),
+                                onPressed: () => showFinishBookSheet(
+                                  context,
+                                  ref,
+                                  computedBook,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ] else
+                        SizedBox(
+                          width: double.infinity,
+                          child: TenkaiButton(
+                            label: 'Add highlight',
+                            variant: TenkaiButtonVariant.ghost,
+                            onPressed: () => showAddHighlightSheet(
+                              context,
+                              ref,
+                              computedBook,
+                            ),
+                          ),
+                        ),
+                      const SizedBox(height: TenkaiSpacing.xxl),
+                      Divider(),
+                      Text('Reading Log'),
+                      const SizedBox(height: 16),
+                      // sessionsAsync.when(
+                      //   loading: () => const SizedBox.shrink(),
+                      //   error: (_, __) => const SizedBox.shrink(),
+                      //   data: (sessions) {
+                      //     if (sessions.isEmpty) {
+                      //       return Text(
+                      //         'No sessions logged yet.',
+                      //         style: TenkaiTypography.bodySmall,
+                      //       );
+                      //     }
+                      //     return Column(
+                      //       children: [
+                      //         for (final s in sessions) ...[
+                      //           _SessionRow(session: s),
+                      //           const SizedBox(height: 10),
+                      //         ],
+                      //       ],
+                      //     );
+                      //   },
+                      // ),
+                      const SizedBox(height: TenkaiSpacing.xxl),
+                      // Divider(label: 'Highlights'),
+                      Divider(),
+                      const SizedBox(height: 16),
+                      highlightsAsync.when(
+                        loading: () => const SizedBox.shrink(),
+                        error: (_, __) => const SizedBox.shrink(),
+                        data: (highlights) {
+                          if (highlights.isEmpty) {
+                            return Text(
+                              'No highlights saved yet.',
+                              style: theme.textTheme.bodySmall,
+                            );
+                          }
+                          return Column(
+                            children: [
+                              for (final h in highlights) ...[
+                                _HighlightRow(highlight: h),
+                                const SizedBox(height: 10),
+                              ],
+                            ],
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
         ),
       ),
     );
@@ -94,202 +334,6 @@ class BookDetailScreen extends ConsumerWidget {
     // await ref.read(notificationServiceProvider).cancelBook(id);
     if (context.mounted) context.pop();
   }
-}
-
-class _BookDetailBody extends ConsumerWidget {
-  const _BookDetailBody({required this.view});
-  final BookView view;
-
-  TenkaiBadgeVariant get _statusVariant => switch (view.status) {
-    BookStatus.reading => TenkaiBadgeVariant.active,
-    BookStatus.finished => TenkaiBadgeVariant.success,
-    BookStatus.paused => TenkaiBadgeVariant.warning,
-    BookStatus.wantToRead => TenkaiBadgeVariant.neutral,
-  };
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final book = view.book;
-    final sessionsAsync = ref.watch(sessionsForBookProvider(book.id));
-    final highlightsAsync = ref.watch(highlightsForBookProvider(book.id));
-    final badge = paceBadge(view.paceState);
-
-    return SingleChildScrollView(
-      // padding: const EdgeInsets.fromLTRB(
-      //   TenkaiSpacing.lg,
-      //   TenkaiAppBar.compactHeight + TenkaiSpacing.md,
-      //   TenkaiSpacing.lg,
-      //   120,
-      // ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Center(
-            child: Column(
-              children: [
-                BookCover(path: book.coverImagePath, width: 140, height: 196),
-                const SizedBox(height: 16),
-                Text(
-                  book.title,
-                  style: TenkaiTypography.h2,
-                  textAlign: TextAlign.center,
-                ),
-                if (book.author != null && book.author!.isNotEmpty) ...[
-                  const SizedBox(height: 4),
-                  Text(book.author!, style: TenkaiTypography.bodySmall),
-                ],
-                const SizedBox(height: 10),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    TenkaiBadge(
-                      label: view.status.label,
-                      variant: _statusVariant,
-                    ),
-                    if (badge != null) ...[const SizedBox(width: 8), badge],
-                  ],
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: TenkaiSpacing.xl),
-          TenkaiProgress(
-            value: view.percent,
-            label: '${book.currentPage} / ${book.totalPages} pages',
-          ),
-          if (view.hasTarget) ...[
-            const SizedBox(height: TenkaiSpacing.xl),
-            BookPaceChart(view: view),
-          ],
-          const SizedBox(height: TenkaiSpacing.xl),
-          Row(
-            children: [
-              Expanded(
-                child: TenkaiMetricCard(
-                  label: 'Streak',
-                  value: '${view.streakDays}',
-                  subtext: view.streakDays == 1 ? 'day' : 'days',
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: TenkaiMetricCard(
-                  label: 'This week',
-                  value: '${view.pagesThisWeek}',
-                  subtext: 'pages',
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              Expanded(
-                child: TenkaiMetricCard(
-                  label: 'Avg / day',
-                  value: view.avgPagesPerDay.toStringAsFixed(1),
-                  subtext: 'pages',
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: TenkaiMetricCard(
-                  label: 'Projected finish',
-                  value: view.projectedFinish != null
-                      ? DateFormat('MMM d').format(view.projectedFinish!)
-                      : '—',
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: TenkaiSpacing.xl),
-          if (view.status != BookStatus.finished) ...[
-            SizedBox(
-              width: double.infinity,
-              child: TenkaiButton(
-                label: 'Update progress',
-                onPressed: () => _updateProgress(context, ref, book),
-              ),
-            ),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Expanded(
-                  child: TenkaiButton(
-                    label: 'Add highlight',
-                    variant: TenkaiButtonVariant.ghost,
-                    onPressed: () => showAddHighlightSheet(context, ref, book),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: TenkaiButton(
-                    label: 'Mark finished',
-                    variant: TenkaiButtonVariant.ghost,
-                    onPressed: () => showFinishBookSheet(context, ref, book),
-                  ),
-                ),
-              ],
-            ),
-          ] else
-            SizedBox(
-              width: double.infinity,
-              child: TenkaiButton(
-                label: 'Add highlight',
-                variant: TenkaiButtonVariant.ghost,
-                onPressed: () => showAddHighlightSheet(context, ref, book),
-              ),
-            ),
-          const SizedBox(height: TenkaiSpacing.xxl),
-          TenkaiDivider(label: 'Reading log'),
-          const SizedBox(height: 16),
-          sessionsAsync.when(
-            loading: () => const SizedBox.shrink(),
-            error: (_, __) => const SizedBox.shrink(),
-            data: (sessions) {
-              if (sessions.isEmpty) {
-                return Text(
-                  'No sessions logged yet.',
-                  style: TenkaiTypography.bodySmall,
-                );
-              }
-              return Column(
-                children: [
-                  for (final s in sessions) ...[
-                    _SessionRow(session: s),
-                    const SizedBox(height: 10),
-                  ],
-                ],
-              );
-            },
-          ),
-          const SizedBox(height: TenkaiSpacing.xxl),
-          TenkaiDivider(label: 'Highlights'),
-          const SizedBox(height: 16),
-          highlightsAsync.when(
-            loading: () => const SizedBox.shrink(),
-            error: (_, __) => const SizedBox.shrink(),
-            data: (highlights) {
-              if (highlights.isEmpty) {
-                return Text(
-                  'No highlights saved yet.',
-                  style: TenkaiTypography.bodySmall,
-                );
-              }
-              return Column(
-                children: [
-                  for (final h in highlights) ...[
-                    _HighlightRow(highlight: h),
-                    const SizedBox(height: 10),
-                  ],
-                ],
-              );
-            },
-          ),
-        ],
-      ),
-    );
-  }
 
   Future<void> _updateProgress(
     BuildContext context,
@@ -322,12 +366,12 @@ class _SessionRow extends ConsumerWidget {
         alignment: Alignment.centerRight,
         padding: const EdgeInsets.symmetric(horizontal: 20),
         color: TenkaiColors.errorDim,
-        child: const CNIcon(
-          symbol: CNSymbol('trash', color: TenkaiColors.error),
-        ),
+        child: const Icon(IconsaxOutline.trash, color: TenkaiColors.error),
       ),
-      onDismissed: (_) =>
-          ref.read(appDataBaseProvider).bookDao.deleteSession(session.id),
+      onDismissed: (_) => ref
+          .read(appDataBaseProvider)
+          .bookDao
+          .deleteReadingSession(session.id),
       child: Card(
         // padding: const EdgeInsets.all(14),
         child: Column(
@@ -340,7 +384,7 @@ class _SessionRow extends ConsumerWidget {
                   'p${session.startPage} → p${session.endPage}',
                   style: TenkaiTypography.labelMd,
                 ),
-                Text(session.dateKey, style: TenkaiTypography.bodySmall),
+                // Text(session.dateKey, style: TenkaiTypography.bodySmall),
               ],
             ),
             if (session.summary != null && session.summary!.isNotEmpty) ...[
@@ -367,9 +411,7 @@ class _HighlightRow extends ConsumerWidget {
         alignment: Alignment.centerRight,
         padding: const EdgeInsets.symmetric(horizontal: 20),
         color: TenkaiColors.errorDim,
-        child: const CNIcon(
-          symbol: CNSymbol('trash', color: TenkaiColors.error),
-        ),
+        child: const Icon(IconsaxOutline.trash, color: TenkaiColors.error),
       ),
       onDismissed: (_) =>
           ref.read(appDataBaseProvider).bookDao.deleteHighlight(highlight.id),

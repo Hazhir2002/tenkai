@@ -75,13 +75,13 @@ class _UpdateProgressSheet extends HookConsumerWidget {
               saving.value = true;
               final db = ref.read(appDataBaseProvider);
               final summary = summaryCtrl.text.trim();
-              await db.bookDao.addSession(
-                bookId: book.id,
-                startPage: book.currentPage,
-                endPage: page.value,
-                summary: summary.isEmpty ? null : summary,
-                dateKey: bookDateKey(),
-              );
+              // await db.bookDao.createReadingSession(
+              //   bookId: book.id,
+              //   startPage: book.currentPage,
+              //   endPage: page.value,
+              //   summary: summary.isEmpty ? null : summary,
+              //   dateKey: bookDateKey(),
+              // );
               if (context.mounted) {
                 Navigator.of(context).pop(page.value >= book.totalPages);
               }

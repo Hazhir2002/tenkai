@@ -1,4 +1,4 @@
-import 'package:cupertino_native_better/cupertino_native_better.dart';
+import 'package:ficonsax/ficonsax.dart';
 import 'package:flutter/material.dart';
 import 'package:tenkai/core/design_system/tenkai.dart';
 
@@ -24,12 +24,9 @@ class StarRating extends StatelessWidget {
         final filled = i < rating;
         final star = Padding(
           padding: const EdgeInsets.all(2),
-          child: CNIcon(
-            symbol: CNSymbol(
-              filled ? 'star.fill' : 'star',
-              size: size,
-              color: filled ? c.foreground : c.border,
-            ),
+          child: Icon(
+            filled ? IconsaxBold.star : IconsaxOutline.star,
+            color: filled ? c.foreground : c.border,
           ),
         );
         if (onChanged == null) return star;

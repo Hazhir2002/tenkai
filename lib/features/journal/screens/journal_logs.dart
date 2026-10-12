@@ -1,4 +1,4 @@
-import 'package:cupertino_native_better/cupertino_native_better.dart';
+import 'package:ficonsax/ficonsax.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -57,13 +57,7 @@ class _EmptyState extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: TenkaiEmptyState(
-        icon: CNIcon(
-          symbol: CNSymbol(
-            'book.closed',
-            size: 36,
-            color: context.tenkai.mutedForeground,
-          ),
-        ),
+        icon: Icon(IconsaxOutline.archive_book),
         title: 'No entries yet',
         description:
             'Record or type your first journal entry and it will show up here.',
@@ -93,7 +87,7 @@ class _EntryCard extends HookConsumerWidget {
           color: c.destructive,
           border: Border.all(color: c.border, width: 1),
         ),
-        child: CNIcon(symbol: CNSymbol('trash.fill', color: c.destructive)),
+        // child: CNIcon(symbol: CNSymbol('trash.fill', color: c.destructive)),
       ),
       onDismissed: (_) => notifier.deleteEntry(entry.id),
       child: Card(
@@ -102,13 +96,13 @@ class _EntryCard extends HookConsumerWidget {
           children: [
             Row(
               children: [
-                CNIcon(
-                  symbol: CNSymbol(
-                    entry.source == 'voice' ? 'mic.fill' : 'pencil',
-                    size: 14,
-                    color: c.secondaryForeground,
-                  ),
-                ),
+                // CNIcon(
+                //   symbol: CNSymbol(
+                //     entry.source == 'voice' ? 'mic.fill' : 'pencil',
+                //     size: 14,
+                //     color: c.secondaryForeground,
+                //   ),
+                // ),
                 const SizedBox(width: 6),
                 Expanded(
                   child: Text(
@@ -118,20 +112,20 @@ class _EntryCard extends HookConsumerWidget {
                     ),
                   ),
                 ),
-                CNPopupMenuButton(
-                  buttonLabel: '•••',
-                  items: const [
-                    CNPopupMenuItem(label: 'Edit', icon: CNSymbol('pencil')),
-                    CNPopupMenuItem(label: 'Delete', icon: CNSymbol('trash')),
-                  ],
-                  onSelected: (i) {
-                    if (i == 0) {
-                      _openEditSheet(context, ref, entry);
-                    } else {
-                      notifier.deleteEntry(entry.id);
-                    }
-                  },
-                ),
+                // CNPopupMenuButton(
+                //   buttonLabel: '•••',
+                //   items: const [
+                //     CNPopupMenuItem(label: 'Edit', icon: CNSymbol('pencil')),
+                //     CNPopupMenuItem(label: 'Delete', icon: CNSymbol('trash')),
+                //   ],
+                //   onSelected: (i) {
+                //     if (i == 0) {
+                //       _openEditSheet(context, ref, entry);
+                //     } else {
+                //       notifier.deleteEntry(entry.id);
+                //     }
+                //   },
+                // ),
               ],
             ),
             const SizedBox(height: 10),

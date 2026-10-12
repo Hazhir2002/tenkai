@@ -74,55 +74,6 @@ class TenkaiBadge extends StatelessWidget {
 }
 
 /// Metric card — for KPI / stat display.
-class TenkaiMetricCard extends StatelessWidget {
-  const TenkaiMetricCard({
-    super.key,
-    required this.label,
-    required this.value,
-    this.subtext,
-    this.accent,
-  });
-
-  final String label;
-  final String value;
-  final String? subtext;
-  final Color? accent;
-
-  @override
-  Widget build(BuildContext context) {
-    final c = context.tenkai;
-
-    return Card(
-      // interactive: true,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            label.toUpperCase(),
-            style: TenkaiTypography.labelMd.copyWith(color: c.mutedForeground),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            value,
-            style: TenkaiTypography.d3.copyWith(
-              fontSize: 28,
-              color: accent ?? c.foreground,
-            ),
-          ),
-          if (subtext != null) ...[
-            const SizedBox(height: 4),
-            Text(
-              subtext!,
-              style: TenkaiTypography.bodySmall.copyWith(
-                color: c.secondaryForeground,
-              ),
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-}
 
 // ── PROGRESS BAR ─────────────────────────────
 
@@ -210,35 +161,3 @@ class _ProgressFill extends StatelessWidget {
 }
 
 // ── DIVIDER ──────────────────────────────────
-
-class TenkaiDivider extends StatelessWidget {
-  const TenkaiDivider({super.key, this.label});
-
-  final String? label;
-
-  @override
-  Widget build(BuildContext context) {
-    final c = context.tenkai;
-
-    if (label != null) {
-      return Row(
-        children: [
-          Expanded(child: _line(c.border)),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: Text(
-              label!.toUpperCase(),
-              style: TenkaiTypography.labelSm.copyWith(
-                color: c.mutedForeground,
-              ),
-            ),
-          ),
-          Expanded(child: _line(c.border)),
-        ],
-      );
-    }
-    return _line(c.border);
-  }
-
-  Widget _line(Color color) => Container(height: 1, color: color);
-}

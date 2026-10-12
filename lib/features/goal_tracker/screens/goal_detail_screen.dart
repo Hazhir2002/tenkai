@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tenkai/core/design_system/tenkai.dart';
+import 'package:tenkai/core/widgets/tenkai_metric_card.dart';
 import 'package:tenkai/features/goal_tracker/enums/goal_status.dart';
 import 'package:tenkai/features/goal_tracker/models/goal.dart';
 import 'package:tenkai/features/goal_tracker/providers/goal_provider.dart';
@@ -10,8 +11,6 @@ import 'package:tenkai/features/goal_tracker/widgets/goal_ui.dart';
 import 'package:tenkai/features/goal_tracker/widgets/log_value_form.dart';
 import 'package:tenkai/features/goal_tracker/widgets/milestone_list.dart';
 
-/// Full view of a single goal: progress, pacing KPIs, value-history chart, and
-/// milestones, plus actions to log a value, edit, or archive the goal.
 class GoalDetailScreen extends ConsumerWidget {
   const GoalDetailScreen({super.key, required this.goalId});
 

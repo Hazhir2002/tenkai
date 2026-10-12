@@ -1,14 +1,12 @@
 import 'package:drift/drift.dart';
+import 'package:tenkai/core/table_mixin.dart';
 
 import 'book.dart';
 
-/// A saved quote / highlight from a book, with the page it came from.
-class BookHighlights extends Table {
-  IntColumn get id => integer().autoIncrement()();
+class BookHighlights extends Table with TableMixin {
   IntColumn get bookId =>
       integer().references(Books, #id, onDelete: KeyAction.cascade)();
   IntColumn get page => integer()();
   TextColumn get quote => text()();
   TextColumn get note => text().nullable()();
-  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
 }

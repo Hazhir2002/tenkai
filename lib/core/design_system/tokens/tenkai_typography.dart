@@ -97,7 +97,7 @@ abstract final class TenkaiTypography {
   static TextStyle labelSm = GoogleFonts.roboto(
     fontSize: 10,
     fontWeight: FontWeight.w800,
-    letterSpacing: 1.6, // 0.16em — wide-tracked all-caps meta
+    letterSpacing: 0.10, // 0.16em — wide-tracked all-caps meta
     height: 1.4,
   );
 

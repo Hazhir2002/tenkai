@@ -122,25 +122,26 @@ class BookView {
     }
 
     // ---- Streak (consecutive days ending today/yesterday with a session) ----
-    final keys = sessions.map((s) => s.dateKey).toSet();
-    String keyOf(DateTime d) =>
-        '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
-    var day = DateTime(now.year, now.month, now.day);
-    if (!keys.contains(keyOf(day))) {
-      day = day.subtract(const Duration(days: 1));
-    }
-    var streak = 0;
-    while (keys.contains(keyOf(day))) {
-      streak++;
-      day = day.subtract(const Duration(days: 1));
-    }
+    // String keyOf(DateTime d) =>
+    //     '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
+    // var day = DateTime(now.year, now.month, now.day);
+    // if (!keys.contains(keyOf(day))) {
+    //   day = day.subtract(const Duration(days: 1));
+    // }
+    // var streak = 0;
+    // while (keys.contains(keyOf(day))) {
+    //   streak++;
+    //   day = day.subtract(const Duration(days: 1));
+    // }
 
     // ---- This week + averages ----
     final weekAgo = now.subtract(const Duration(days: 7));
     final pagesThisWeek = sessions
         .where((s) => s.createdAt.isAfter(weekAgo))
         .fold<int>(0, (sum, s) => sum + (s.endPage - s.startPage));
-    final avgPagesPerDay = elapsed >= 1 ? totalRead / elapsed : totalRead.toDouble();
+    final avgPagesPerDay = elapsed >= 1
+        ? totalRead / elapsed
+        : totalRead.toDouble();
     final projectedFinish = (avgPagesPerDay > 0 && pagesLeft > 0)
         ? now.add(Duration(days: (pagesLeft / avgPagesPerDay).ceil()))
         : null;
@@ -159,7 +160,10 @@ class BookView {
       for (final s
           in sessions.toList()
             ..sort((a, b) => a.createdAt.compareTo(b.createdAt)))
-        BookChartPoint(dayOffset(s.createdAt).clamp(0, spanDays), s.endPage.toDouble()),
+        BookChartPoint(
+          dayOffset(s.createdAt).clamp(0, spanDays),
+          s.endPage.toDouble(),
+        ),
     ];
     final expected = book.deadline != null
         ? [
@@ -184,7 +188,8 @@ class BookView {
       paceState: paceState,
       expectedPage: expectedPage,
       pagesPerDayNeeded: pagesPerDayNeeded,
-      streakDays: streak,
+      // streakDays: streak,
+      streakDays: 1,
       pagesThisWeek: pagesThisWeek,
       avgPagesPerDay: avgPagesPerDay,
       projectedFinish: projectedFinish,

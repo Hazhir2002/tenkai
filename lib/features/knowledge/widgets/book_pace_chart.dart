@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:tenkai/core/design_system/tenkai.dart';
+import 'package:tenkai/features/knowledge/models/book_model.dart';
 
 import '../models/book_enums.dart';
-import '../models/book_view.dart';
 
 /// A small pace chart: the straight "expected" line (from the deadline or daily
 /// goal) vs the actual reading progress line, with the area between tinted by
@@ -10,7 +10,7 @@ import '../models/book_view.dart';
 class BookPaceChart extends StatelessWidget {
   const BookPaceChart({super.key, required this.view, this.height = 150});
 
-  final BookView view;
+  final BookModel view;
   final double height;
 
   Color get _paceColor => switch (view.paceState) {
@@ -57,7 +57,7 @@ class _PacePainter extends CustomPainter {
     required this.todayColor,
   });
 
-  final BookView view;
+  final BookModel view;
   final Color paceColor;
   final double t;
   final Color gridColor;
@@ -69,9 +69,7 @@ class _PacePainter extends CustomPainter {
     const padL = 8.0, padR = 8.0, padT = 12.0, padB = 12.0;
     final w = size.width - padL - padR;
     final h = size.height - padT - padB;
-    final maxPage = view.book.totalPages <= 0
-        ? 1.0
-        : view.book.totalPages.toDouble();
+    final maxPage = view.totalPages <= 0 ? 1.0 : view.totalPages.toDouble();
     final span = view.spanDays <= 0 ? 1.0 : view.spanDays;
 
     Offset toPx(BookChartPoint p) => Offset(

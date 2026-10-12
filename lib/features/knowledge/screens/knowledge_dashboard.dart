@@ -1,21 +1,20 @@
-import 'package:cupertino_native_better/cupertino_native_better.dart';
 import 'package:ficonsax/ficonsax.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tenkai/core/design_system/tenkai.dart';
+import 'package:tenkai/features/knowledge/providers/book_provider.dart';
 
 import '../models/book_enums.dart';
-import '../providers/books_provider.dart';
 
-class KnowledgeDashboard extends HookConsumerWidget {
+class KnowledgeDashboard extends ConsumerWidget {
   const KnowledgeDashboard({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final booksAsync = ref.watch(booksProvider);
-    final reading = booksAsync.valueOrNull
-        ?.where((b) => BookStatus.fromDb(b.status) == BookStatus.reading)
+    final bookState = ref.watch(bookProvider);
+    final reading = bookState.books
+        .where((b) => BookStatus.fromDb(b.status) == BookStatus.reading)
         .length;
 
     return Scaffold(
@@ -30,7 +29,7 @@ class KnowledgeDashboard extends HookConsumerWidget {
             children: [
               Card(
                 child: ListTile(
-                  onTap: () => context.push('/knowledge/books'),
+                  onTap: () => context.push('/knowledge/book-library'),
                   leading: const TenkaiNode(size: 22),
                   title: Text('Books'),
                   subtitle: Text(

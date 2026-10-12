@@ -1,11 +1,11 @@
 import 'dart:io';
 
-import 'package:cupertino_native_better/cupertino_native_better.dart';
+import 'package:ficonsax/ficonsax.dart';
 import 'package:flutter/material.dart';
 import 'package:tenkai/core/design_system/tenkai.dart';
+import 'package:tenkai/features/knowledge/models/book_model.dart';
 
 import '../models/book_enums.dart';
-import '../models/book_view.dart';
 
 /// Maps a pace state to a badge. Returns null when there's nothing to show.
 TenkaiBadge? paceBadge(PaceState state) => switch (state) {
@@ -52,15 +52,7 @@ class BookCover extends StatelessWidget {
             ? Image.file(File(path!), fit: BoxFit.cover)
             : Container(
                 color: context.tenkai.card,
-                child: Center(
-                  child: CNIcon(
-                    symbol: CNSymbol(
-                      'book.closed',
-                      size: width * 0.5,
-                      color: context.tenkai.secondaryForeground,
-                    ),
-                  ),
-                ),
+                child: Center(child: Icon(IconsaxOutline.book)),
               ),
       ),
     );
@@ -68,62 +60,36 @@ class BookCover extends StatelessWidget {
 }
 
 class BookCard extends StatelessWidget {
-  const BookCard({super.key, required this.view, required this.onTap});
+  const BookCard({super.key, required this.book, required this.onTap});
 
-  final BookView view;
+  final BookModel book;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    final book = view.book;
-    final badge = paceBadge(view.paceState);
+    final theme = Theme.of(context);
+    final badge = paceBadge(book.paceState);
 
     return Card(
-      // interactive: true,
-      // onTap: onTap,
-      // padding: const EdgeInsets.all(14),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          BookCover(path: book.coverImagePath),
-          const SizedBox(width: 14),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        book.title,
-                        style: TenkaiTypography.h3,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    if (badge != null) ...[const SizedBox(width: 8), badge],
-                  ],
-                ),
-                if (book.author != null && book.author!.isNotEmpty) ...[
-                  const SizedBox(height: 2),
-                  Text(
-                    book.author!,
-                    style: TenkaiTypography.bodySmall,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-                const SizedBox(height: 12),
-                TenkaiProgress(value: view.percent, showPercent: true),
-                const SizedBox(height: 6),
-                Text(
-                  'p${book.currentPage} / ${book.totalPages}',
-                  style: TenkaiTypography.labelSm,
-                ),
-              ],
-            ),
+      child: ListTile(
+        onTap: onTap,
+        leading: BookCover(path: book.coverImagePath),
+        title: Text(book.title),
+        subtitle: Padding(
+          padding: const EdgeInsets.only(top: TenkaiSpacing.sm),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              LinearProgressIndicator(value: book.percent),
+              Text(
+                '${book.currentPage} / ${book.totalPages} (p)',
+                style: theme.textTheme.labelSmall,
+              ),
+              ?badge,
+            ],
           ),
-        ],
+        ),
+        trailing: badge,
       ),
     );
   }

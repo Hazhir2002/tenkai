@@ -1,4 +1,4 @@
-import 'package:cupertino_native_better/cupertino_native_better.dart';
+import 'package:ficonsax/ficonsax.dart';
 import 'package:flutter/material.dart';
 import '../theme/tenkai_semantic_colors.dart';
 import '../tokens/tenkai_tokens.dart';
@@ -105,13 +105,7 @@ class _TenkaiRecordButtonState extends State<TenkaiRecordButton>
                           ),
                         ),
                       )
-                    : CNIcon(
-                        symbol: CNSymbol(
-                          'mic.fill',
-                          size: 32,
-                          color: c.mutedForeground,
-                        ),
-                      ),
+                    : Icon(IconsaxBold.microphone),
               ),
             ),
           ),
