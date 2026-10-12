@@ -12,7 +12,8 @@ class BookChartPoint {
 }
 
 class BookModel extends Book {
-  final List<ReadingSession>? readingSessions;
+  final List<ReadingSession> readingSessions;
+  final List<BookHighlight> bookHighlights;
 
   // ---- Derived values ----
   final double percent; // 0..1
@@ -57,7 +58,8 @@ class BookModel extends Book {
     super.reminderHour,
     super.reminderMinute,
     super.review,
-    this.readingSessions,
+    this.readingSessions = const [],
+    this.bookHighlights = const [],
     this.percent = 0,
     this.pagesLeft = 0,
     this.paceState = PaceState.noTarget,
@@ -79,7 +81,8 @@ class BookModel extends Book {
 
   factory BookModel.fromBook(
     Book book, {
-    List<ReadingSession>? readingSessions,
+    List<ReadingSession> readingSessions = const [],
+    List<BookHighlight> bookHighlights = const [],
   }) {
     return BookModel(
       id: book.id,
@@ -101,6 +104,7 @@ class BookModel extends Book {
       coverImagePath: book.coverImagePath,
       deadline: book.deadline,
       readingSessions: readingSessions,
+      bookHighlights: bookHighlights,
     );
   }
 
@@ -108,6 +112,7 @@ class BookModel extends Book {
   factory BookModel.compute(
     Book book,
     List<ReadingSession> sessions,
+    List<BookHighlight> highlights,
     DateTime now,
   ) {
     final total = book.totalPages <= 0 ? 1 : book.totalPages;
@@ -238,6 +243,7 @@ class BookModel extends Book {
       coverImagePath: book.coverImagePath,
       deadline: book.deadline,
       readingSessions: sessions,
+      bookHighlights: highlights,
       percent: percent,
       pagesLeft: pagesLeft,
       paceState: paceState,
@@ -275,6 +281,7 @@ class BookModel extends Book {
     Value<DateTime?> finishedAt = const Value.absent(),
     String? status,
     List<ReadingSession>? readingSessions,
+    List<BookHighlight>? bookHighlights,
   }) {
     return BookModel(
       id: id ?? this.id,
@@ -286,6 +293,7 @@ class BookModel extends Book {
       status: status ?? this.status,
       reminderEnabled: reminderEnabled ?? this.reminderEnabled,
       readingSessions: readingSessions ?? this.readingSessions,
+      bookHighlights: bookHighlights ?? this.bookHighlights,
       dailyPageGoal: dailyPageGoal.value ?? this.dailyPageGoal,
       review: review.value ?? this.review,
       rating: rating.value ?? this.rating,

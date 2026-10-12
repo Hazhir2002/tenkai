@@ -11,7 +11,7 @@ import 'package:tenkai/features/knowledge/models/book_model.dart';
 import 'package:tenkai/features/knowledge/providers/book_provider.dart';
 
 import '../models/book_enums.dart';
-import '../widgets/add_highlight_sheet.dart';
+import '../widgets/book_highlight_form.dart';
 import '../widgets/book_card.dart';
 import '../widgets/book_form.dart';
 import '../widgets/book_pace_chart.dart';
@@ -30,6 +30,14 @@ class _BookDetailScreenState extends ConsumerState<BookDetailScreen> {
   bool _isEditing = false;
 
   @override
+  void initState() {
+    final bookNotifier = ref.read(bookProvider.notifier);
+    Future.microtask(() => bookNotifier.listReadingSessions(widget.bookId));
+    Future.microtask(() => bookNotifier.listBookHighlights(widget.bookId));
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
@@ -40,14 +48,14 @@ class _BookDetailScreenState extends ConsumerState<BookDetailScreen> {
         .first;
 
     final readingSessions = book.readingSessions;
+    final bookHighlights = book.bookHighlights;
     final computedBook = BookModel.compute(
       book,
-      readingSessions ?? [],
+      readingSessions,
+      bookHighlights,
       DateTime.now(),
     );
-    // final highlightsAsync = ref.watch(
-    //   highlightsForBookProvider(computedBook.id),
-    // );
+
     final badge = paceBadge(computedBook.paceState);
 
     return Scaffold(
@@ -223,10 +231,23 @@ class _BookDetailScreenState extends ConsumerState<BookDetailScreen> {
                             Expanded(
                               child: OutlinedButton(
                                 child: Text('Add highlight'),
-                                onPressed: () => showAddHighlightSheet(
-                                  context,
-                                  ref,
-                                  computedBook,
+                                onPressed: () => showModalBottomSheet(
+                                  isScrollControlled: true,
+                                  useSafeArea: true,
+                                  context: context,
+                                  builder: (context) => SafeArea(
+                                    minimum: const EdgeInsets.all(
+                                      TenkaiSpacing.md,
+                                    ),
+                                    child: SingleChildScrollView(
+                                      padding: EdgeInsets.only(
+                                        bottom: MediaQuery.of(
+                                          context,
+                                        ).viewInsets.bottom,
+                                      ),
+                                      child: BookHighlightForm(book: book),
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
@@ -246,13 +267,23 @@ class _BookDetailScreenState extends ConsumerState<BookDetailScreen> {
                       ] else
                         SizedBox(
                           width: double.infinity,
-                          child: TenkaiButton(
-                            label: 'Add highlight',
-                            variant: TenkaiButtonVariant.ghost,
-                            onPressed: () => showAddHighlightSheet(
-                              context,
-                              ref,
-                              computedBook,
+                          child: OutlinedButton(
+                            child: Text('Add highlight'),
+                            onPressed: () => showModalBottomSheet(
+                              context: context,
+                              isScrollControlled: true,
+                              useSafeArea: true,
+                              builder: (context) => SafeArea(
+                                minimum: const EdgeInsets.all(TenkaiSpacing.md),
+                                child: SingleChildScrollView(
+                                  padding: EdgeInsets.only(
+                                    bottom: MediaQuery.of(
+                                      context,
+                                    ).viewInsets.bottom,
+                                  ),
+                                  child: BookHighlightForm(book: book),
+                                ),
+                              ),
                             ),
                           ),
                         ),
@@ -268,26 +299,19 @@ class _BookDetailScreenState extends ConsumerState<BookDetailScreen> {
                         ],
                       ),
                       const SizedBox(height: 16),
-                      // sessionsAsync.when(
-                      //   loading: () => const SizedBox.shrink(),
-                      //   error: (_, __) => const SizedBox.shrink(),
-                      //   data: (sessions) {
-                      //     if (sessions.isEmpty) {
-                      //       return Text(
-                      //         'No sessions logged yet.',
-                      //         style: TenkaiTypography.bodySmall,
-                      //       );
-                      //     }
-                      //     return Column(
-                      //       children: [
-                      //         for (final s in sessions) ...[
-                      //           _SessionRow(session: s),
-                      //           const SizedBox(height: 10),
-                      //         ],
-                      //       ],
-                      //     );
-                      //   },
-                      // ),
+                      readingSessions.isEmpty
+                          ? Text(
+                              'No sessions logged yet.',
+                              style: TenkaiTypography.bodySmall,
+                            )
+                          : Column(
+                              children: [
+                                for (final s in readingSessions) ...[
+                                  _SessionRow(session: s),
+                                  const SizedBox(height: 10),
+                                ],
+                              ],
+                            ),
                       const SizedBox(height: TenkaiSpacing.xxl),
                       Row(
                         spacing: TenkaiSpacing.sm,
@@ -297,26 +321,19 @@ class _BookDetailScreenState extends ConsumerState<BookDetailScreen> {
                         ],
                       ),
                       const SizedBox(height: 16),
-                      // highlightsAsync.when(
-                      //   loading: () => const SizedBox.shrink(),
-                      //   error: (_, __) => const SizedBox.shrink(),
-                      //   data: (highlights) {
-                      //     if (highlights.isEmpty) {
-                      //       return Text(
-                      //         'No highlights saved yet.',
-                      //         style: theme.textTheme.bodySmall,
-                      //       );
-                      //     }
-                      //     return Column(
-                      //       children: [
-                      //         for (final h in highlights) ...[
-                      //           _HighlightRow(highlight: h),
-                      //           const SizedBox(height: 10),
-                      //         ],
-                      //       ],
-                      //     );
-                      //   },
-                      // ),
+                      bookHighlights.isEmpty
+                          ? Text(
+                              'No highlights saved yet.',
+                              style: theme.textTheme.bodySmall,
+                            )
+                          : Column(
+                              children: [
+                                for (final h in bookHighlights) ...[
+                                  _HighlightRow(highlight: h),
+                                  const SizedBox(height: 10),
+                                ],
+                              ],
+                            ),
                     ],
                   ),
                 ),
@@ -394,40 +411,28 @@ class _HighlightRow extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+
     return Dismissible(
       key: ValueKey('highlight-${highlight.id}'),
       direction: DismissDirection.endToStart,
       background: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(TenkaiRadius.md),
+          color: theme.colorScheme.errorContainer,
+        ),
         alignment: Alignment.centerRight,
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        color: TenkaiColors.errorDim,
-        child: const Icon(IconsaxOutline.trash, color: TenkaiColors.error),
+        padding: const EdgeInsets.symmetric(horizontal: TenkaiSpacing.md),
+        child: Icon(IconsaxOutline.trash, color: theme.colorScheme.error),
       ),
-      onDismissed: (_) =>
-          ref.read(appDataBaseProvider).bookDao.deleteHighlight(highlight.id),
+      onDismissed: (_) async => await ref
+          .read(bookProvider.notifier)
+          .deleteBookHighlight(highlight.bookId, highlight.id),
       child: Card(
-        // padding: const EdgeInsets.all(14),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Text(
-                    '"${highlight.quote}"',
-                    style: TenkaiTypography.bodyMd,
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Text('p${highlight.page}', style: TenkaiTypography.labelSm),
-              ],
-            ),
-            if (highlight.note != null && highlight.note!.isNotEmpty) ...[
-              const SizedBox(height: 8),
-              Text(highlight.note!, style: TenkaiTypography.bodySmall),
-            ],
-          ],
+        child: ListTile(
+          title: Text('"${highlight.quote}"'),
+          subtitle: highlight.note != null ? Text(highlight.note!) : null,
+          trailing: Text('p${highlight.page}', style: TenkaiTypography.labelSm),
         ),
       ),
     );

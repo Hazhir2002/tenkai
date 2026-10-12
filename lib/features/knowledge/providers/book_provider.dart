@@ -95,12 +95,33 @@ class BookNotifier extends Notifier<BookState> {
     final updatedBooks = state.books.map((book) {
       if (book.id == entry.bookId.value) {
         return book.copyWith(
-          readingSessions: [...book.readingSessions!, result],
+          readingSessions: [...book.readingSessions, result],
         );
       }
       return book;
     }).toList();
     state = state.copyWith(books: updatedBooks);
+  }
+
+  Future<void> updateReadingSession(ReadingSessionsCompanion entry) async {
+    final result = await db.bookDao.updateReadingSession(entry);
+
+    state = state.copyWith(
+      books: state.books.map((book) {
+        if (book.id != entry.bookId.value) {
+          return book;
+        }
+        final updatedReadingSessions = book.readingSessions.map((
+          readingSession,
+        ) {
+          if (readingSession.id == entry.id.value) {
+            return result;
+          }
+          return readingSession;
+        }).toList();
+        return book.copyWith(readingSessions: updatedReadingSessions);
+      }).toList(),
+    );
   }
 
   Future<void> deleteReadingSession(int bookId, int readingSessionId) async {
@@ -112,8 +133,79 @@ class BookNotifier extends Notifier<BookState> {
     final updatedBooks = state.books.map((book) {
       if (book.id == bookId) {
         return book.copyWith(
-          readingSessions: book.readingSessions!
+          readingSessions: book.readingSessions
               .where((session) => session.id != readingSessionId)
+              .toList(),
+        );
+      }
+      return book;
+    }).toList();
+    state = state.copyWith(books: updatedBooks);
+  }
+
+  Future<void> listBookHighlights(int bookId) async {
+    state = state.copyWith(isLoading: true, error: null);
+
+    try {
+      final highlights = await db.bookDao.getAllBookHighlights(bookId);
+
+      final updatedBooks = state.books.map((book) {
+        if (book.id == bookId) {
+          List<BookHighlight> bookHighlights = highlights
+              .map((p) => p)
+              .toList();
+          return book.copyWith(bookHighlights: bookHighlights);
+        }
+        return book;
+      }).toList();
+
+      state = state.copyWith(isLoading: false, books: updatedBooks);
+    } catch (e) {
+      state = state.copyWith(isLoading: false, error: e.toString());
+    }
+  }
+
+  Future<void> addBookHighlight(BookHighlightsCompanion entry) async {
+    final result = await db.bookDao.createBookHighlight(entry);
+    final updatedBooks = state.books.map((book) {
+      if (book.id == entry.bookId.value) {
+        return book.copyWith(bookHighlights: [...book.bookHighlights, result]);
+      }
+      return book;
+    }).toList();
+    state = state.copyWith(books: updatedBooks);
+  }
+
+  Future<void> updateBookHighlight(BookHighlightsCompanion entry) async {
+    final result = await db.bookDao.updateBookHighlight(entry);
+
+    state = state.copyWith(
+      books: state.books.map((book) {
+        if (book.id != entry.bookId.value) {
+          return book;
+        }
+        final updatedBookHighlights = book.bookHighlights.map((bookHighlight) {
+          if (bookHighlight.id == entry.id.value) {
+            return result;
+          }
+          return bookHighlight;
+        }).toList();
+        return book.copyWith(bookHighlights: updatedBookHighlights);
+      }).toList(),
+    );
+  }
+
+  Future<void> deleteBookHighlight(int bookId, int bookHighlightId) async {
+    final result = await db.bookDao.deleteBookHighlight(bookId);
+    if (result == 0) {
+      state = state.copyWith(error: 'Failed to delete book highlight');
+      return;
+    }
+    final updatedBooks = state.books.map((book) {
+      if (book.id == bookId) {
+        return book.copyWith(
+          bookHighlights: book.bookHighlights
+              .where((session) => session.id != bookHighlightId)
               .toList(),
         );
       }

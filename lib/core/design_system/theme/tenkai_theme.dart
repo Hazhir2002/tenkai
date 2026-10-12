@@ -32,6 +32,7 @@ abstract final class TenkaiTheme {
         onSecondary: c.secondaryForeground,
         secondaryContainer: c.muted,
         error: c.destructive,
+        errorContainer: Color(0x14FF4444),
         onError: c.foreground,
         surface: c.background,
         onSurface: c.foreground,
@@ -115,8 +116,10 @@ abstract final class TenkaiTheme {
 
       // ── Bottom sheet (flat) ──
       bottomSheetTheme: BottomSheetThemeData(
-        // backgroundColor: c.surface,
-        // modalBackgroundColor: c.surface,
+        backgroundColor: c.background,
+        modalBackgroundColor: c.background,
+        showDragHandle: true,
+        dragHandleColor: c.muted,
         elevation: 0,
         modalElevation: 0,
         shape: RoundedRectangleBorder(
