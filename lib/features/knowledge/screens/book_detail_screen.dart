@@ -309,20 +309,23 @@ class _BookDetailScreenState extends ConsumerState<BookDetailScreen> {
     WidgetRef ref,
     int id,
   ) async {
-    final confirmed = await showCupertinoDialog<bool>(
+    final theme = Theme.of(context);
+    final confirmed = await showDialog<bool>(
       context: context,
-      builder: (dialogCtx) => CupertinoAlertDialog(
+      builder: (dialogCtx) => AlertDialog(
         title: const Text('Delete book?'),
         content: const Text(
           'This removes the book, its reading log, and highlights. This can\'t be undone.',
         ),
         actions: [
-          CupertinoDialogAction(
+          TextButton(
             onPressed: () => Navigator.pop(dialogCtx, false),
             child: const Text('Cancel'),
           ),
-          CupertinoDialogAction(
-            isDestructiveAction: true,
+          FilledButton(
+            style: theme.filledButtonTheme.style!.copyWith(
+              backgroundColor: WidgetStatePropertyAll(theme.colorScheme.error),
+            ),
             onPressed: () => Navigator.pop(dialogCtx, true),
             child: const Text('Delete'),
           ),

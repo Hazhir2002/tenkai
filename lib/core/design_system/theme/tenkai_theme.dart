@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tenkai/core/design_system/atoms/tenkai_page_transition_builder.dart';
 import '../tokens/tenkai_tokens.dart';
 import 'tenkai_semantic_colors.dart';
 
@@ -317,6 +316,15 @@ abstract final class TenkaiTheme {
         contentTextStyle: TenkaiTypography.bodyMd.copyWith(color: c.foreground),
         shape: RoundedRectangleBorder(
           side: BorderSide(color: c.border),
+          borderRadius: BorderRadius.circular(TenkaiRadius.md),
+        ),
+      ),
+
+      dialogTheme: DialogThemeData(
+        backgroundColor: c.card,
+        titleTextStyle: TenkaiTypography.titleMd,
+        contentTextStyle: TenkaiTypography.bodyMd,
+        shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(TenkaiRadius.md),
         ),
       ),
