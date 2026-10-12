@@ -84,7 +84,11 @@ class _BookFormState extends ConsumerState<BookForm> {
                 children: [
                   Center(
                     child: GestureDetector(
-                      onTap: () => _pickCover(context, ref),
+                      onTap: () => _pickCover(context, (cover) {
+                        setState(() {
+                          _coverImage = cover;
+                        });
+                      }),
                       behavior: HitTestBehavior.opaque,
                       child: Column(
                         children: [
@@ -230,14 +234,18 @@ class _BookFormState extends ConsumerState<BookForm> {
                   const SizedBox(height: 16),
 
                   // Reminder
-                  Switch(
-                    value: _reminderEnabled,
-                    onChanged: (value) {
-                      setState(() {
-                        _reminderEnabled = value;
-                      });
-                    },
-                    // label: 'Daily reading reminder',
+                  Row(
+                    children: [
+                      Switch(
+                        value: _reminderEnabled,
+                        onChanged: (value) {
+                          setState(() {
+                            _reminderEnabled = value;
+                          });
+                        },
+                      ),
+                      Text('Daily reading reminder'),
+                    ],
                   ),
                   if (_reminderEnabled) ...[
                     const SizedBox(height: 12),
@@ -309,6 +317,7 @@ class _BookFormState extends ConsumerState<BookForm> {
                           deadline: Value(_deadline),
                           dailyPageGoal: Value(int.tryParse(_goalCtrl.text)),
                           updatedAt: Value(DateTime.now()),
+                          coverImagePath: Value(_coverImage),
                         ),
                       );
                   if (context.mounted) {
@@ -331,6 +340,7 @@ class _BookFormState extends ConsumerState<BookForm> {
                           status: Value(_bookStatus.dbValue),
                           deadline: Value(_deadline),
                           dailyPageGoal: Value(int.tryParse(_goalCtrl.text)),
+                          coverImagePath: Value(_coverImage),
                         ),
                       );
                   if (context.mounted) {
@@ -348,7 +358,10 @@ class _BookFormState extends ConsumerState<BookForm> {
     );
   }
 
-  Future<void> _pickCover(BuildContext context, WidgetRef ref) async {
+  Future<void> _pickCover(
+    BuildContext context,
+    void Function(String?) onCoverChanged,
+  ) async {
     final service = ref.read(imageStorageServiceProvider);
     // final notifier = ref.read(bookFormProvider.notifier);
     final source = await showModalBottomSheet<ImageSource?>(
@@ -368,24 +381,27 @@ class _BookFormState extends ConsumerState<BookForm> {
               title: const Text('Choose from library'),
               onTap: () => Navigator.pop(sheetCtx, ImageSource.gallery),
             ),
-            // if (ref.read(bookFormProvider).coverImagePath != null)
-            //   ListTile(
-            //     leading: const CNIcon(
-            //       symbol: CNSymbol('trash', color: TenkaiColors.error),
-            //     ),
-            //     title: const Text('Remove cover'),
-            //     onTap: () {
-            //       notifier.setCover(null);
-            //       Navigator.pop(sheetCtx, null);
-            //     },
-            //   ),
+            if (_coverImage != null)
+              ListTile(
+                leading: Icon(
+                  IconsaxOutline.trash,
+                  color: Theme.of(context).colorScheme.error,
+                ),
+                title: const Text('Remove cover'),
+                onTap: () {
+                  onCoverChanged(null);
+                  Navigator.pop(sheetCtx, null);
+                },
+              ),
           ],
         ),
       ),
     );
     if (source == null) return;
     final path = await service.pickAndStore(source: source);
-    // if (path != null) notifier.setCover(path);
+    if (path != null) {
+      onCoverChanged(path);
+    }
   }
 }
 
@@ -393,7 +409,7 @@ String _hm(int h, int m) =>
     '${h.toString().padLeft(2, '0')}:${m.toString().padLeft(2, '0')}';
 
 Future<DateTime?> _pickDate(BuildContext context, DateTime? initial) async {
-  var picked = initial ?? DateTime.now().add(const Duration(days: 14));
+  var picked = initial ?? DateTime.now();
   final ok = await showModalBottomSheet<bool>(
     context: context,
     backgroundColor: context.tenkai.card,

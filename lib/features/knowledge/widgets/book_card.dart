@@ -8,22 +8,22 @@ import 'package:tenkai/features/knowledge/models/book_model.dart';
 import '../models/book_enums.dart';
 
 /// Maps a pace state to a badge. Returns null when there's nothing to show.
-TenkaiBadge? paceBadge(PaceState state) => switch (state) {
-  PaceState.ahead => const TenkaiBadge(
-    label: 'Ahead',
-    variant: TenkaiBadgeVariant.success,
+Chip? paceBadge(PaceState state) => switch (state) {
+  PaceState.ahead => const Chip(
+    label: Text('Ahead'),
+    backgroundColor: Colors.greenAccent,
   ),
-  PaceState.onTrack => const TenkaiBadge(
-    label: 'On track',
-    variant: TenkaiBadgeVariant.success,
+  PaceState.onTrack => const Chip(
+    label: Text('On track'),
+    backgroundColor: Colors.greenAccent,
   ),
-  PaceState.behind => const TenkaiBadge(
-    label: 'Behind',
-    variant: TenkaiBadgeVariant.warning,
+  PaceState.behind => const Chip(
+    label: Text('Behind'),
+    backgroundColor: Colors.amberAccent,
   ),
-  PaceState.finished => const TenkaiBadge(
-    label: 'Finished',
-    variant: TenkaiBadgeVariant.success,
+  PaceState.finished => Chip(
+    label: Text('Finished'),
+    backgroundColor: Colors.greenAccent,
   ),
   PaceState.noTarget => null,
 };

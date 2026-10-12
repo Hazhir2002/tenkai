@@ -1,7 +1,5 @@
 import 'package:ficonsax/ficonsax.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:tenkai/core/database.dart';
@@ -13,7 +11,6 @@ import 'package:tenkai/features/knowledge/models/book_model.dart';
 import 'package:tenkai/features/knowledge/providers/book_provider.dart';
 
 import '../models/book_enums.dart';
-import '../providers/books_provider.dart';
 import '../widgets/add_highlight_sheet.dart';
 import '../widgets/book_card.dart';
 import '../widgets/book_form.dart';
@@ -48,9 +45,9 @@ class _BookDetailScreenState extends ConsumerState<BookDetailScreen> {
       readingSessions ?? [],
       DateTime.now(),
     );
-    final highlightsAsync = ref.watch(
-      highlightsForBookProvider(computedBook.id),
-    );
+    // final highlightsAsync = ref.watch(
+    //   highlightsForBookProvider(computedBook.id),
+    // );
     final badge = paceBadge(computedBook.paceState);
 
     return Scaffold(
@@ -260,8 +257,16 @@ class _BookDetailScreenState extends ConsumerState<BookDetailScreen> {
                           ),
                         ),
                       const SizedBox(height: TenkaiSpacing.xxl),
-                      Divider(),
-                      Text('Reading Log'),
+                      Row(
+                        spacing: TenkaiSpacing.sm,
+                        children: [
+                          Text(
+                            'Reading Logs',
+                            style: theme.textTheme.labelLarge,
+                          ),
+                          Expanded(child: Divider()),
+                        ],
+                      ),
                       const SizedBox(height: 16),
                       // sessionsAsync.when(
                       //   loading: () => const SizedBox.shrink(),
@@ -284,29 +289,34 @@ class _BookDetailScreenState extends ConsumerState<BookDetailScreen> {
                       //   },
                       // ),
                       const SizedBox(height: TenkaiSpacing.xxl),
-                      // Divider(label: 'Highlights'),
-                      Divider(),
-                      const SizedBox(height: 16),
-                      highlightsAsync.when(
-                        loading: () => const SizedBox.shrink(),
-                        error: (_, __) => const SizedBox.shrink(),
-                        data: (highlights) {
-                          if (highlights.isEmpty) {
-                            return Text(
-                              'No highlights saved yet.',
-                              style: theme.textTheme.bodySmall,
-                            );
-                          }
-                          return Column(
-                            children: [
-                              for (final h in highlights) ...[
-                                _HighlightRow(highlight: h),
-                                const SizedBox(height: 10),
-                              ],
-                            ],
-                          );
-                        },
+                      Row(
+                        spacing: TenkaiSpacing.sm,
+                        children: [
+                          Text('Highlights', style: theme.textTheme.labelLarge),
+                          Expanded(child: Divider()),
+                        ],
                       ),
+                      const SizedBox(height: 16),
+                      // highlightsAsync.when(
+                      //   loading: () => const SizedBox.shrink(),
+                      //   error: (_, __) => const SizedBox.shrink(),
+                      //   data: (highlights) {
+                      //     if (highlights.isEmpty) {
+                      //       return Text(
+                      //         'No highlights saved yet.',
+                      //         style: theme.textTheme.bodySmall,
+                      //       );
+                      //     }
+                      //     return Column(
+                      //       children: [
+                      //         for (final h in highlights) ...[
+                      //           _HighlightRow(highlight: h),
+                      //           const SizedBox(height: 10),
+                      //         ],
+                      //       ],
+                      //     );
+                      //   },
+                      // ),
                     ],
                   ),
                 ),

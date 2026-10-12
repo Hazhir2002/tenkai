@@ -6,8 +6,6 @@ import 'package:tenkai/core/design_system/atoms/tenkai_text_form_field.dart';
 import 'package:tenkai/core/design_system/tenkai.dart';
 import 'package:tenkai/core/providers.dart';
 
-import '../providers/books_provider.dart';
-
 /// Records a reading session (page update + optional "what I learned"
 /// summary). Returns `true` when the update reached the last page, so the
 /// caller can chain into the finish flow.
