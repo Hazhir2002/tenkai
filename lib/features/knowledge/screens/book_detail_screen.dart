@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:tenkai/core/database.dart';
 import 'package:tenkai/core/design_system/tenkai.dart';
 import 'package:tenkai/core/providers.dart';
+import 'package:tenkai/core/widgets/show_confirm_delete_dialog.dart';
 import 'package:tenkai/core/widgets/tenkai_metric_card.dart';
 import 'package:tenkai/features/knowledge/models/book_model.dart';
 import 'package:tenkai/features/knowledge/providers/book_provider.dart';
@@ -70,7 +71,17 @@ class _BookDetailScreenState extends ConsumerState<BookDetailScreen> {
               ? SizedBox()
               : IconButton(
                   icon: Icon(IconsaxOutline.trash),
-                  onPressed: () => _confirmDelete(context, ref, widget.bookId),
+                  onPressed: () => showConfirmDeleteDialog(
+                    context,
+                    'Delete book?',
+                    'This removes the book, its reading log, and highlights. This can\'t be undone.',
+                    () async {
+                      await ref
+                          .read(appDataBaseProvider)
+                          .bookDao
+                          .deleteBook(book.id);
+                    },
+                  ),
                 ),
         ],
       ),
@@ -302,40 +313,6 @@ class _BookDetailScreenState extends ConsumerState<BookDetailScreen> {
         ),
       ),
     );
-  }
-
-  Future<void> _confirmDelete(
-    BuildContext context,
-    WidgetRef ref,
-    int id,
-  ) async {
-    final theme = Theme.of(context);
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (dialogCtx) => AlertDialog(
-        title: const Text('Delete book?'),
-        content: const Text(
-          'This removes the book, its reading log, and highlights. This can\'t be undone.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogCtx, false),
-            child: const Text('Cancel'),
-          ),
-          FilledButton(
-            style: theme.filledButtonTheme.style!.copyWith(
-              backgroundColor: WidgetStatePropertyAll(theme.colorScheme.error),
-            ),
-            onPressed: () => Navigator.pop(dialogCtx, true),
-            child: const Text('Delete'),
-          ),
-        ],
-      ),
-    );
-    if (confirmed != true) return;
-    await ref.read(appDataBaseProvider).bookDao.deleteBook(id);
-    // await ref.read(notificationServiceProvider).cancelBook(id);
-    if (context.mounted) context.pop();
   }
 
   Future<void> _updateProgress(
