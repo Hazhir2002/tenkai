@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:tenkai/core/design_system/atoms/tenkai_display.dart';
 import 'package:tenkai/core/design_system/molecules/tenkai_molecules.dart';
 import 'package:tenkai/core/design_system/tenkai.dart';
 import 'package:tenkai/core/design_system/tokens/tenkai_typography.dart';
@@ -100,12 +99,9 @@ class HabitScreen extends ConsumerWidget {
           children: [
             Row(
               children: [
-                TenkaiBadge(label: habitView.status.label),
+                Chip(label: Text(habitView.status.label)),
                 const SizedBox(width: 8),
-                TenkaiBadge(
-                  label: habitView.cueType.label,
-                  variant: TenkaiBadgeVariant.active,
-                ),
+                Chip(label: Text(habitView.cueType.label)),
               ],
             ),
             const SizedBox(height: 16),
@@ -129,9 +125,10 @@ class HabitScreen extends ConsumerWidget {
                 runSpacing: 6,
                 children: [
                   for (final s in habitView.schedules)
-                    TenkaiBadge(
-                      label:
-                          '${weekdayLabel(s.weekday)} ${formatHm(s.hour, s.minute)}',
+                    Chip(
+                      label: Text(
+                        '${weekdayLabel(s.weekday)} ${formatHm(s.hour, s.minute)}',
+                      ),
                     ),
                 ],
               ),

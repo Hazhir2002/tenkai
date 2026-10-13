@@ -102,11 +102,7 @@ class _GoalDetailBody extends ConsumerWidget {
             _statusBadge(goal),
             if (goal.hasPacing) ...[
               const SizedBox(width: TenkaiSpacing.sm),
-              TenkaiBadge(
-                label: goal.pace.label,
-                variant: goal.pace.badgeVariant,
-                dot: true,
-              ),
+              Chip(label: Text(goal.pace.label)),
             ],
           ],
         ),
@@ -120,11 +116,11 @@ class _GoalDetailBody extends ConsumerWidget {
           ),
         ],
         const SizedBox(height: TenkaiSpacing.xl),
-        TenkaiProgress(
+        LinearProgressIndicator(
           value: goal.progress,
-          label:
-              '${formatGoalValue(goal.currentValue, goal.unit)} of '
-              '${formatGoalValue(goal.targetValue, goal.unit)}',
+          // label:
+          //     '${formatGoalValue(goal.currentValue, goal.unit)} of '
+          //     '${formatGoalValue(goal.targetValue, goal.unit)}',
         ),
         const SizedBox(height: TenkaiSpacing.xl),
         _MetricGrid(goal: goal),
@@ -166,16 +162,12 @@ class _GoalDetailBody extends ConsumerWidget {
   }
 
   Widget _statusBadge(Goal goal) => switch (goal.status) {
-    GoalStatus.completed => const TenkaiBadge(
-      label: 'Completed',
-      variant: TenkaiBadgeVariant.success,
-      dot: true,
+    GoalStatus.completed => const Chip(
+      label: Text('Completed'),
+      backgroundColor: Colors.greenAccent,
     ),
-    GoalStatus.archived => const TenkaiBadge(label: 'Archived'),
-    GoalStatus.active => const TenkaiBadge(
-      label: 'Active',
-      variant: TenkaiBadgeVariant.active,
-    ),
+    GoalStatus.archived => const Chip(label: Text('Archived')),
+    GoalStatus.active => const Chip(label: Text('Active')),
   };
 }
 

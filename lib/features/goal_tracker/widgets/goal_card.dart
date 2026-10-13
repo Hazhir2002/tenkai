@@ -53,7 +53,7 @@ class GoalCard extends StatelessWidget {
               ),
             ),
             const SizedBox(height: TenkaiSpacing.md),
-            TenkaiProgress(value: goal.progress),
+            LinearProgressIndicator(value: goal.progress),
           ],
         ),
       ),
@@ -63,25 +63,17 @@ class GoalCard extends StatelessWidget {
   Widget _badge() {
     switch (goal.status) {
       case GoalStatus.completed:
-        return const TenkaiBadge(
-          label: 'Completed',
-          variant: TenkaiBadgeVariant.success,
-          dot: true,
+        return const Chip(
+          label: Text('Completed'),
+          backgroundColor: Colors.greenAccent,
         );
       case GoalStatus.archived:
-        return const TenkaiBadge(label: 'Archived');
+        return const Chip(label: Text('Archived'));
       case GoalStatus.active:
         if (goal.hasPacing) {
-          return TenkaiBadge(
-            label: goal.pace.label,
-            variant: goal.pace.badgeVariant,
-            dot: true,
-          );
+          return Chip(label: Text(goal.pace.label));
         }
-        return const TenkaiBadge(
-          label: 'Active',
-          variant: TenkaiBadgeVariant.active,
-        );
+        return const Chip(label: Text('Active'));
     }
   }
 }

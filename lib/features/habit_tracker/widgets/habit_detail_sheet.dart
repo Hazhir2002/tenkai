@@ -73,12 +73,9 @@ class _HabitDetailSheet extends ConsumerWidget {
       children: [
         Row(
           children: [
-            TenkaiBadge(label: view.status.label),
+            Chip(label: Text(view.status.label)),
             const SizedBox(width: 8),
-            TenkaiBadge(
-              label: view.cueType.label,
-              variant: TenkaiBadgeVariant.active,
-            ),
+            Chip(label: Text(view.cueType.label)),
           ],
         ),
         const SizedBox(height: 16),
@@ -101,9 +98,10 @@ class _HabitDetailSheet extends ConsumerWidget {
             runSpacing: 6,
             children: [
               for (final s in view.schedules)
-                TenkaiBadge(
-                  label:
-                      '${weekdayLabel(s.weekday)} ${formatHm(s.hour, s.minute)}',
+                Chip(
+                  label: Text(
+                    '${weekdayLabel(s.weekday)} ${formatHm(s.hour, s.minute)}',
+                  ),
                 ),
             ],
           ),

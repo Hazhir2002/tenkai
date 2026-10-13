@@ -18,7 +18,7 @@ class _NodeStyle {
   final bool glowing;
   final double size;
   final String? badgeLabel;
-  final TenkaiBadgeVariant badgeVariant;
+  final Color badgeVariant;
 
   factory _NodeStyle.of(HabitView v, TenkaiSemanticColors c) {
     switch (v.dayState) {
@@ -28,7 +28,7 @@ class _NodeStyle {
           glowing: true,
           size: 18,
           badgeLabel: 'Done',
-          badgeVariant: TenkaiBadgeVariant.success,
+          badgeVariant: Colors.greenAccent,
         );
       case HabitDayState.next:
         return _NodeStyle(
@@ -36,7 +36,7 @@ class _NodeStyle {
           glowing: true,
           size: 24,
           badgeLabel: 'Next',
-          badgeVariant: TenkaiBadgeVariant.active,
+          badgeVariant: Colors.blueAccent,
         );
       case HabitDayState.pendingToday:
         return _NodeStyle(
@@ -44,7 +44,7 @@ class _NodeStyle {
           glowing: true,
           size: 18,
           badgeLabel: 'Pending',
-          badgeVariant: TenkaiBadgeVariant.neutral,
+          badgeVariant: Colors.transparent,
         );
       case HabitDayState.notScheduledToday:
         return _NodeStyle(
@@ -52,7 +52,7 @@ class _NodeStyle {
           glowing: false,
           size: 16,
           badgeLabel: null,
-          badgeVariant: TenkaiBadgeVariant.neutral,
+          badgeVariant: Colors.transparent,
         );
       case HabitDayState.building:
         return _NodeStyle(
@@ -60,7 +60,7 @@ class _NodeStyle {
           glowing: true,
           size: 16,
           badgeLabel: 'Building',
-          badgeVariant: TenkaiBadgeVariant.neutral,
+          badgeVariant: Colors.transparent,
         );
       case HabitDayState.planned:
         return _NodeStyle(
@@ -68,7 +68,7 @@ class _NodeStyle {
           glowing: false,
           size: 14,
           badgeLabel: 'Planned',
-          badgeVariant: TenkaiBadgeVariant.neutral,
+          badgeVariant: Colors.transparent,
         );
     }
   }
@@ -186,10 +186,9 @@ class _NodeRow extends StatelessWidget {
                             ),
                             if (style.badgeLabel != null) ...[
                               const SizedBox(width: 8),
-                              TenkaiBadge(
-                                label: style.badgeLabel!,
-                                variant: style.badgeVariant,
-                                dot: view.dayState == HabitDayState.next,
+                              Chip(
+                                label: Text(style.badgeLabel!),
+                                backgroundColor: style.badgeVariant,
                               ),
                             ],
                           ],

@@ -6,11 +6,11 @@ import 'package:tenkai/features/goal_tracker/enums/goal_pace.dart';
 /// Tenkai colors/badges, and formatting goal values for display.
 
 extension GoalPaceUi on GoalPace {
-  TenkaiBadgeVariant get badgeVariant => switch (this) {
-    GoalPace.ahead => TenkaiBadgeVariant.success,
-    GoalPace.onTrack => TenkaiBadgeVariant.active,
-    GoalPace.behind => TenkaiBadgeVariant.warning,
-    GoalPace.none => TenkaiBadgeVariant.neutral,
+  Color get badgeVariant => switch (this) {
+    GoalPace.ahead => Colors.greenAccent,
+    GoalPace.onTrack => Colors.blueAccent,
+    GoalPace.behind => Colors.yellowAccent,
+    GoalPace.none => Colors.transparent,
   };
 
   /// Chart/accent color for this pace (ahead & on-track read as "good").
