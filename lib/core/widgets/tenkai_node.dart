@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../design_system/theme/tenkai_semantic_colors.dart';
-import '../design_system/tokens/tenkai_tokens.dart';
+import '../theme/tenkai_semantic_colors.dart';
+import '../tokens/tenkai_tokens.dart';
 
 /// A small dot/pill marker — e.g. for timelines, diagrams, or node-based
 /// layouts (the habit stacking chain). Flat by default; [glowing] adds the

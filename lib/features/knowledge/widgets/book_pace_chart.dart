@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:tenkai/core/design_system/tenkai.dart';
+import 'package:tenkai/core/theme/tenkai_semantic_colors.dart';
+import 'package:tenkai/core/tokens/tenkai_colors.dart';
+import 'package:tenkai/core/tokens/tenkai_curves.dart';
+import 'package:tenkai/core/tokens/tenkai_duration.dart';
 import 'package:tenkai/features/knowledge/models/book_model.dart';
 
 import '../models/book_enums.dart';

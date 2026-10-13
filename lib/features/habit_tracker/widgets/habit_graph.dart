@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:tenkai/core/design_system/tenkai.dart';
+import 'package:tenkai/core/theme/tenkai_semantic_colors.dart';
+import 'package:tenkai/core/tokens/tenkai_colors.dart';
+import 'package:tenkai/core/tokens/tenkai_typography.dart';
+import 'package:tenkai/core/widgets/tenkai_node.dart';
 
 import '../models/habit_enums.dart';
 import '../models/habit_view.dart';

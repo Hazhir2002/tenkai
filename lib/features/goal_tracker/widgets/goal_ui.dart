@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tenkai/core/design_system/tenkai.dart';
+import 'package:tenkai/core/tokens/tenkai_colors.dart';
 import 'package:tenkai/features/goal_tracker/enums/goal_pace.dart';
 
 /// Shared presentation helpers for goal widgets: mapping the server's pace to

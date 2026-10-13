@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:tenkai/core/tokens/tenkai_spacing.dart';
 import 'package:tenkai/core/widgets/tenkai_record_button.dart';
 import 'package:tenkai/core/widgets/tenkai_text_form_field.dart';
-import 'package:tenkai/core/design_system/tenkai.dart';
-import 'package:tenkai/core/design_system/tokens/tenkai_duration.dart';
+import 'package:tenkai/core/tokens/tenkai_duration.dart';
 
 import '../providers/journal_flow_provider.dart';
 

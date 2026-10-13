@@ -3,8 +3,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:tenkai/core/design_system/tenkai.dart';
+import 'package:tenkai/core/tokens/tenkai_spacing.dart';
+import 'package:tenkai/core/tokens/tenkai_typography.dart';
 import 'package:tenkai/core/widgets/tenkai_empty_state.dart';
+import 'package:tenkai/core/widgets/tenkai_node.dart';
 import 'package:tenkai/features/knowledge/providers/book_provider.dart';
 
 import '../models/book_enums.dart';

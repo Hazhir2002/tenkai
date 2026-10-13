@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:tenkai/core/design_system/tenkai.dart';
+import 'package:tenkai/core/tokens/tenkai_spacing.dart';
 import 'package:tenkai/features/fitness/widgets/steps_widget.dart';
 
 class FitnessScreen extends StatelessWidget {

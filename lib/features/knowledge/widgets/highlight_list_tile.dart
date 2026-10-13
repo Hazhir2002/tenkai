@@ -2,8 +2,8 @@ import 'package:ficonsax/ficonsax.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tenkai/core/database.dart';
-import 'package:tenkai/core/design_system/tokens/tenkai_radius.dart';
-import 'package:tenkai/core/design_system/tokens/tenkai_spacing.dart';
+import 'package:tenkai/core/tokens/tenkai_radius.dart';
+import 'package:tenkai/core/tokens/tenkai_spacing.dart';
 import 'package:tenkai/features/knowledge/providers/book_provider.dart';
 
 class HighlightListTile extends ConsumerWidget {

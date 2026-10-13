@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tenkai/core/design_system/tenkai.dart';
+import 'package:tenkai/core/tokens/tenkai_spacing.dart';
 import 'package:tenkai/features/task_tracker/enums/task_status.dart';
 
 /// Horizontal row of filter chips: "All" plus one chip per [TaskStatus].

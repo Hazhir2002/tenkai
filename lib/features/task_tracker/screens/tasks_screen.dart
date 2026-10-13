@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:tenkai/core/design_system/tenkai.dart';
+import 'package:tenkai/core/theme/tenkai_semantic_colors.dart';
+import 'package:tenkai/core/tokens/tenkai_colors.dart';
+import 'package:tenkai/core/tokens/tenkai_radius.dart';
+import 'package:tenkai/core/tokens/tenkai_spacing.dart';
+import 'package:tenkai/core/tokens/tenkai_typography.dart';
 import 'package:tenkai/features/task_tracker/providers/task_provider.dart';
 import 'package:tenkai/features/task_tracker/widgets/create_task_form.dart';
 import 'package:tenkai/features/task_tracker/widgets/task_card.dart';

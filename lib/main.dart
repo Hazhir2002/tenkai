@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tenkai/core/configs/app_router.dart';
-import 'package:tenkai/core/design_system/tenkai.dart';
 import 'package:tenkai/core/notifications/tenkai_notifications.dart';
 import 'package:tenkai/core/services/storage_service.dart';
 import 'package:tenkai/core/tenkai_widget.dart';
+import 'package:tenkai/core/theme/tenkai_semantic_colors.dart';
+import 'package:tenkai/core/theme/tenkai_theme.dart';
 import 'package:tenkai/core/theme_mode_provider.dart';
+import 'package:tenkai/core/tokens/tenkai_typography.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

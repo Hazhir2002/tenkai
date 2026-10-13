@@ -1,6 +1,6 @@
 import 'package:ficonsax/ficonsax.dart';
 import 'package:flutter/material.dart';
-import 'package:tenkai/core/design_system/tenkai.dart';
+import 'package:tenkai/core/theme/tenkai_semantic_colors.dart';
 
 /// A 1–5 star rating. Read-only when [onChanged] is null.
 class StarRating extends StatelessWidget {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../design_system/theme/tenkai_semantic_colors.dart';
-import '../design_system/tokens/tenkai_tokens.dart';
+import '../theme/tenkai_semantic_colors.dart';
+import '../tokens/tenkai_tokens.dart';
 
 // ─────────────────────────────────────────────
 // TENKAI · LED Glow Primitive

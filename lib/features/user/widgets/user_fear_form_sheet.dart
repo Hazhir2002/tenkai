@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tenkai/core/database.dart';
 import 'package:tenkai/core/widgets/tenkai_text_form_field.dart';
-import 'package:tenkai/core/design_system/tokens/tenkai_spacing.dart';
+import 'package:tenkai/core/tokens/tenkai_spacing.dart';
 import 'package:tenkai/features/user/provider/user_fear_provider.dart';
 
 Future<void> showUserFearFormSheet(

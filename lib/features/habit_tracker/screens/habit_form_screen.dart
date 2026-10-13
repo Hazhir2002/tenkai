@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tenkai/core/design_system/tenkai.dart';
+import 'package:tenkai/core/tokens/tenkai_spacing.dart';
 import 'package:tenkai/features/habit_tracker/widgets/habit_form.dart';
 
 class HabitFormScreen extends StatelessWidget {

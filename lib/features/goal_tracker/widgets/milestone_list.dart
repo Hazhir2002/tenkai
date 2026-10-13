@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:tenkai/core/theme/tenkai_semantic_colors.dart';
+import 'package:tenkai/core/tokens/tenkai_colors.dart';
+import 'package:tenkai/core/tokens/tenkai_spacing.dart';
+import 'package:tenkai/core/tokens/tenkai_typography.dart';
+import 'package:tenkai/core/widgets/tenkai_node.dart';
 import 'package:tenkai/core/widgets/tenkai_text_form_field.dart';
-import 'package:tenkai/core/design_system/tenkai.dart';
 import 'package:tenkai/features/goal_tracker/models/goal.dart';
 import 'package:tenkai/features/goal_tracker/models/milestone.dart';
 import 'package:tenkai/features/goal_tracker/params/milestone_param.dart';

@@ -1,6 +1,6 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/foundation.dart';
-import 'package:tenkai/core/design_system/tenkai.dart';
+import 'package:tenkai/core/theme/tenkai_semantic_colors.dart';
 
 abstract final class TenkaiNotifications {
   static const String _channelKey = 'tenkai_reminders';

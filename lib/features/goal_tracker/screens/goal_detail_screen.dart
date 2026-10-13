@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:tenkai/core/design_system/tenkai.dart';
+import 'package:tenkai/core/theme/tenkai_semantic_colors.dart';
+import 'package:tenkai/core/tokens/tenkai_spacing.dart';
+import 'package:tenkai/core/tokens/tenkai_typography.dart';
 import 'package:tenkai/core/widgets/tenkai_metric_card.dart';
 import 'package:tenkai/features/goal_tracker/enums/goal_status.dart';
 import 'package:tenkai/features/goal_tracker/models/goal.dart';
