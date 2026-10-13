@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:tenkai/core/design_system/atoms/tenkai_text_form_field.dart';
+import 'package:tenkai/core/widgets/tenkai_text_form_field.dart';
 import 'package:tenkai/core/design_system/tenkai.dart';
 import 'package:tenkai/features/goal_tracker/models/goal.dart';
 import 'package:tenkai/features/goal_tracker/params/log_value_param.dart';
@@ -90,19 +90,19 @@ class _LogValueFormState extends ConsumerState<LogValueForm> {
 
     final justCompleted = updated.isCompleted && !wasCompleted;
     Navigator.of(context).pop();
-    showTenkaiToast(
-      context,
-      justCompleted
-          ? TenkaiToastData(
-              title: 'Goal complete! 🎉',
-              message: '“${updated.title}” hit its target.',
-              variant: TenkaiToastVariant.success,
-            )
-          : const TenkaiToastData(
-              title: 'Value logged',
-              variant: TenkaiToastVariant.success,
-            ),
-    );
+    // showTenkaiToast(
+    //   context,
+    //   justCompleted
+    //       ? TenkaiToastData(
+    //           title: 'Goal complete! 🎉',
+    //           message: '“${updated.title}” hit its target.',
+    //           variant: TenkaiToastVariant.success,
+    //         )
+    //       : const TenkaiToastData(
+    //           title: 'Value logged',
+    //           variant: TenkaiToastVariant.success,
+    //         ),
+    // );
   }
 
   @override

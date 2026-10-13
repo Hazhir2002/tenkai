@@ -13,10 +13,10 @@ class GoalsScreen extends ConsumerWidget {
   const GoalsScreen({super.key});
 
   void _openCreateSheet(BuildContext context) {
-    showTenkaiSheet(
+    showModalBottomSheet(
       context: context,
-      title: 'New goal',
-      child: const CreateGoalForm(),
+      // title: 'New goal',
+      builder: (context) => const CreateGoalForm(),
     );
   }
 

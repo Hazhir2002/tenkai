@@ -16,24 +16,24 @@ class ProfileScreen extends ConsumerStatefulWidget {
 
 class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   Future<void> _confirmLogout() async {
-    final shouldLogout = await showTenkaiDialog<bool>(
-      context: context,
-      title: 'Log out?',
-      description: 'You will need to sign in again to continue.',
-      actions: [
-        OutlinedButton(
-          onPressed: () => Navigator.of(context).pop(false),
-          child: const Text('Cancel'),
-        ),
-        FilledButton(
-          child: Text('Log out'),
-          onPressed: () => Navigator.of(context).pop(true),
-        ),
-      ],
-    );
-    if (shouldLogout ?? false) {
-      // The router guard redirects to /login once state is unauthenticated.
-    }
+    // final shouldLogout = await showTenkaiDialog<bool>(
+    //   context: context,
+    //   title: 'Log out?',
+    //   description: 'You will need to sign in again to continue.',
+    //   actions: [
+    //     OutlinedButton(
+    //       onPressed: () => Navigator.of(context).pop(false),
+    //       child: const Text('Cancel'),
+    //     ),
+    //     FilledButton(
+    //       child: Text('Log out'),
+    //       onPressed: () => Navigator.of(context).pop(true),
+    //     ),
+    //   ],
+    // );
+    // if (shouldLogout ?? false) {
+    //   // The router guard redirects to /login once state is unauthenticated.
+    // }
   }
 
   @override
@@ -130,10 +130,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               '${stats[i].value} ${stats[i].unit}',
               style: TenkaiTypography.bodyMd.copyWith(color: c.mutedForeground),
             ),
-            onTap: () => showTenkaiSheet(
+            onTap: () => showModalBottomSheet(
               context: context,
-              title: 'Update ${stats[i].title}',
-              child: UpdateStatForm(userStat: stats[i]),
+              // title: 'Update ${stats[i].title}',
+              builder: (context) => UpdateStatForm(userStat: stats[i]),
             ),
           ),
         ],

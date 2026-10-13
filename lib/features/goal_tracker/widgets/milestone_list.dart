@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:tenkai/core/design_system/atoms/tenkai_text_form_field.dart';
+import 'package:tenkai/core/widgets/tenkai_text_form_field.dart';
 import 'package:tenkai/core/design_system/tenkai.dart';
 import 'package:tenkai/features/goal_tracker/models/goal.dart';
 import 'package:tenkai/features/goal_tracker/models/milestone.dart';
@@ -17,10 +17,10 @@ class MilestoneList extends ConsumerWidget {
   final Goal goal;
 
   void _openForm(BuildContext context, {Milestone? existing}) {
-    showTenkaiSheet(
+    showModalBottomSheet(
       context: context,
-      title: existing == null ? 'New milestone' : 'Edit milestone',
-      child: _MilestoneForm(goalId: goal.id, existing: existing),
+      // title: existing == null ? 'New milestone' : 'Edit milestone',
+      builder: (context) => _MilestoneForm(goalId: goal.id, existing: existing),
     );
   }
 

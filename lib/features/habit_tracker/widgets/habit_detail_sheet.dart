@@ -17,10 +17,10 @@ Future<void> showHabitDetailSheet(
   WidgetRef ref,
   HabitView view,
 ) {
-  return showTenkaiSheet<void>(
+  return showModalBottomSheet<void>(
     context: context,
-    title: view.habit.title,
-    child: _HabitDetailSheet(view: view),
+    // title: view.habit.title,
+    builder: (context) => _HabitDetailSheet(view: view),
   );
 }
 
@@ -53,13 +53,13 @@ class _HabitDetailSheet extends ConsumerWidget {
     // await ref.read(notificationServiceProvider).cancelHabit(view.habit.id);
     if (context.mounted) {
       Navigator.of(context).pop();
-      showTenkaiToast(
-        context,
-        const TenkaiToastData(
-          title: 'Habit deleted',
-          variant: TenkaiToastVariant.info,
-        ),
-      );
+      // showTenkaiToast(
+      //   context,
+      //   const TenkaiToastData(
+      //     title: 'Habit deleted',
+      //     variant: TenkaiToastVariant.info,
+      //   ),
+      // );
     }
   }
 

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tenkai/core/database.dart';
-import 'package:tenkai/core/design_system/atoms/tenkai_text_form_field.dart';
-import 'package:tenkai/core/design_system/molecules/tenkai_molecules.dart';
+import 'package:tenkai/core/widgets/tenkai_text_form_field.dart';
 import 'package:tenkai/core/design_system/tokens/tenkai_spacing.dart';
 import 'package:tenkai/features/user/provider/user_fear_provider.dart';
 
@@ -15,10 +14,10 @@ Future<void> showUserFearFormSheet(
 ) {
   // final notifier = ref.read(userFearFormProvider.notifier)
 
-  return showTenkaiSheet<void>(
+  return showModalBottomSheet<void>(
     context: context,
-    title: 'New fear',
-    child: _UserFearFormSheet(),
+    // title: 'New fear',
+    builder: (context) => _UserFearFormSheet(),
   );
 }
 

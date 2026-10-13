@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tenkai/core/database.dart';
-import 'package:tenkai/core/design_system/atoms/tenkai_text_form_field.dart';
+import 'package:tenkai/core/widgets/tenkai_text_form_field.dart';
 import 'package:tenkai/core/design_system/tenkai.dart';
 import 'package:tenkai/features/habit_tracker/providers/habit_provider.dart';
 import 'package:tenkai/features/habit_tracker/widgets/schedule_builder.dart';
@@ -168,15 +168,15 @@ class _HabitFormState extends ConsumerState<HabitForm> {
                       );
                       if (context.mounted) {
                         context.pop();
-                        showTenkaiToast(
-                          context,
-                          TenkaiToastData(
-                            title: widget.editing != null
-                                ? 'Habit updated'
-                                : 'Habit added',
-                            variant: TenkaiToastVariant.success,
-                          ),
-                        );
+                        // showTenkaiToast(
+                        //   context,
+                        //   TenkaiToastData(
+                        //     title: widget.editing != null
+                        //         ? 'Habit updated'
+                        //         : 'Habit added',
+                        //     variant: TenkaiToastVariant.success,
+                        //   ),
+                        // );
                       }
                     }
                   : null,

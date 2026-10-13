@@ -16,12 +16,6 @@ export '../widgets/tenkai_record_button.dart';
 // Atoms — added components
 export '../widgets/tenkai_motion.dart';
 
-// Molecules
-export 'molecules/tenkai_molecules.dart';
-export 'molecules/tenkai_dialog.dart';
-export 'molecules/tenkai_tab_bar.dart';
-export 'molecules/tenkai_accordion.dart';
-
 // Theme
 export 'theme/tenkai_theme.dart';
 export 'theme/tenkai_semantic_colors.dart';

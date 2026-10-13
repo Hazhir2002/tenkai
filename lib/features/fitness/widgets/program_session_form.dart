@@ -2,7 +2,7 @@ import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tenkai/core/database.dart';
-import 'package:tenkai/core/design_system/atoms/tenkai_text_form_field.dart';
+import 'package:tenkai/core/widgets/tenkai_text_form_field.dart';
 import 'package:tenkai/core/design_system/tenkai.dart';
 import 'package:tenkai/features/fitness/providers/fitness_provider.dart';
 

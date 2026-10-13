@@ -6,7 +6,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:tenkai/core/database.dart';
-import 'package:tenkai/core/design_system/atoms/tenkai_text_form_field.dart';
+import 'package:tenkai/core/widgets/tenkai_text_form_field.dart';
 import 'package:tenkai/core/design_system/tenkai.dart';
 import 'package:tenkai/core/services/image_storage_service.dart';
 import 'package:tenkai/features/knowledge/models/book_enums.dart';

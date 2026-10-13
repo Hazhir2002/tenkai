@@ -5,7 +5,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:tenkai/core/database.dart';
-import 'package:tenkai/core/design_system/atoms/tenkai_text_form_field.dart';
+import 'package:tenkai/core/widgets/tenkai_text_form_field.dart';
 import 'package:tenkai/core/design_system/tenkai.dart';
 import 'package:tenkai/core/widgets/tenkai_empty_state.dart';
 
@@ -147,10 +147,10 @@ class _EntryCard extends HookConsumerWidget {
   }
 
   void _openEditSheet(BuildContext context, WidgetRef ref, JournalEntry entry) {
-    showTenkaiSheet(
+    showModalBottomSheet(
       context: context,
-      title: 'Edit entry',
-      child: _EditEntryForm(entry: entry),
+      // title: 'Edit entry',
+      builder: (context) => _EditEntryForm(entry: entry),
     );
   }
 }

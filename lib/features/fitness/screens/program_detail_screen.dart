@@ -2,7 +2,6 @@ import 'package:ficonsax/ficonsax.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:tenkai/core/design_system/molecules/tenkai_molecules.dart';
 import 'package:tenkai/core/widgets/tenkai_empty_state.dart';
 import 'package:tenkai/features/fitness/providers/fitness_provider.dart';
 import 'package:tenkai/features/fitness/widgets/program_session_form.dart';
@@ -43,10 +42,11 @@ class _ProgramDetailScreenState extends ConsumerState<ProgramDetailScreen> {
         actions: [
           IconButton(
             onPressed: () => {
-              showTenkaiSheet(
+              showModalBottomSheet(
                 context: context,
-                title: 'Add Program Session',
-                child: ProgramSessionForm(programId: widget.programId),
+                // title: 'Add Program Session',
+                builder: (context) =>
+                    ProgramSessionForm(programId: widget.programId),
               ),
             },
             icon: Icon(IconsaxOutline.add),
@@ -67,10 +67,11 @@ class _ProgramDetailScreenState extends ConsumerState<ProgramDetailScreen> {
                   description: 'This program has no sessions',
                   action: FilledButton(
                     onPressed: () => {
-                      showTenkaiSheet(
+                      showModalBottomSheet(
                         context: context,
-                        title: 'Add Program Session',
-                        child: ProgramSessionForm(programId: widget.programId),
+                        // title: 'Add Program Session',
+                        builder: (context) =>
+                            ProgramSessionForm(programId: widget.programId),
                       ),
                     },
                     child: Text('Add Session'),

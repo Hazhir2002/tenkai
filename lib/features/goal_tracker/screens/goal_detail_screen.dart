@@ -17,18 +17,18 @@ class GoalDetailScreen extends ConsumerWidget {
   final String goalId;
 
   void _openLogSheet(BuildContext context, Goal goal) {
-    showTenkaiSheet(
+    showModalBottomSheet(
       context: context,
-      title: 'Log a value',
-      child: LogValueForm(goal: goal),
+      // title: 'Log a value',
+      builder: (context) => LogValueForm(goal: goal),
     );
   }
 
   void _openEditSheet(BuildContext context, Goal goal) {
-    showTenkaiSheet(
+    showModalBottomSheet(
       context: context,
-      title: 'Edit goal',
-      child: CreateGoalForm(existing: goal),
+      // title: 'Edit goal',
+      builder: (context) => CreateGoalForm(existing: goal),
     );
   }
 

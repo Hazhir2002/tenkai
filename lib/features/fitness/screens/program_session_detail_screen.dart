@@ -1,7 +1,6 @@
 import 'package:ficonsax/ficonsax.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:tenkai/core/design_system/molecules/tenkai_molecules.dart';
 import 'package:tenkai/core/widgets/tenkai_empty_state.dart';
 import 'package:tenkai/features/fitness/providers/fitness_provider.dart';
 import 'package:tenkai/features/fitness/widgets/session_excercise_form.dart';
@@ -49,10 +48,10 @@ class _ProgramSessionDetailScreenState
         actions: [
           IconButton(
             onPressed: () {
-              showTenkaiSheet(
+              showModalBottomSheet(
                 context: context,
-                title: 'Add Session Exercise',
-                child: SessionExerciseForm(
+                // title: 'Add Session Exercise',
+                builder: (context) => SessionExerciseForm(
                   programId: widget.programId,
                   programSessionId: widget.programSessionId,
                 ),
@@ -76,10 +75,10 @@ class _ProgramSessionDetailScreenState
                   description: 'This session has no exercises',
                   action: FilledButton(
                     onPressed: () => {
-                      showTenkaiSheet(
+                      showModalBottomSheet(
                         context: context,
-                        title: 'Add Program Session',
-                        child: SessionExerciseForm(
+                        // title: 'Add Program Session',
+                        builder: (context) => SessionExerciseForm(
                           programId: widget.programId,
                           programSessionId: widget.programSessionId,
                         ),
