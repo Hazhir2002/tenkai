@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tenkai/core/database.dart';
 import 'package:tenkai/core/design_system/atoms/tenkai_text_form_field.dart';
-import 'package:tenkai/core/design_system/tenkai.dart';
 import 'package:tenkai/features/knowledge/models/book_model.dart';
 import 'package:tenkai/features/knowledge/providers/book_provider.dart';
 

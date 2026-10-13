@@ -9,6 +9,7 @@ import 'package:tenkai/core/widgets/show_confirm_delete_dialog.dart';
 import 'package:tenkai/core/widgets/tenkai_metric_card.dart';
 import 'package:tenkai/features/knowledge/models/book_model.dart';
 import 'package:tenkai/features/knowledge/providers/book_provider.dart';
+import 'package:tenkai/features/knowledge/widgets/highlight_list_tile.dart';
 
 import '../models/book_enums.dart';
 import '../widgets/book_highlight_form.dart';
@@ -16,7 +17,7 @@ import '../widgets/book_card.dart';
 import '../widgets/book_form.dart';
 import '../widgets/book_pace_chart.dart';
 import '../widgets/finish_book_sheet.dart';
-import '../widgets/update_progress_sheet.dart';
+import '../widgets/reading_session_form.dart';
 
 class BookDetailScreen extends ConsumerStatefulWidget {
   const BookDetailScreen({super.key, required this.bookId});
@@ -222,7 +223,7 @@ class _BookDetailScreenState extends ConsumerState<BookDetailScreen> {
                           child: FilledButton(
                             child: Text('Update progress'),
                             onPressed: () =>
-                                _updateProgress(context, ref, computedBook),
+                                _updateProgress(context, computedBook),
                           ),
                         ),
                         const SizedBox(height: 12),
@@ -329,7 +330,7 @@ class _BookDetailScreenState extends ConsumerState<BookDetailScreen> {
                           : Column(
                               children: [
                                 for (final h in bookHighlights) ...[
-                                  _HighlightRow(highlight: h),
+                                  HighlightListTile(highlight: h),
                                   const SizedBox(height: 10),
                                 ],
                               ],
@@ -342,21 +343,30 @@ class _BookDetailScreenState extends ConsumerState<BookDetailScreen> {
     );
   }
 
-  Future<void> _updateProgress(
-    BuildContext context,
-    WidgetRef ref,
-    Book book,
-  ) async {
-    final finished = await showUpdateProgressSheet(context, ref, book);
-    if (finished == true && context.mounted) {
-      final updated = await ref
-          .read(appDataBaseProvider)
-          .bookDao
-          .getBook(book.id);
-      if (updated != null && context.mounted) {
-        await showFinishBookSheet(context, ref, updated);
-      }
-    }
+  Future<void> _updateProgress(BuildContext context, BookModel book) async {
+    final finished = await showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      builder: (context) => Padding(
+        padding: const EdgeInsets.all(TenkaiSpacing.md),
+        child: SingleChildScrollView(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: ReadingSessionForm(book: book),
+        ),
+      ),
+    );
+    // if (finished == true && context.mounted) {
+    //   final updated = await ref
+    //       .read(appDataBaseProvider)
+    //       .bookDao
+    //       .getBook(book.id);
+    //   if (updated != null && context.mounted) {
+    //     await showFinishBookSheet(context, ref, updated);
+    //   }
+    // }
   }
 }
 
@@ -399,40 +409,6 @@ class _SessionRow extends ConsumerWidget {
               Text(session.summary!, style: TenkaiTypography.bodySmall),
             ],
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class _HighlightRow extends ConsumerWidget {
-  const _HighlightRow({required this.highlight});
-  final BookHighlight highlight;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
-
-    return Dismissible(
-      key: ValueKey('highlight-${highlight.id}'),
-      direction: DismissDirection.endToStart,
-      background: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(TenkaiRadius.md),
-          color: theme.colorScheme.errorContainer,
-        ),
-        alignment: Alignment.centerRight,
-        padding: const EdgeInsets.symmetric(horizontal: TenkaiSpacing.md),
-        child: Icon(IconsaxOutline.trash, color: theme.colorScheme.error),
-      ),
-      onDismissed: (_) async => await ref
-          .read(bookProvider.notifier)
-          .deleteBookHighlight(highlight.bookId, highlight.id),
-      child: Card(
-        child: ListTile(
-          title: Text('"${highlight.quote}"'),
-          subtitle: highlight.note != null ? Text(highlight.note!) : null,
-          trailing: Text('p${highlight.page}', style: TenkaiTypography.labelSm),
         ),
       ),
     );
