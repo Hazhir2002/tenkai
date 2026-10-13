@@ -22,7 +22,6 @@ export 'atoms/tenkai_record_button.dart';
 export 'atoms/tenkai_motion.dart';
 export 'atoms/tenkai_icon_tile.dart';
 export 'atoms/tenkai_forms_extra.dart';
-export 'atoms/tenkai_stepper.dart';
 
 // Molecules
 export 'molecules/tenkai_molecules.dart';
