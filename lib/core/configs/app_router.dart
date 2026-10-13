@@ -2,16 +2,13 @@ import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tenkai/core/widgets/main_shell_wrapper.dart';
-import 'package:tenkai/features/auth/providers/auth_provider.dart';
-import 'package:tenkai/features/auth/screens/login_screen.dart';
-import 'package:tenkai/features/auth/screens/register_screen.dart';
-import 'package:tenkai/features/auth/screens/splash_screen.dart';
 import 'package:tenkai/features/fitness/screens/exercises_screen.dart';
 import 'package:tenkai/features/fitness/screens/fitness_screen.dart';
 import 'package:tenkai/features/fitness/screens/program_detail_screen.dart';
 import 'package:tenkai/features/fitness/screens/program_session_detail_screen.dart';
 import 'package:tenkai/features/fitness/screens/programs_screen.dart';
 import 'package:tenkai/features/habit_tracker/screens/habit_form_screen.dart';
+import 'package:tenkai/features/home/screens/home_screen.dart';
 import 'package:tenkai/features/knowledge/screens/book_detail_screen.dart';
 import 'package:tenkai/features/knowledge/screens/book_form_screen.dart';
 import 'package:tenkai/features/knowledge/screens/book_library_screen.dart';
@@ -29,38 +26,13 @@ final goRouterProvider = Provider<GoRouter>((ref) {
   // Bridge Riverpod → go_router: bump this whenever the auth status changes so
   // the router re-evaluates [redirect] on login/logout/session-restore.
   final refresh = ValueNotifier<int>(0);
-  ref.listen(authProvider.select((s) => s.status), (_, __) => refresh.value++);
   ref.onDispose(refresh.dispose);
 
   return GoRouter(
-    initialLocation: '/habits',
+    initialLocation: '/',
     refreshListenable: refresh,
     debugLogDiagnostics: true,
-    // redirect: (context, state) {
-    //   final status = ref.read(authProvider).status;
-    //   final location = state.matchedLocation;
-
-    //   // Still restoring the persisted session — hold on the splash.
-    //   if (status == AuthStatus.initial) {
-    //     return location == '/splash' ? null : '/splash';
-    //   }
-
-    //   final loggedIn = status == AuthStatus.authenticated;
-    //   if (!loggedIn) {
-    //     return _authRoutes.contains(location) ? null : '/login';
-    //   }
-
-    //   // Authenticated: keep users out of the auth/splash screens.
-    //   if (_authRoutes.contains(location) || location == '/splash') {
-    //     return '/habits';
-    //   }
-    //   return null;
-    // },
     routes: [
-      GoRoute(
-        path: '/splash',
-        builder: (context, state) => const SplashScreen(),
-      ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) =>
             MainShellWrapper(navigationShell: navigationShell),
@@ -129,6 +101,14 @@ final goRouterProvider = Provider<GoRouter>((ref) {
           StatefulShellBranch(
             routes: [
               GoRoute(
+                path: '/',
+                builder: (context, state) => const HomeScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
                 path: '/knowledge',
                 builder: (context, state) => const KnowledgeDashboard(),
                 routes: [
@@ -161,11 +141,6 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             ],
           ),
         ],
-      ),
-      GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
-      GoRoute(
-        path: '/register',
-        builder: (context, state) => const RegisterScreen(),
       ),
     ],
   );

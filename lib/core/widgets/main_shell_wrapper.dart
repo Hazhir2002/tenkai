@@ -21,6 +21,7 @@ class _MainShellWrapperState extends ConsumerState<MainShellWrapper> {
     final bool showBottomBar = [
       '/habits',
       '/fitness',
+      '/',
       '/knowledge',
       '/user',
     ].contains(location);
@@ -54,6 +55,11 @@ class _MainShellWrapperState extends ConsumerState<MainShellWrapper> {
                   selectedIcon: Icon(IconsaxBold.health),
                   icon: Icon(IconsaxOutline.health),
                   label: 'fitness',
+                ),
+                NavigationDestination(
+                  selectedIcon: Icon(IconsaxBold.home),
+                  icon: Icon(IconsaxOutline.home),
+                  label: 'home',
                 ),
                 NavigationDestination(
                   selectedIcon: Icon(IconsaxBold.book_1),
