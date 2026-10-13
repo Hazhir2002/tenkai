@@ -94,8 +94,8 @@ class _BookLibraryScreenState extends ConsumerState<BookLibraryScreen> {
                         title: 'No books yet',
                         subtitle:
                             'Add a book to track your reading progress\nand pace toward a deadline or goal.',
-                        actionWidget: TenkaiButton(
-                          label: 'Add your first book',
+                        actionWidget: FilledButton(
+                          child: const Text('Add your first book'),
                           onPressed: () =>
                               context.push('/knowledge/book-library/new'),
                         ),

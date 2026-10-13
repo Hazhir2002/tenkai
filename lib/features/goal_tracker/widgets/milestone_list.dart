@@ -36,10 +36,8 @@ class MilestoneList extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text('MILESTONES', style: Theme.of(context).textTheme.labelMedium),
-            TenkaiButton(
-              label: 'Add',
-              variant: TenkaiButtonVariant.ghost,
-              size: TenkaiButtonSize.sm,
+            OutlinedButton(
+              child: Text('Add'),
               onPressed: () => _openForm(context),
             ),
           ],
@@ -248,11 +246,7 @@ class _MilestoneFormState extends ConsumerState<_MilestoneForm> {
         const SizedBox(height: TenkaiSpacing.xl),
         SizedBox(
           width: double.infinity,
-          child: TenkaiButton(
-            label: 'Save',
-            loading: _submitting,
-            onPressed: _submit,
-          ),
+          child: FilledButton(onPressed: _submit, child: const Text('Save')),
         ),
       ],
     );

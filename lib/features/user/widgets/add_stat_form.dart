@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tenkai/core/database.dart';
-import 'package:tenkai/core/design_system/atoms/tenkai_button.dart';
 import 'package:tenkai/core/design_system/atoms/tenkai_controls.dart';
 import 'package:tenkai/core/design_system/atoms/tenkai_text_form_field.dart';
 import 'package:tenkai/features/user/provider/user_stat_provider.dart';
@@ -48,7 +47,7 @@ class _AddStatFormState extends ConsumerState<AddStatForm> {
           const SizedBox(height: 20),
           SizedBox(
             width: double.infinity,
-            child: TenkaiButton(
+            child: FilledButton(
               onPressed: () => ref
                   .read(userStatProvider.notifier)
                   .addStat(
@@ -58,7 +57,7 @@ class _AddStatFormState extends ConsumerState<AddStatForm> {
                       value: Value(int.parse(_valueController.text)),
                     ),
                   ),
-              label: 'Add',
+              child: Text('Add'),
             ),
           ),
         ],

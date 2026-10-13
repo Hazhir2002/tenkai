@@ -20,16 +20,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       title: 'Log out?',
       description: 'You will need to sign in again to continue.',
       actions: [
-        TenkaiButton(
-          label: 'Cancel',
-          variant: TenkaiButtonVariant.ghost,
-          size: TenkaiButtonSize.sm,
+        OutlinedButton(
           onPressed: () => Navigator.of(context).pop(false),
+          child: const Text('Cancel'),
         ),
-        TenkaiButton(
-          label: 'Log out',
-          variant: TenkaiButtonVariant.danger,
-          size: TenkaiButtonSize.sm,
+        FilledButton(
+          child: Text('Log out'),
           onPressed: () => Navigator.of(context).pop(true),
         ),
       ],

@@ -57,8 +57,8 @@ class _FinishBookSheet extends HookConsumerWidget {
         const SizedBox(height: 24),
         SizedBox(
           width: double.infinity,
-          child: TenkaiButton(
-            label: 'Mark finished',
+          child: FilledButton(
+            child: Text('Mark finished'),
             onPressed: () async {
               final db = ref.read(appDataBaseProvider);
               await db.bookDao.updateBook(

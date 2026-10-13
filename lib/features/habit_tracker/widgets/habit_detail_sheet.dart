@@ -112,23 +112,18 @@ class _HabitDetailSheet extends ConsumerWidget {
         const SizedBox(height: 24),
         SizedBox(
           width: double.infinity,
-          child: TenkaiButton(
-            label: done ? 'Mark as not done' : 'Mark done for today',
-            variant: done
-                ? TenkaiButtonVariant.ghost
-                : TenkaiButtonVariant.primary,
-            icon: done ? null : const Icon(Icons.check, size: 18),
+          child: FilledButton(
             onPressed: () =>
                 done ? _undo(context, ref) : _markDone(context, ref),
+            child: Text(done ? 'Mark as not done' : 'Mark done for today'),
           ),
         ),
         const SizedBox(height: 10),
         Row(
           children: [
             Expanded(
-              child: TenkaiButton(
-                label: 'Edit',
-                variant: TenkaiButtonVariant.ghost,
+              child: OutlinedButton(
+                child: const Text('Edit'),
                 onPressed: () {
                   Navigator.of(context).pop();
                   context.push('/habits/new');
@@ -138,10 +133,14 @@ class _HabitDetailSheet extends ConsumerWidget {
             ),
             const SizedBox(width: 10),
             Expanded(
-              child: TenkaiButton(
-                label: 'Delete',
-                variant: TenkaiButtonVariant.danger,
+              child: FilledButton(
+                style: Theme.of(context).filledButtonTheme.style!.copyWith(
+                  backgroundColor: WidgetStatePropertyAll(
+                    Theme.of(context).colorScheme.error,
+                  ),
+                ),
                 onPressed: () => _delete(context, ref),
+                child: Text('Delete'),
               ),
             ),
           ],

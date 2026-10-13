@@ -121,21 +121,18 @@ class _CreateTaskFormState extends ConsumerState<CreateTaskForm> {
                   color: context.tenkai.mutedForeground,
                 ),
               ),
-              TenkaiButton(
-                label: _dueDate == null ? 'Set date' : 'Change',
-                variant: TenkaiButtonVariant.ghost,
-                size: TenkaiButtonSize.sm,
+              OutlinedButton(
                 onPressed: _pickDueDate,
+                child: Text(_dueDate == null ? 'Set date' : 'Change'),
               ),
             ],
           ),
           const SizedBox(height: TenkaiSpacing.xl),
           SizedBox(
             width: double.infinity,
-            child: TenkaiButton(
-              label: 'Create',
-              loading: isLoading,
+            child: FilledButton(
               onPressed: _submit,
+              child: const Text('Create'),
             ),
           ),
         ],

@@ -154,12 +154,11 @@ class _GoalDetailBody extends ConsumerWidget {
         const SizedBox(height: TenkaiSpacing.xl),
         SizedBox(
           width: double.infinity,
-          child: TenkaiButton(
-            label: goal.status == GoalStatus.archived
-                ? 'Archived'
-                : 'Log a value',
-            enabled: goal.status != GoalStatus.archived,
+          child: FilledButton(
             onPressed: onLog,
+            child: Text(
+              goal.status == GoalStatus.archived ? 'Archived' : 'Log a value',
+            ),
           ),
         ),
       ],
@@ -261,12 +260,7 @@ class _ErrorBody extends StatelessWidget {
             ),
           ),
           const SizedBox(height: TenkaiSpacing.lg),
-          TenkaiButton(
-            label: 'Retry',
-            variant: TenkaiButtonVariant.ghost,
-            size: TenkaiButtonSize.sm,
-            onPressed: onRetry,
-          ),
+          OutlinedButton(onPressed: onRetry, child: const Text('Retry')),
         ],
       ),
     );

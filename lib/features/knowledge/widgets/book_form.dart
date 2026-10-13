@@ -432,8 +432,8 @@ Future<DateTime?> _pickDate(BuildContext context, DateTime? initial) async {
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               child: SizedBox(
                 width: double.infinity,
-                child: TenkaiButton(
-                  label: 'Done',
+                child: FilledButton(
+                  child: Text('Done'),
                   onPressed: () => Navigator.of(sheetCtx).pop(true),
                 ),
               ),
@@ -477,8 +477,8 @@ Future<(int, int)?> _pickTime(
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               child: SizedBox(
                 width: double.infinity,
-                child: TenkaiButton(
-                  label: 'Done',
+                child: FilledButton(
+                  child: Text('Done'),
                   onPressed: () => Navigator.of(sheetCtx).pop(true),
                 ),
               ),

@@ -241,10 +241,9 @@ class _CreateGoalFormState extends ConsumerState<CreateGoalForm> {
         const SizedBox(height: TenkaiSpacing.xl),
         SizedBox(
           width: double.infinity,
-          child: TenkaiButton(
-            label: widget.isEditing ? 'Save' : 'Create goal',
-            loading: isLoading,
+          child: FilledButton(
             onPressed: _submit,
+            child: Text(widget.isEditing ? 'Save' : 'Create goal'),
           ),
         ),
       ],
@@ -281,17 +280,10 @@ class _DateRow extends StatelessWidget {
         Row(
           children: [
             if (onClear != null)
-              TenkaiButton(
-                label: 'Clear',
-                variant: TenkaiButtonVariant.ghost,
-                size: TenkaiButtonSize.sm,
-                onPressed: onClear,
-              ),
-            TenkaiButton(
-              label: date == null ? 'Set' : 'Change',
-              variant: TenkaiButtonVariant.ghost,
-              size: TenkaiButtonSize.sm,
+              OutlinedButton(onPressed: onClear, child: Text('Clear')),
+            OutlinedButton(
               onPressed: onPick,
+              child: Text(date == null ? 'Set' : 'Change'),
             ),
           ],
         ),

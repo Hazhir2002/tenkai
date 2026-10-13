@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:tenkai/core/design_system/atoms/tenkai_button.dart';
 import 'package:tenkai/core/design_system/atoms/tenkai_display.dart';
 import 'package:tenkai/core/design_system/molecules/tenkai_molecules.dart';
 import 'package:tenkai/core/design_system/tenkai.dart';

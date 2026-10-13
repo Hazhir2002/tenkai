@@ -171,16 +171,15 @@ class _EditEntryForm extends HookConsumerWidget {
         Row(
           children: [
             Expanded(
-              child: TenkaiButton(
-                label: 'Cancel',
-                variant: TenkaiButtonVariant.ghost,
+              child: OutlinedButton(
                 onPressed: () => Navigator.pop(context),
+                child: const Text('Cancel'),
               ),
             ),
             const SizedBox(width: TenkaiSpacing.md),
             Expanded(
-              child: TenkaiButton(
-                label: 'Save',
+              child: FilledButton(
+                child: Text('Save'),
                 onPressed: () async {
                   await notifier.editEntry(entry, controller.text);
                   if (context.mounted) Navigator.pop(context);

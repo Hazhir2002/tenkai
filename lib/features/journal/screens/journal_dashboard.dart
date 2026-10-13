@@ -180,17 +180,16 @@ class _ReviewSheet extends HookConsumerWidget {
         Row(
           children: [
             Expanded(
-              child: TenkaiButton(
-                label: 'Discard',
-                variant: TenkaiButtonVariant.ghost,
+              child: OutlinedButton(
+                child: const Text('Discard'),
                 onPressed: () => notifier.discardDraft(),
               ),
             ),
             const SizedBox(width: 12),
             Expanded(
               flex: 2,
-              child: TenkaiButton(
-                label: 'Save to Journal',
+              child: FilledButton(
+                child: Text('Save to Journal'),
                 onPressed: () async {
                   await notifier.confirmAndSave();
                 },

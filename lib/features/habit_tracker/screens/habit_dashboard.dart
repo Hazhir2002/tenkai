@@ -106,7 +106,10 @@ class _EmptyState extends StatelessWidget {
               style: TenkaiTypography.bodySmall,
             ),
             const SizedBox(height: TenkaiSpacing.xl),
-            TenkaiButton(label: 'Add your first habit', onPressed: onAdd),
+            FilledButton(
+              onPressed: onAdd,
+              child: const Text('Add your first habit'),
+            ),
           ],
         ),
       ),

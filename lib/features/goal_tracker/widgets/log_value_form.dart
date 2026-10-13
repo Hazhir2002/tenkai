@@ -159,11 +159,7 @@ class _LogValueFormState extends ConsumerState<LogValueForm> {
         const SizedBox(height: TenkaiSpacing.xl),
         SizedBox(
           width: double.infinity,
-          child: TenkaiButton(
-            label: 'Log value',
-            loading: _submitting,
-            onPressed: _submit,
-          ),
+          child: FilledButton(onPressed: _submit, child: Text('Log value')),
         ),
       ],
     );

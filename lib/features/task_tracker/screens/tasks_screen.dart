@@ -164,12 +164,7 @@ class _ErrorState extends StatelessWidget {
             ),
           ),
           const SizedBox(height: TenkaiSpacing.lg),
-          TenkaiButton(
-            label: 'Retry',
-            variant: TenkaiButtonVariant.ghost,
-            size: TenkaiButtonSize.sm,
-            onPressed: onRetry,
-          ),
+          OutlinedButton(onPressed: onRetry, child: const Text('Retry')),
         ],
       ),
     );
