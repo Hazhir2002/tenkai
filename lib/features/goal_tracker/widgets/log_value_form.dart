@@ -142,13 +142,13 @@ class _LogValueFormState extends ConsumerState<LogValueForm> {
         ),
         if (_max > _min) ...[
           const SizedBox(height: TenkaiSpacing.md),
-          TenkaiSlider(
-            value: _sliderValue,
-            min: _min,
-            max: _max,
-            showValue: false,
-            onChanged: (v) => _valueController.text = formatGoalValue(v),
-          ),
+          // TenkaiSlider(
+          //   value: _sliderValue,
+          //   min: _min,
+          //   max: _max,
+          //   showValue: false,
+          //   onChanged: (v) => _valueController.text = formatGoalValue(v),
+          // ),
         ],
         const SizedBox(height: TenkaiSpacing.md),
         TenkaiTextFormField(

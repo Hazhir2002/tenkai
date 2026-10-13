@@ -38,9 +38,9 @@ class TaskCard extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.only(top: 2),
-              child: TenkaiCheckbox(
+              child: Checkbox(
                 value: task.isDone,
-                onChanged: onToggleDone,
+                onChanged: (value) => onToggleDone(value!),
               ),
             ),
             const SizedBox(width: TenkaiSpacing.md),
