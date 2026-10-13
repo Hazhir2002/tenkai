@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tenkai/core/design_system/tenkai.dart';
-import 'package:tenkai/core/widgets/empty_state_widget.dart';
+import 'package:tenkai/core/widgets/tenkai_empty_state.dart';
 import 'package:tenkai/features/knowledge/providers/book_provider.dart';
 
 import '../models/book_enums.dart';
@@ -89,12 +89,12 @@ class _BookLibraryScreenState extends ConsumerState<BookLibraryScreen> {
                     ),
                     const SizedBox(height: TenkaiSpacing.xl),
                     if (books.isEmpty)
-                      EmptyStateWidget(
+                      TenkaiEmptyState(
                         icon: const TenkaiNode(size: 28),
                         title: 'No books yet',
-                        subtitle:
+                        description:
                             'Add a book to track your reading progress\nand pace toward a deadline or goal.',
-                        actionWidget: FilledButton(
+                        action: FilledButton(
                           child: const Text('Add your first book'),
                           onPressed: () =>
                               context.push('/knowledge/book-library/new'),

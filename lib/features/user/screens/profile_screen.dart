@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tenkai/core/design_system/tenkai.dart';
 import 'package:tenkai/core/theme_mode_provider.dart';
+import 'package:tenkai/core/widgets/tenkai_empty_state.dart';
 import 'package:tenkai/features/user/provider/user_stat_provider.dart';
 import 'package:tenkai/features/user/widgets/add_stat_form.dart';
 import 'package:tenkai/features/user/widgets/update_stat_form.dart';

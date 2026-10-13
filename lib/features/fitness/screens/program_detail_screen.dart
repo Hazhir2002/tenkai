@@ -2,8 +2,8 @@ import 'package:ficonsax/ficonsax.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:tenkai/core/design_system/atoms/tenkai_data_display.dart';
 import 'package:tenkai/core/design_system/molecules/tenkai_molecules.dart';
+import 'package:tenkai/core/widgets/tenkai_empty_state.dart';
 import 'package:tenkai/features/fitness/providers/fitness_provider.dart';
 import 'package:tenkai/features/fitness/widgets/program_session_form.dart';
 

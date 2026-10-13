@@ -6,6 +6,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:tenkai/core/database.dart';
 import 'package:tenkai/core/design_system/tenkai.dart';
+import 'package:tenkai/core/widgets/tenkai_empty_state.dart';
 
 import '../providers/journal_entries_provider.dart';
 import '../providers/journal_flow_provider.dart';
