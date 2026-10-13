@@ -1,7 +1,7 @@
 import 'package:ficonsax/ficonsax.dart';
 import 'package:flutter/material.dart';
-import '../theme/tenkai_semantic_colors.dart';
-import '../tokens/tenkai_tokens.dart';
+import '../design_system/theme/tenkai_semantic_colors.dart';
+import '../design_system/tokens/tenkai_tokens.dart';
 
 /// Voice-capture button — a flat bordered circle, not a glass orb. Mic glyph at
 /// rest; a red rounded-square "stop" plus a pulsing ring while recording.

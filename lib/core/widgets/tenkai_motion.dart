@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../tokens/tenkai_tokens.dart';
+import '../design_system/tokens/tenkai_tokens.dart';
 
 // ─────────────────────────────────────────────
 // TENKAI · Motion — the "unfold"

@@ -10,13 +10,12 @@
 export 'tokens/tenkai_tokens.dart';
 
 // Atoms
-export 'atoms/tenkai_glow.dart';
+export '../widgets/tenkai_glow.dart';
 export 'atoms/tenkai_controls.dart';
-export 'atoms/tenkai_node.dart';
-export 'atoms/tenkai_record_button.dart';
+export '../widgets/tenkai_node.dart';
+export '../widgets/tenkai_record_button.dart';
 // Atoms — added components
-export 'atoms/tenkai_motion.dart';
-export 'atoms/tenkai_forms_extra.dart';
+export '../widgets/tenkai_motion.dart';
 
 // Molecules
 export 'molecules/tenkai_molecules.dart';

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tenkai/core/design_system/atoms/tenkai_motion.dart';
+import 'package:tenkai/core/widgets/tenkai_motion.dart';
 import 'package:tenkai/core/design_system/theme/tenkai_semantic_colors.dart';
 import 'package:tenkai/core/design_system/tokens/tenkai_typography.dart';
 
