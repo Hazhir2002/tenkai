@@ -16,7 +16,6 @@ export 'atoms/tenkai_icon.dart';
 export 'atoms/tenkai_logo.dart';
 export 'atoms/tenkai_icon_button.dart';
 export 'atoms/tenkai_node.dart';
-export 'atoms/tenkai_form_error.dart';
 export 'atoms/tenkai_record_button.dart';
 // Atoms — added components
 export 'atoms/tenkai_motion.dart';
