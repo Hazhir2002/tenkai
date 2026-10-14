@@ -15,18 +15,18 @@ import 'package:tenkai/features/goal_tracker/widgets/goal_ui.dart';
 /// Bottom-sheet form to create a goal, or edit an existing one when [existing]
 /// is provided. Hosted inside [showTenkaiSheet], so it renders as a plain
 /// column (the sheet supplies the title, scrolling and padding).
-class CreateGoalForm extends ConsumerStatefulWidget {
-  const CreateGoalForm({super.key, this.existing});
+class GoalForm extends ConsumerStatefulWidget {
+  const GoalForm({super.key, this.existing});
 
   final Goal? existing;
 
   bool get isEditing => existing != null;
 
   @override
-  ConsumerState<CreateGoalForm> createState() => _CreateGoalFormState();
+  ConsumerState<GoalForm> createState() => _GoalFormState();
 }
 
-class _CreateGoalFormState extends ConsumerState<CreateGoalForm> {
+class _GoalFormState extends ConsumerState<GoalForm> {
   late final TextEditingController _titleController;
   late final TextEditingController _descriptionController;
   late final TextEditingController _unitController;

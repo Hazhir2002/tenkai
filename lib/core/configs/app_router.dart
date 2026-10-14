@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tenkai/core/widgets/main_shell_wrapper.dart';
-import 'package:tenkai/features/fitness/screens/exercises_screen.dart';
 import 'package:tenkai/features/fitness/screens/fitness_screen.dart';
 import 'package:tenkai/features/fitness/screens/program_detail_screen.dart';
 import 'package:tenkai/features/fitness/screens/program_session_detail_screen.dart';
@@ -14,14 +13,9 @@ import 'package:tenkai/features/knowledge/screens/book_detail_screen.dart';
 import 'package:tenkai/features/knowledge/screens/book_form_screen.dart';
 import 'package:tenkai/features/knowledge/screens/book_library_screen.dart';
 import 'package:tenkai/features/knowledge/screens/knowledge_dashboard.dart';
-import 'package:tenkai/features/user/screens/fears_screen.dart';
 import 'package:tenkai/features/habit_tracker/models/habit_view.dart';
 import 'package:tenkai/features/habit_tracker/screens/habit_dashboard.dart';
 import 'package:tenkai/features/habit_tracker/screens/habit_screen.dart';
-import 'package:tenkai/features/user/screens/profile_screen.dart';
-
-/// Routes that an unauthenticated user is allowed to sit on.
-const _authRoutes = {'/login', '/register'};
 
 final goRouterProvider = Provider<GoRouter>((ref) {
   // Bridge Riverpod → go_router: bump this whenever the auth status changes so
@@ -136,8 +130,9 @@ final goRouterProvider = Provider<GoRouter>((ref) {
           StatefulShellBranch(
             routes: [
               GoRoute(
-                path: '/user',
+                path: '/goals',
                 builder: (context, state) => const GoalsScreen(),
+                routes: [],
               ),
             ],
           ),

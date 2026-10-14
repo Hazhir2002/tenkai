@@ -7,7 +7,7 @@ import 'package:tenkai/core/widgets/tenkai_metric_card.dart';
 import 'package:tenkai/features/goal_tracker/enums/goal_status.dart';
 import 'package:tenkai/features/goal_tracker/models/goal.dart';
 import 'package:tenkai/features/goal_tracker/providers/goal_provider.dart';
-import 'package:tenkai/features/goal_tracker/widgets/create_goal_form.dart';
+import 'package:tenkai/features/goal_tracker/widgets/goal_form.dart';
 import 'package:tenkai/features/goal_tracker/widgets/goal_pace_chart.dart';
 import 'package:tenkai/features/goal_tracker/widgets/goal_ui.dart';
 import 'package:tenkai/features/goal_tracker/widgets/log_value_form.dart';
@@ -35,7 +35,7 @@ class _GoalDetailScreenState extends ConsumerState<GoalDetailScreen> {
     showModalBottomSheet(
       context: context,
       // title: 'Edit goal',
-      builder: (context) => CreateGoalForm(existing: goal),
+      builder: (context) => GoalForm(existing: goal),
     );
   }
 

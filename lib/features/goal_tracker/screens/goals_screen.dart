@@ -7,7 +7,7 @@ import 'package:tenkai/core/tokens/tenkai_radius.dart';
 import 'package:tenkai/core/tokens/tenkai_spacing.dart';
 import 'package:tenkai/core/tokens/tenkai_typography.dart';
 import 'package:tenkai/features/goal_tracker/providers/goal_provider.dart';
-import 'package:tenkai/features/goal_tracker/widgets/create_goal_form.dart';
+import 'package:tenkai/features/goal_tracker/widgets/goal_form.dart';
 import 'package:tenkai/features/goal_tracker/widgets/goal_card.dart';
 import 'package:tenkai/features/goal_tracker/widgets/goal_status_filter.dart';
 
@@ -20,7 +20,7 @@ class GoalsScreen extends ConsumerWidget {
     showModalBottomSheet(
       context: context,
       // title: 'New goal',
-      builder: (context) => const CreateGoalForm(),
+      builder: (context) => const GoalForm(),
     );
   }
 

@@ -23,7 +23,7 @@ class _MainShellWrapperState extends ConsumerState<MainShellWrapper> {
       '/fitness',
       '/',
       '/knowledge',
-      '/user',
+      '/goals',
     ].contains(location);
 
     void onItemTap(int index) {
@@ -69,7 +69,7 @@ class _MainShellWrapperState extends ConsumerState<MainShellWrapper> {
                 NavigationDestination(
                   selectedIcon: Icon(IconsaxBold.user),
                   icon: Icon(IconsaxOutline.user),
-                  label: 'fears',
+                  label: 'goals',
                 ),
               ],
             )

@@ -80,19 +80,6 @@ class AppDatabase extends _$AppDatabase {
         await m.createTable(goals);
         await m.createTable(goalLogs);
       }
-      if (from < 8) {
-        await m.alterTable(
-          TableMigration(
-            goals,
-            columnTransformer: {
-              goals.targetValue: const CustomExpression('expected_value'),
-            },
-          ),
-        );
-      }
-      if (from < 9) {
-        await m.alterTable(TableMigration(goals));
-      }
     },
   );
 
