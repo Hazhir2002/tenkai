@@ -31,7 +31,7 @@ class MilestoneList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final c = context.tenkai;
-    final milestonesAsync = ref.watch(goalMilestonesProvider(goal.id));
+    // final milestonesAsync = ref.watch(goalMilestonesProvider(goal.id));
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -47,41 +47,42 @@ class MilestoneList extends ConsumerWidget {
           ],
         ),
         const SizedBox(height: TenkaiSpacing.sm),
-        milestonesAsync.when(
-          loading: () => const Padding(
-            padding: EdgeInsets.all(TenkaiSpacing.md),
-            child: Center(child: CircularProgressIndicator()),
-          ),
-          error: (_, __) => Text(
-            'Could not load milestones',
-            style: TenkaiTypography.bodySmall.copyWith(
-              color: c.secondaryForeground,
-            ),
-          ),
-          data: (milestones) {
-            if (milestones.isEmpty) {
-              return Text(
-                'No milestones yet',
-                style: TenkaiTypography.bodySmall.copyWith(
-                  color: c.secondaryForeground,
-                ),
-              );
-            }
-            return Column(
-              children: [
-                for (final m in milestones)
-                  _MilestoneRow(
-                    milestone: m,
-                    unit: goal.unit,
-                    onTap: () => _openForm(context, existing: m),
-                    onDelete: () => ref
-                        .read(goalProvider.notifier)
-                        .deleteMilestone(goal.id, m.id),
-                  ),
-              ],
-            );
-          },
-        ),
+        // milestonesAsync.when(
+        //   loading: () => const Padding(
+        //     padding: EdgeInsets.all(TenkaiSpacing.md),
+        //     child: Center(child: CircularProgressIndicator()),
+        //   ),
+        //   error: (_, __) => Text(
+        //     'Could not load milestones',
+        //     style: TenkaiTypography.bodySmall.copyWith(
+        //       color: c.secondaryForeground,
+        //     ),
+        //   ),
+        //   data: (milestones) {
+        //     if (milestones.isEmpty) {
+        //       return Text(
+        //         'No milestones yet',
+        //         style: TenkaiTypography.bodySmall.copyWith(
+        //           color: c.secondaryForeground,
+        //         ),
+        //       );
+        //     }
+        //     return Column(
+        //       children: [
+        //         for (final m in milestones)
+        //           _MilestoneRow(
+        //             milestone: m,
+        //             unit: goal.unit,
+        //             onTap: () => _openForm(context, existing: m),
+        //             // onDelete: () => ref
+        //             //     .read(goalProvider.notifier)
+        //             //     .deleteMilestone(goal.id, m.id),
+        //             onDelete: () => {},
+        //           ),
+        //       ],
+        //     );
+        //   },
+        // ),
       ],
     );
   }
@@ -202,22 +203,22 @@ class _MilestoneFormState extends ConsumerState<_MilestoneForm> {
     final notifier = ref.read(goalProvider.notifier);
     final title = _titleController.text.trim();
     final param = MilestoneParam(title: title, targetValue: target);
-    final ok = widget.existing == null
-        ? await notifier.createMilestone(widget.goalId, param)
-        : await notifier.updateMilestone(
-            widget.goalId,
-            widget.existing!.id,
-            param,
-          );
+    // final ok = widget.existing == null
+    //     ? await notifier.createMilestone(widget.goalId, param)
+    //     : await notifier.updateMilestone(
+    //         widget.goalId,
+    //         widget.existing!.id,
+    //         param,
+    //       );
 
     if (!mounted) return;
     setState(() => _submitting = false);
-    if (ok) {
-      Navigator.of(context).pop();
-    } else {
-      setState(() => _error = 'Could not save milestone');
-      HapticFeedback.vibrate();
-    }
+    // if (ok) {
+    //   Navigator.of(context).pop();
+    // } else {
+    //   setState(() => _error = 'Could not save milestone');
+    //   HapticFeedback.vibrate();
+    // }
   }
 
   @override

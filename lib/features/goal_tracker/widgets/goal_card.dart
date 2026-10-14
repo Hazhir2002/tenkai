@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tenkai/core/tokens/tenkai_spacing.dart';
 import 'package:tenkai/core/tokens/tenkai_typography.dart';
 import 'package:tenkai/features/goal_tracker/enums/goal_status.dart';
-import 'package:tenkai/features/goal_tracker/models/goal.dart';
+import 'package:tenkai/features/goal_tracker/models/goal_model.dart';
 import 'package:tenkai/features/goal_tracker/widgets/goal_ui.dart';
 
 import '../../../core/theme/tenkai_semantic_colors.dart'
@@ -13,7 +13,7 @@ import '../../../core/theme/tenkai_semantic_colors.dart'
 class GoalCard extends StatelessWidget {
   const GoalCard({super.key, required this.goal, this.onTap});
 
-  final Goal goal;
+  final GoalModel goal;
   final VoidCallback? onTap;
 
   @override
@@ -51,7 +51,7 @@ class GoalCard extends StatelessWidget {
             const SizedBox(height: 4),
             Text(
               '${formatGoalValue(goal.currentValue)} of '
-              '${formatGoalValue(goal.targetValue, goal.unit)}',
+              '${formatGoalValue(goal.targetValue ?? 0, goal.unit)}',
               style: TenkaiTypography.labelSm.copyWith(
                 color: c.secondaryForeground,
               ),

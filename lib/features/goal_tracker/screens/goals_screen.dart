@@ -34,16 +34,15 @@ class GoalsScreen extends ConsumerWidget {
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         title: Text('Goals'),
-        // showBackButton: false,
         actions: [
-          // TenkaiAppBarAction(
-          //   symbol: 'plus',
-          //   onPressed: () => _openCreateSheet(context),
-          // ),
+          IconButton(
+            icon: Icon(Icons.add),
+            onPressed: () => _openCreateSheet(context),
+          ),
         ],
       ),
-      body: Padding(
-        padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+      body: SafeArea(
+        minimum: EdgeInsets.all(TenkaiSpacing.md),
         child: Column(
           children: [
             GoalStatusFilter(

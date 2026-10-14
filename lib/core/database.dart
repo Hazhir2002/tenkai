@@ -5,6 +5,9 @@ import 'package:tenkai/features/fitness/data/fitness_dao.dart';
 import 'package:tenkai/features/fitness/data/tables/program_session.dart';
 import 'package:tenkai/features/fitness/data/tables/program.dart';
 import 'package:tenkai/features/fitness/data/tables/session_exercise.dart';
+import 'package:tenkai/features/goal_tracker/data/goal_dao.dart';
+import 'package:tenkai/features/goal_tracker/data/tables/goal.dart';
+import 'package:tenkai/features/goal_tracker/data/tables/goal_log.dart';
 
 import 'package:tenkai/features/habit_tracker/data/habit_dao.dart';
 import 'package:tenkai/features/habit_tracker/data/tables/habit.dart';
@@ -41,14 +44,16 @@ part 'database.g.dart';
     Programs,
     ProgramSessions,
     SessionExercises,
+    Goals,
+    GoalLogs,
   ],
-  daos: [UserDao, JournalDao, HabitDao, BookDao, FitnessDao],
+  daos: [UserDao, JournalDao, HabitDao, BookDao, FitnessDao, GoalDao],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 6;
+  int get schemaVersion => 9;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -70,6 +75,23 @@ class AppDatabase extends _$AppDatabase {
         await m.dropColumn(readingSessions, 'date_key');
         await m.addColumn(readingSessions, readingSessions.updatedAt);
         await m.addColumn(bookHighlights, bookHighlights.updatedAt);
+      }
+      if (from < 7) {
+        await m.createTable(goals);
+        await m.createTable(goalLogs);
+      }
+      if (from < 8) {
+        await m.alterTable(
+          TableMigration(
+            goals,
+            columnTransformer: {
+              goals.targetValue: const CustomExpression('expected_value'),
+            },
+          ),
+        );
+      }
+      if (from < 9) {
+        await m.alterTable(TableMigration(goals));
       }
     },
   );

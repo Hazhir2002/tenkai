@@ -107,19 +107,19 @@ class _CreateGoalFormState extends ConsumerState<CreateGoalForm> {
 
     bool ok;
     if (widget.isEditing) {
-      ok = await ref
-          .read(goalProvider.notifier)
-          .updateGoal(
-            widget.existing!.id,
-            UpdateGoalParam(
-              title: title,
-              description: description,
-              unit: unit,
-              targetValue: target,
-              startDate: _startDate,
-              endDate: _endDate,
-            ),
-          );
+      // ok = await ref
+      //     .read(goalProvider.notifier)
+      //     .updateGoal(
+      //       widget.existing!.id,
+      //       UpdateGoalParam(
+      //         title: title,
+      //         description: description,
+      //         unit: unit,
+      //         targetValue: target,
+      //         startDate: _startDate,
+      //         endDate: _endDate,
+      //       ),
+      //     );
     } else {
       final initial = double.tryParse(_initialController.text.trim());
       if (initial == null) {
@@ -130,27 +130,27 @@ class _CreateGoalFormState extends ConsumerState<CreateGoalForm> {
         _fail('Target must differ from the starting value');
         return;
       }
-      ok = await ref
-          .read(goalProvider.notifier)
-          .createGoal(
-            CreateGoalParam(
-              title: title,
-              initialValue: initial,
-              targetValue: target,
-              description: description,
-              unit: unit,
-              startDate: _startDate,
-              endDate: _endDate,
-            ),
-          );
+      // ok = await ref
+      //     .read(goalProvider.notifier)
+      //     .createGoal(
+      //       CreateGoalParam(
+      //         title: title,
+      //         initialValue: initial,
+      //         targetValue: target,
+      //         description: description,
+      //         unit: unit,
+      //         startDate: _startDate,
+      //         endDate: _endDate,
+      //       ),
+      //     );
     }
 
     if (!mounted) return;
-    if (ok) {
-      Navigator.of(context).pop();
-    } else {
-      _fail(ref.read(goalProvider).error ?? 'Something went wrong');
-    }
+    // if (ok) {
+    //   Navigator.of(context).pop();
+    // } else {
+    //   _fail(ref.read(goalProvider).error ?? 'Something went wrong');
+    // }
   }
 
   void _fail(String message) {

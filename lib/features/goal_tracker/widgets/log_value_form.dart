@@ -70,28 +70,28 @@ class _LogValueFormState extends ConsumerState<LogValueForm> {
     });
 
     final wasCompleted = widget.goal.isCompleted;
-    final updated = await ref
-        .read(goalProvider.notifier)
-        .logValue(
-          widget.goal.id,
-          LogValueParam(
-            value: value,
-            note: _noteController.text.trim().isEmpty
-                ? null
-                : _noteController.text.trim(),
-          ),
-        );
+    // final updated = await ref
+    //     .read(goalProvider.notifier)
+    //     .logValue(
+    //       widget.goal.id,
+    //       LogValueParam(
+    //         value: value,
+    //         note: _noteController.text.trim().isEmpty
+    //             ? null
+    //             : _noteController.text.trim(),
+    //       ),
+    //     );
 
     if (!mounted) return;
     setState(() => _submitting = false);
 
-    if (updated == null) {
-      setState(() => _error = ref.read(goalProvider).error ?? 'Failed to log');
-      HapticFeedback.vibrate();
-      return;
-    }
+    // if (updated == null) {
+    //   setState(() => _error = ref.read(goalProvider).error ?? 'Failed to log');
+    //   HapticFeedback.vibrate();
+    //   return;
+    // }
 
-    final justCompleted = updated.isCompleted && !wasCompleted;
+    // final justCompleted = updated.isCompleted && !wasCompleted;
     Navigator.of(context).pop();
     // showTenkaiToast(
     //   context,
