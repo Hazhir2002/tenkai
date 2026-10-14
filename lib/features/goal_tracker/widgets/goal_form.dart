@@ -162,94 +162,100 @@ class _GoalFormState extends ConsumerState<GoalForm> {
   Widget build(BuildContext context) {
     final isLoading = ref.watch(goalProvider.select((s) => s.isLoading));
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        if (_error != null) ...[
-          Text(
-            _error!,
-            style: TenkaiTypography.labelSm.copyWith(color: TenkaiColors.error),
-          ),
-          const SizedBox(height: TenkaiSpacing.md),
-        ],
-        TenkaiTextFormField(
-          controller: _titleController,
-          label: 'title',
-          placeholder: 'e.g. Bench press',
-          textInputAction: TextInputAction.next,
-          autofocus: !widget.isEditing,
-        ),
-        const SizedBox(height: TenkaiSpacing.md),
-        TenkaiTextFormField(
-          controller: _descriptionController,
-          label: 'description',
-          placeholder: 'Optional note',
-        ),
-        const SizedBox(height: TenkaiSpacing.md),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            if (!widget.isEditing) ...[
-              Expanded(
-                child: TenkaiTextFormField(
-                  controller: _initialController,
-                  label: 'start',
-                  placeholder: '60',
-                  keyboardType: const TextInputType.numberWithOptions(
-                    decimal: true,
+    return Form(
+      child: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: TenkaiSpacing.md,
+                children: [
+                  if (_error != null) ...[
+                    Text(
+                      _error!,
+                      style: TenkaiTypography.labelSm.copyWith(
+                        color: TenkaiColors.error,
+                      ),
+                    ),
+                  ],
+                  TenkaiTextFormField(
+                    controller: _titleController,
+                    label: 'title',
+                    placeholder: 'e.g. Bench press',
+                    textInputAction: TextInputAction.next,
+                    autofocus: !widget.isEditing,
                   ),
-                ),
-              ),
-              const SizedBox(width: TenkaiSpacing.md),
-            ],
-            Expanded(
-              child: TenkaiTextFormField(
-                controller: _targetController,
-                label: 'target',
-                placeholder: '100',
-                keyboardType: const TextInputType.numberWithOptions(
-                  decimal: true,
-                ),
+                  TenkaiTextFormField(
+                    controller: _descriptionController,
+                    label: 'description',
+                    placeholder: 'Optional note',
+                  ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    spacing: TenkaiSpacing.sm,
+                    children: [
+                      if (!widget.isEditing) ...[
+                        Expanded(
+                          child: TenkaiTextFormField(
+                            controller: _initialController,
+                            label: 'start',
+                            placeholder: '60',
+                            keyboardType: const TextInputType.numberWithOptions(
+                              decimal: true,
+                            ),
+                          ),
+                        ),
+                      ],
+                      Expanded(
+                        child: TenkaiTextFormField(
+                          controller: _targetController,
+                          label: 'target',
+                          placeholder: '100',
+                          keyboardType: const TextInputType.numberWithOptions(
+                            decimal: true,
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: TenkaiTextFormField(
+                          controller: _unitController,
+                          label: 'unit',
+                          placeholder: 'kg',
+                        ),
+                      ),
+                    ],
+                  ),
+                  _DateRow(
+                    label: 'Start date',
+                    date: _startDate,
+                    onPick: () => _pickDate(isStart: true),
+                    onClear: _startDate == null
+                        ? null
+                        : () => setState(() => _startDate = null),
+                  ),
+                  _DateRow(
+                    label: 'End date',
+                    date: _endDate,
+                    onPick: () => _pickDate(isStart: false),
+                    onClear: _endDate == null
+                        ? null
+                        : () => setState(() => _endDate = null),
+                  ),
+                ],
               ),
             ),
-            const SizedBox(width: TenkaiSpacing.md),
-            Expanded(
-              child: TenkaiTextFormField(
-                controller: _unitController,
-                label: 'unit',
-                placeholder: 'kg',
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: TenkaiSpacing.lg),
-        _DateRow(
-          label: 'Start date',
-          date: _startDate,
-          onPick: () => _pickDate(isStart: true),
-          onClear: _startDate == null
-              ? null
-              : () => setState(() => _startDate = null),
-        ),
-        const SizedBox(height: TenkaiSpacing.sm),
-        _DateRow(
-          label: 'End date',
-          date: _endDate,
-          onPick: () => _pickDate(isStart: false),
-          onClear: _endDate == null
-              ? null
-              : () => setState(() => _endDate = null),
-        ),
-        const SizedBox(height: TenkaiSpacing.xl),
-        SizedBox(
-          width: double.infinity,
-          child: FilledButton(
-            onPressed: _submit,
-            child: Text(widget.isEditing ? 'Save' : 'Create goal'),
           ),
-        ),
-      ],
+          SizedBox(
+            width: double.infinity,
+            child: FilledButton(
+              onPressed: _submit,
+              child: Text(widget.isEditing ? 'Save' : 'Create goal'),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

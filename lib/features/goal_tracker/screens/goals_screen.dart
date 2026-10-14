@@ -7,7 +7,6 @@ import 'package:tenkai/core/tokens/tenkai_radius.dart';
 import 'package:tenkai/core/tokens/tenkai_spacing.dart';
 import 'package:tenkai/core/tokens/tenkai_typography.dart';
 import 'package:tenkai/features/goal_tracker/providers/goal_provider.dart';
-import 'package:tenkai/features/goal_tracker/widgets/goal_form.dart';
 import 'package:tenkai/features/goal_tracker/widgets/goal_card.dart';
 import 'package:tenkai/features/goal_tracker/widgets/goal_status_filter.dart';
 
@@ -15,14 +14,6 @@ import 'package:tenkai/features/goal_tracker/widgets/goal_status_filter.dart';
 /// Creating routes through a bottom sheet; each goal opens its detail screen.
 class GoalsScreen extends ConsumerWidget {
   const GoalsScreen({super.key});
-
-  void _openCreateSheet(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      // title: 'New goal',
-      builder: (context) => const GoalForm(),
-    );
-  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -37,7 +28,7 @@ class GoalsScreen extends ConsumerWidget {
         actions: [
           IconButton(
             icon: Icon(Icons.add),
-            onPressed: () => _openCreateSheet(context),
+            onPressed: () => context.push('/goals/new'),
           ),
         ],
       ),
