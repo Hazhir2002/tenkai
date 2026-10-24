@@ -62,6 +62,23 @@ class GoalNotifier extends Notifier<GoalState> {
     );
   }
 
+  Future<void> loadGoalDetails(int id) async {
+    final result = await _db.goalDao.getAllSubGoals(id);
+    state = state.copyWith(
+      goals: state.goals.map((goal) {
+        if (goal.id != id) {
+          return goal;
+        }
+        final updatedGoal = goal.copyWith(
+          subGoals: result
+              .map((subGoal) => GoalModel.fromGoal(subGoal))
+              .toList(),
+        );
+        return updatedGoal;
+      }).toList(),
+    );
+  }
+
   /// Sets the active status filter (pass `null` for the "All" view).
   void setFilter(GoalStatus? filter) {
     state = filter == null ? state : state.copyWith(filter: filter);
@@ -69,6 +86,9 @@ class GoalNotifier extends Notifier<GoalState> {
 
   Future<void> createGoal(GoalsCompanion entry) async {
     final result = await _db.goalDao.createGoal(entry);
+    // if (result.parentGoalId != null) {
+
+    // }
     state = state.copyWith(goals: [...state.goals, GoalModel.fromGoal(result)]);
   }
 

@@ -10,7 +10,16 @@ class GoalDao extends DatabaseAccessor<AppDatabase> with _$GoalDaoMixin {
   GoalDao(super.db);
 
   Future<List<Goal>> getAllGoals() =>
-      (select(goals)..orderBy([(t) => OrderingTerm.asc(t.completedAt)])).get();
+      (select(goals)
+            ..where((tbl) => tbl.parentGoalId.isNull())
+            ..orderBy([(t) => OrderingTerm.asc(t.createdAt)]))
+          .get();
+
+  Future<List<Goal>> getAllSubGoals(int goalId) =>
+      (select(goals)
+            ..where((tbl) => tbl.parentGoalId.equals(goalId))
+            ..orderBy([(t) => OrderingTerm.asc(t.createdAt)]))
+          .get();
 
   Future<Goal> createGoal(GoalsCompanion entry) => transaction(() async {
     return await into(goals).insertReturning(entry);

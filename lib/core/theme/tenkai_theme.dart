@@ -331,6 +331,13 @@ abstract final class TenkaiTheme {
           borderRadius: BorderRadius.circular(TenkaiRadius.md),
         ),
       ),
+
+      pageTransitionsTheme: const PageTransitionsTheme(
+        builders: {
+          TargetPlatform.android: FadeForwardsPageTransitionsBuilder(),
+          TargetPlatform.iOS: FadeForwardsPageTransitionsBuilder(),
+        },
+      ),
     );
   }
 }

@@ -1,24 +1,20 @@
+import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:tenkai/core/database.dart';
 import 'package:tenkai/core/theme/tenkai_semantic_colors.dart';
-import 'package:tenkai/core/tokens/tenkai_colors.dart';
 import 'package:tenkai/core/tokens/tenkai_spacing.dart';
 import 'package:tenkai/core/tokens/tenkai_typography.dart';
 import 'package:tenkai/core/widgets/tenkai_text_form_field.dart';
-import 'package:tenkai/features/goal_tracker/models/goal.dart';
-import 'package:tenkai/features/goal_tracker/params/create_goal_param.dart';
-import 'package:tenkai/features/goal_tracker/params/update_goal_param.dart';
+import 'package:tenkai/features/goal_tracker/models/goal_model.dart';
 import 'package:tenkai/features/goal_tracker/providers/goal_provider.dart';
-import 'package:tenkai/features/goal_tracker/widgets/goal_ui.dart';
 
-/// Bottom-sheet form to create a goal, or edit an existing one when [existing]
-/// is provided. Hosted inside [showTenkaiSheet], so it renders as a plain
-/// column (the sheet supplies the title, scrolling and padding).
 class GoalForm extends ConsumerStatefulWidget {
-  const GoalForm({super.key, this.existing});
+  const GoalForm({super.key, this.existing, this.parentGoalId});
 
-  final Goal? existing;
+  final GoalModel? existing;
+  final int? parentGoalId;
 
   bool get isEditing => existing != null;
 
@@ -27,31 +23,33 @@ class GoalForm extends ConsumerStatefulWidget {
 }
 
 class _GoalFormState extends ConsumerState<GoalForm> {
-  late final TextEditingController _titleController;
-  late final TextEditingController _descriptionController;
-  late final TextEditingController _unitController;
-  late final TextEditingController _initialController;
-  late final TextEditingController _targetController;
+  final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
+  final TextEditingController _unitController = TextEditingController();
+  final TextEditingController _initialController = TextEditingController();
+  final TextEditingController _targetController = TextEditingController();
+  final TextEditingController _currentController = TextEditingController();
+  final TextEditingController _goalValueController = TextEditingController();
 
   DateTime? _startDate;
   DateTime? _endDate;
-  String? _error;
 
   @override
   void initState() {
     super.initState();
     final g = widget.existing;
-    _titleController = TextEditingController(text: g?.title ?? '');
-    _descriptionController = TextEditingController(text: g?.description ?? '');
-    _unitController = TextEditingController(text: g?.unit ?? '');
-    _initialController = TextEditingController(
-      text: g == null ? '' : formatGoalValue(g.initialValue),
-    );
-    _targetController = TextEditingController(
-      text: g == null ? '' : formatGoalValue(g.targetValue),
-    );
-    _startDate = g?.startDate;
-    _endDate = g?.endDate;
+    if (g == null) return;
+    _titleController.text = g.title;
+    _descriptionController.text = g.description ?? '';
+    _unitController.text = g.unit ?? '';
+    _initialController.text = g.initialValue.toString();
+    _targetController.text = g.targetValue != null
+        ? g.targetValue.toString()
+        : '';
+    _currentController.text = g.currentValue.toString();
+    _startDate = g.startDate;
+    _endDate = g.endDate;
   }
 
   @override
@@ -61,6 +59,8 @@ class _GoalFormState extends ConsumerState<GoalForm> {
     _unitController.dispose();
     _initialController.dispose();
     _targetController.dispose();
+    _currentController.dispose();
+    _goalValueController.dispose();
     super.dispose();
   }
 
@@ -86,83 +86,79 @@ class _GoalFormState extends ConsumerState<GoalForm> {
 
   Future<void> _submit() async {
     final title = _titleController.text.trim();
-    if (title.isEmpty) {
-      _fail('Title is required');
-      return;
-    }
+    // if (title.isEmpty) {
+    //   _fail('Title is required');
+    //   return;
+    // }
     final target = double.tryParse(_targetController.text.trim());
-    if (target == null) {
-      _fail('Enter a valid target value');
-      return;
-    }
-    if (_startDate != null &&
-        _endDate != null &&
-        !_endDate!.isAfter(_startDate!)) {
-      _fail('End date must be after the start date');
-      return;
-    }
+    // if (target == null) {
+    //   _fail('Enter a valid target value');
+    //   return;
+    // }
+    // if (_startDate != null &&
+    //     _endDate != null &&
+    //     !_endDate!.isAfter(_startDate!)) {
+    //   _fail('End date must be after the start date');
+    //   return;
+    // }
 
     final unit = _unitController.text.trim();
     final description = _descriptionController.text.trim();
 
     bool ok;
     if (widget.isEditing) {
-      // ok = await ref
-      //     .read(goalProvider.notifier)
-      //     .updateGoal(
-      //       widget.existing!.id,
-      //       UpdateGoalParam(
-      //         title: title,
-      //         description: description,
-      //         unit: unit,
-      //         targetValue: target,
-      //         startDate: _startDate,
-      //         endDate: _endDate,
-      //       ),
-      //     );
+      await ref
+          .read(goalProvider.notifier)
+          .updateGoal(
+            GoalsCompanion(
+              title: Value(title),
+              description: Value(description),
+              // initialValue: Value(initial),
+              targetValue: Value(target),
+              currentValue: Value(double.parse(_currentController.text)),
+              unit: Value(unit),
+              startDate: Value(_startDate),
+              endDate: Value(_endDate),
+            ),
+          );
     } else {
-      final initial = double.tryParse(_initialController.text.trim());
-      if (initial == null) {
-        _fail('Enter a valid starting value');
-        return;
-      }
-      if (initial == target) {
-        _fail('Target must differ from the starting value');
-        return;
-      }
-      // ok = await ref
-      //     .read(goalProvider.notifier)
-      //     .createGoal(
-      //       CreateGoalParam(
-      //         title: title,
-      //         initialValue: initial,
-      //         targetValue: target,
-      //         description: description,
-      //         unit: unit,
-      //         startDate: _startDate,
-      //         endDate: _endDate,
-      //       ),
-      //     );
+      final initial = double.parse(_initialController.text.trim());
+      // if (initial == null) {
+      //   _fail('Enter a valid starting value');
+      //   return;
+      // }
+      // if (initial == target) {
+      //   _fail('Target must differ from the starting value');
+      //   return;
+      // }
+      await ref
+          .read(goalProvider.notifier)
+          .createGoal(
+            GoalsCompanion(
+              title: Value(title),
+              description: Value(description),
+              initialValue: Value(initial),
+              targetValue: Value(target),
+              currentValue: Value(double.parse(_currentController.text)),
+              unit: Value(unit),
+              startDate: Value(_startDate),
+              endDate: Value(_endDate),
+              parentGoalId: Value(widget.parentGoalId),
+              goalValueOnParentGoal: Value(
+                double.tryParse(_goalValueController.text),
+              ),
+            ),
+          );
     }
 
     if (!mounted) return;
-    // if (ok) {
-    //   Navigator.of(context).pop();
-    // } else {
-    //   _fail(ref.read(goalProvider).error ?? 'Something went wrong');
-    // }
-  }
-
-  void _fail(String message) {
-    setState(() => _error = message);
-    HapticFeedback.vibrate();
+    context.pop();
   }
 
   @override
   Widget build(BuildContext context) {
-    final isLoading = ref.watch(goalProvider.select((s) => s.isLoading));
-
     return Form(
+      key: _formkey,
       child: Column(
         children: [
           Expanded(
@@ -172,15 +168,8 @@ class _GoalFormState extends ConsumerState<GoalForm> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 spacing: TenkaiSpacing.md,
                 children: [
-                  if (_error != null) ...[
-                    Text(
-                      _error!,
-                      style: TenkaiTypography.labelSm.copyWith(
-                        color: TenkaiColors.error,
-                      ),
-                    ),
-                  ],
                   TenkaiTextFormField(
+                    isRequired: true,
                     controller: _titleController,
                     label: 'title',
                     placeholder: 'e.g. Bench press',
@@ -191,6 +180,7 @@ class _GoalFormState extends ConsumerState<GoalForm> {
                     controller: _descriptionController,
                     label: 'description',
                     placeholder: 'Optional note',
+                    maxLines: 3,
                   ),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.end,
@@ -199,6 +189,7 @@ class _GoalFormState extends ConsumerState<GoalForm> {
                       if (!widget.isEditing) ...[
                         Expanded(
                           child: TenkaiTextFormField(
+                            isRequired: true,
                             controller: _initialController,
                             label: 'start',
                             placeholder: '60',
@@ -220,11 +211,35 @@ class _GoalFormState extends ConsumerState<GoalForm> {
                       ),
                       Expanded(
                         child: TenkaiTextFormField(
+                          controller: _currentController,
+                          isRequired: true,
+                          label: 'current',
+                          placeholder: '50',
+                          keyboardType: const TextInputType.numberWithOptions(
+                            decimal: true,
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: TenkaiTextFormField(
                           controller: _unitController,
+                          isRequired: true,
                           label: 'unit',
                           placeholder: 'kg',
                         ),
                       ),
+                      if (widget.parentGoalId != null)
+                        Expanded(
+                          child: TenkaiTextFormField(
+                            controller: _goalValueController,
+                            isRequired: true,
+                            label: 'goal value',
+                            placeholder: '0.2',
+                            keyboardType: const TextInputType.numberWithOptions(
+                              decimal: true,
+                            ),
+                          ),
+                        ),
                     ],
                   ),
                   _DateRow(

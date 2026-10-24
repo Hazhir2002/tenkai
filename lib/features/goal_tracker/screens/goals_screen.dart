@@ -1,17 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:tenkai/core/theme/tenkai_semantic_colors.dart';
 import 'package:tenkai/core/tokens/tenkai_colors.dart';
 import 'package:tenkai/core/tokens/tenkai_radius.dart';
 import 'package:tenkai/core/tokens/tenkai_spacing.dart';
-import 'package:tenkai/core/tokens/tenkai_typography.dart';
+import 'package:tenkai/core/widgets/tenkai_empty_state.dart';
 import 'package:tenkai/features/goal_tracker/providers/goal_provider.dart';
 import 'package:tenkai/features/goal_tracker/widgets/goal_card.dart';
 import 'package:tenkai/features/goal_tracker/widgets/goal_status_filter.dart';
 
-/// The "Goals" tab: a filterable list of goals backed by [goalProvider].
-/// Creating routes through a bottom sheet; each goal opens its detail screen.
 class GoalsScreen extends ConsumerWidget {
   const GoalsScreen({super.key});
 
@@ -41,56 +38,59 @@ class GoalsScreen extends ConsumerWidget {
               onSelected: notifier.setFilter,
             ),
             const SizedBox(height: TenkaiSpacing.sm),
-            Expanded(child: _GoalListBody(state: state)),
+            Expanded(
+              child: Builder(
+                builder: (context) {
+                  if (state.isLoading) {
+                    return Center(child: CircularProgressIndicator());
+                  } else if (state.error != null) {
+                    return Text(state.error!);
+                  }
+                  final goals = state.visibleGoals;
+                  if (goals.isEmpty) {
+                    return TenkaiEmptyState(
+                      title: state.filter != null
+                          ? 'No goals here'
+                          : 'No goals yet — set your first one',
+                      description:
+                          'Goals will give meaning to your life and help with daily motivation',
+                      action: FilledButton(
+                        onPressed: () {
+                          context.push('/goals/new');
+                        },
+                        child: Text('Create Goal'),
+                      ),
+                    );
+                  }
+
+                  final notifier = ref.read(goalProvider.notifier);
+                  return RefreshIndicator(
+                    onRefresh: notifier.loadGoals,
+                    child: ListView.builder(
+                      padding: const EdgeInsets.only(
+                        bottom: TenkaiSpacing.xxxl,
+                      ),
+                      itemCount: goals.length,
+                      itemBuilder: (_, index) {
+                        final goal = goals[index];
+                        return Dismissible(
+                          key: ValueKey(goal.id),
+                          direction: DismissDirection.endToStart,
+                          onDismissed: (_) => notifier.deleteGoal(goal.id),
+                          background: _deleteBackground(),
+                          child: GoalCard(
+                            goal: goal,
+                            onTap: () => context.push('/goals/${goal.id}'),
+                          ),
+                        );
+                      },
+                    ),
+                  );
+                },
+              ),
+            ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _GoalListBody extends ConsumerWidget {
-  const _GoalListBody({required this.state});
-
-  final GoalState state;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    if (state.isLoading && state.goals == null) {
-      return const Center(child: CircularProgressIndicator());
-    }
-
-    if (state.error != null && state.goals == null) {
-      return _ErrorState(
-        message: state.error!,
-        onRetry: () => ref.read(goalProvider.notifier).loadGoals(),
-      );
-    }
-
-    final goals = state.visibleGoals;
-    if (goals.isEmpty) {
-      return _EmptyState(hasFilter: state.filter != null);
-    }
-
-    final notifier = ref.read(goalProvider.notifier);
-    return RefreshIndicator(
-      onRefresh: notifier.loadGoals,
-      child: ListView.builder(
-        padding: const EdgeInsets.only(bottom: TenkaiSpacing.xxxl),
-        itemCount: goals.length,
-        itemBuilder: (_, index) {
-          final goal = goals[index];
-          return Dismissible(
-            key: ValueKey(goal.id),
-            direction: DismissDirection.endToStart,
-            onDismissed: (_) => notifier.deleteGoal(goal.id),
-            background: _deleteBackground(),
-            child: GoalCard(
-              goal: goal,
-              onTap: () => context.push('/goals/${goal.id}'),
-            ),
-          );
-        },
       ),
     );
   }
@@ -108,49 +108,4 @@ class _GoalListBody extends ConsumerWidget {
     ),
     child: const Icon(Icons.delete_outline, color: TenkaiColors.error),
   );
-}
-
-class _EmptyState extends StatelessWidget {
-  const _EmptyState({required this.hasFilter});
-
-  final bool hasFilter;
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        hasFilter ? 'No goals here' : 'No goals yet — set your first one',
-        style: TenkaiTypography.bodyMd.copyWith(
-          color: context.tenkai.secondaryForeground,
-        ),
-      ),
-    );
-  }
-}
-
-class _ErrorState extends StatelessWidget {
-  const _ErrorState({required this.message, required this.onRetry});
-
-  final String message;
-  final VoidCallback onRetry;
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            message,
-            textAlign: TextAlign.center,
-            style: TenkaiTypography.bodyMd.copyWith(
-              color: context.tenkai.mutedForeground,
-            ),
-          ),
-          const SizedBox(height: TenkaiSpacing.lg),
-          OutlinedButton(onPressed: onRetry, child: const Text('Retry')),
-        ],
-      ),
-    );
-  }
 }

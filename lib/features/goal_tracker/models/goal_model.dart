@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart';
+import 'package:flutter/material.dart';
 import 'package:tenkai/core/database.dart';
 import 'package:tenkai/features/goal_tracker/enums/goal_pace.dart';
 import 'package:tenkai/features/goal_tracker/enums/goal_status.dart';
@@ -23,6 +24,7 @@ enum GoalDirection {
 
 class GoalModel extends Goal {
   final List<GoalLog> goalLogs;
+  final List<GoalModel> subGoals;
   final GoalStatus status;
   final GoalDirection direction;
   final double percentComplete;
@@ -70,9 +72,14 @@ class GoalModel extends Goal {
     required super.createdAt,
     required super.updatedAt,
     this.goalLogs = const [],
+    this.subGoals = const [],
   });
 
-  factory GoalModel.fromGoal(Goal goal, {List<GoalLog> goalLogs = const []}) {
+  factory GoalModel.fromGoal(
+    Goal goal, {
+    List<GoalLog> goalLogs = const [],
+    List<GoalModel> subGoals = const [],
+  }) {
     return GoalModel(
       id: goal.id,
       title: goal.title,
@@ -92,6 +99,8 @@ class GoalModel extends Goal {
       direction: GoalDirection.increase,
       percentComplete: 0,
       pace: GoalPace.onTrack,
+      goalLogs: goalLogs,
+      subGoals: subGoals,
     );
   }
 
@@ -112,6 +121,7 @@ class GoalModel extends Goal {
     DateTime? createdAt,
     DateTime? updatedAt,
     List<GoalLog>? goalLogs,
+    List<GoalModel>? subGoals,
   }) => GoalModel(
     id: id ?? this.id,
     title: title ?? this.title,
@@ -126,6 +136,7 @@ class GoalModel extends Goal {
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
     goalLogs: goalLogs ?? this.goalLogs,
+    subGoals: subGoals ?? this.subGoals,
     status: status ?? this.status,
     direction: direction,
     percentComplete: percentComplete,
@@ -140,4 +151,21 @@ class GoalModel extends Goal {
 
   static DateTime? _parseDate(dynamic value) =>
       value == null ? null : DateTime.tryParse(value.toString());
+
+  static Widget badge(GoalModel goal) {
+    switch (goal.status) {
+      case GoalStatus.completed:
+        return const Chip(
+          label: Text('Completed'),
+          backgroundColor: Colors.greenAccent,
+        );
+      case GoalStatus.archived:
+        return const Chip(label: Text('Archived'));
+      case GoalStatus.active:
+        if (goal.hasPacing) {
+          return Chip(label: Text(goal.pace.label));
+        }
+        return const Chip(label: Text('Active'));
+    }
+  }
 }

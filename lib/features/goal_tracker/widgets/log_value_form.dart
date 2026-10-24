@@ -7,6 +7,7 @@ import 'package:tenkai/core/tokens/tenkai_spacing.dart';
 import 'package:tenkai/core/tokens/tenkai_typography.dart';
 import 'package:tenkai/core/widgets/tenkai_text_form_field.dart';
 import 'package:tenkai/features/goal_tracker/models/goal.dart';
+import 'package:tenkai/features/goal_tracker/models/goal_model.dart';
 import 'package:tenkai/features/goal_tracker/params/log_value_param.dart';
 import 'package:tenkai/features/goal_tracker/providers/goal_provider.dart';
 import 'package:tenkai/features/goal_tracker/widgets/goal_ui.dart';
@@ -17,7 +18,7 @@ import 'package:tenkai/features/goal_tracker/widgets/goal_ui.dart';
 class LogValueForm extends ConsumerStatefulWidget {
   const LogValueForm({super.key, required this.goal});
 
-  final Goal goal;
+  final GoalModel goal;
 
   @override
   ConsumerState<LogValueForm> createState() => _LogValueFormState();
@@ -29,18 +30,18 @@ class _LogValueFormState extends ConsumerState<LogValueForm> {
   bool _submitting = false;
   String? _error;
 
-  double get _min => widget.goal.initialValue < widget.goal.targetValue
-      ? widget.goal.initialValue
-      : widget.goal.targetValue;
-  double get _max => widget.goal.initialValue > widget.goal.targetValue
-      ? widget.goal.initialValue
-      : widget.goal.targetValue;
+  // double? get _min => widget.goal.initialValue < widget.goal.targetValue
+  //     ? widget.goal.initialValue
+  //     : widget.goal.targetValue;
+  // double? get _max => widget.goal.initialValue > widget.goal.targetValue
+  //     ? widget.goal.initialValue
+  //     : widget.goal.targetValue;
 
   @override
   void initState() {
     super.initState();
     _valueController = TextEditingController(
-      text: formatGoalValue(widget.goal.currentValue),
+      text: widget.goal.currentValue.toString(),
     );
     _valueController.addListener(() => setState(() {}));
   }
@@ -52,10 +53,10 @@ class _LogValueFormState extends ConsumerState<LogValueForm> {
     super.dispose();
   }
 
-  double get _sliderValue {
-    final parsed = double.tryParse(_valueController.text) ?? _min;
-    return parsed.clamp(_min, _max);
-  }
+  // double get _sliderValue {
+  // final parsed = double.tryParse(_valueController.text) ?? _min;
+  // return parsed.clamp(_min, _max);
+  // }
 
   Future<void> _submit() async {
     final value = double.tryParse(_valueController.text.trim());
@@ -118,8 +119,8 @@ class _LogValueFormState extends ConsumerState<LogValueForm> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Current: ${formatGoalValue(goal.currentValue, unit)}  ·  '
-          'Target: ${formatGoalValue(goal.targetValue, unit)}',
+          'Current: ${goal.currentValue}, $unit  ·  '
+          'Target: ${goal.targetValue}, $unit',
           style: TenkaiTypography.bodySmall.copyWith(
             color: context.tenkai.secondaryForeground,
           ),
@@ -143,16 +144,16 @@ class _LogValueFormState extends ConsumerState<LogValueForm> {
                   child: Text(unit, style: TenkaiTypography.labelMd),
                 ),
         ),
-        if (_max > _min) ...[
-          const SizedBox(height: TenkaiSpacing.md),
-          // TenkaiSlider(
-          //   value: _sliderValue,
-          //   min: _min,
-          //   max: _max,
-          //   showValue: false,
-          //   onChanged: (v) => _valueController.text = formatGoalValue(v),
-          // ),
-        ],
+        // if (_max > _min) ...[
+        //   const SizedBox(height: TenkaiSpacing.md),
+        //   // TenkaiSlider(
+        //   //   value: _sliderValue,
+        //   //   min: _min,
+        //   //   max: _max,
+        //   //   showValue: false,
+        //   //   onChanged: (v) => _valueController.text = formatGoalValue(v),
+        //   // ),
+        // ],
         const SizedBox(height: TenkaiSpacing.md),
         TenkaiTextFormField(
           controller: _noteController,

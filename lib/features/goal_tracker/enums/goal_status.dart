@@ -1,3 +1,5 @@
+import 'package:tenkai/features/goal_tracker/models/goal_model.dart';
+
 /// The lifecycle state of a goal, mirrored from the API's PascalCase status.
 ///
 /// Each value knows how to (de)serialize itself ([apiValue]) and how to present

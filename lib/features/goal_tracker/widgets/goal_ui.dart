@@ -22,13 +22,3 @@ extension GoalPaceUi on GoalPace {
     GoalPace.none => TenkaiColors.gray500,
   };
 }
-
-/// Formats a goal value without a trailing `.0` (e.g. `90` not `90.0`), with an
-/// optional [unit] appended.
-String formatGoalValue(double value, [String? unit]) {
-  final rounded = value.roundToDouble();
-  final text = value == rounded
-      ? rounded.toInt().toString()
-      : value.toStringAsFixed(1);
-  return unit == null || unit.isEmpty ? text : '$text $unit';
-}
