@@ -1,8 +1,10 @@
+import 'package:ficonsax/ficonsax.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tenkai/core/database.dart';
+import 'package:tenkai/core/theme/tenkai_semantic_colors.dart';
 import 'package:tenkai/core/tokens/tenkai_spacing.dart';
 import 'package:tenkai/core/tokens/tenkai_typography.dart';
 import 'package:tenkai/core/widgets/tenkai_text_form_field.dart';
@@ -105,6 +107,24 @@ class _HabitFormState extends ConsumerState<HabitForm> {
                     'Cue *'.toUpperCase(),
                     style: theme.textTheme.labelMedium,
                   ),
+                  if (_cueType == HabitCueType.time)
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: TenkaiSpacing.sm),
+                      child: Card(
+                        child: ListTile(
+                          visualDensity: VisualDensity.compact,
+                          leading: Icon(
+                            IconsaxOutline.info_circle,
+                            color: context.tenkai.mutedForeground,
+                          ),
+                          title: Text(
+                            'Habits will form better if it happens after a cue (usually another habit)',
+                            style: theme.textTheme.bodySmall,
+                            softWrap: true,
+                          ),
+                        ),
+                      ),
+                    ),
                   RadioGroup<HabitCueType>(
                     groupValue: _cueType,
                     onChanged: (HabitCueType? value) {

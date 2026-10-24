@@ -1,10 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:tenkai/core/table_mixin.dart';
 
-/// A habit the user is tracking. Built around the Atomic Habits idea that a new
-/// habit is anchored to a *cue* — either "after I finish an existing habit"
-/// (habit stacking, via [cueHabitId]) or "at a scheduled time" (see
-/// `HabitSchedules`). [status] tracks the habit's lifecycle.
 class Habits extends Table with TableMixin {
   TextColumn get title => text().withLength(min: 1, max: 64)();
   TextColumn get description => text().nullable()();

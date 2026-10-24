@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:table_calendar/table_calendar.dart';
 import 'package:tenkai/core/tokens/tenkai_spacing.dart';
 import 'package:tenkai/core/tokens/tenkai_typography.dart';
 import 'package:tenkai/core/providers.dart';
@@ -70,7 +71,6 @@ class HabitScreen extends ConsumerWidget {
           IconButton(
             onPressed: () {
               Navigator.of(context).pop();
-              // showHabitFormSheet(context, ref, editing: habitView);
               context.push('/habits/new');
             },
             icon: Icon(Icons.edit_square),
@@ -132,6 +132,12 @@ class HabitScreen extends ConsumerWidget {
                 ],
               ),
             ],
+
+            TableCalendar(
+              firstDay: DateTime.utc(2010, 10, 16),
+              lastDay: DateTime.utc(2030, 3, 14),
+              focusedDay: DateTime.now(),
+            ),
           ],
         ),
       ),
