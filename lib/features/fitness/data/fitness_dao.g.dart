@@ -8,6 +8,10 @@ mixin _$FitnessDaoMixin on DatabaseAccessor<AppDatabase> {
   $ProgramSessionsTable get programSessions => attachedDatabase.programSessions;
   $SessionExercisesTable get sessionExercises =>
       attachedDatabase.sessionExercises;
+  $SessionLogsTable get sessionLogs => attachedDatabase.sessionLogs;
+  $SessionExerciseLogsTable get sessionExerciseLogs =>
+      attachedDatabase.sessionExerciseLogs;
+  $ExerciseSetLogsTable get exerciseSetLogs => attachedDatabase.exerciseSetLogs;
   FitnessDaoManager get managers => FitnessDaoManager(this);
 }
 
@@ -25,5 +29,17 @@ class FitnessDaoManager {
       $$SessionExercisesTableTableManager(
         _db.attachedDatabase,
         _db.sessionExercises,
+      );
+  $$SessionLogsTableTableManager get sessionLogs =>
+      $$SessionLogsTableTableManager(_db.attachedDatabase, _db.sessionLogs);
+  $$SessionExerciseLogsTableTableManager get sessionExerciseLogs =>
+      $$SessionExerciseLogsTableTableManager(
+        _db.attachedDatabase,
+        _db.sessionExerciseLogs,
+      );
+  $$ExerciseSetLogsTableTableManager get exerciseSetLogs =>
+      $$ExerciseSetLogsTableTableManager(
+        _db.attachedDatabase,
+        _db.exerciseSetLogs,
       );
 }

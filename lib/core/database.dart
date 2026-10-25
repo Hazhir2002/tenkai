@@ -2,9 +2,12 @@ import 'package:drift/drift.dart';
 import 'package:drift_flutter/drift_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:tenkai/features/fitness/data/fitness_dao.dart';
+import 'package:tenkai/features/fitness/data/tables/exercise_set_log.dart';
 import 'package:tenkai/features/fitness/data/tables/program_session.dart';
 import 'package:tenkai/features/fitness/data/tables/program.dart';
 import 'package:tenkai/features/fitness/data/tables/session_exercise.dart';
+import 'package:tenkai/features/fitness/data/tables/session_exercise_log.dart';
+import 'package:tenkai/features/fitness/data/tables/session_log.dart';
 import 'package:tenkai/features/goal_tracker/data/goal_dao.dart';
 import 'package:tenkai/features/goal_tracker/data/tables/goal.dart';
 import 'package:tenkai/features/goal_tracker/data/tables/goal_log.dart';
@@ -46,6 +49,9 @@ part 'database.g.dart';
     SessionExercises,
     Goals,
     GoalLogs,
+    SessionLogs,
+    SessionExerciseLogs,
+    ExerciseSetLogs,
   ],
   daos: [UserDao, JournalDao, HabitDao, BookDao, FitnessDao, GoalDao],
 )
@@ -79,6 +85,11 @@ class AppDatabase extends _$AppDatabase {
       if (from < 7) {
         await m.createTable(goals);
         await m.createTable(goalLogs);
+      }
+      if (from < 8) {
+        await m.createTable(sessionLogs);
+        await m.createTable(sessionExerciseLogs);
+        await m.createTable(exerciseSetLogs);
       }
     },
   );

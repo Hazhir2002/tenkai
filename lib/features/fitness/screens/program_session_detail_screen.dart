@@ -1,5 +1,6 @@
 import 'package:ficonsax/ficonsax.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tenkai/core/widgets/tenkai_empty_state.dart';
 import 'package:tenkai/features/fitness/providers/fitness_provider.dart';
@@ -98,9 +99,9 @@ class _ProgramSessionDetailScreenState
                       subtitle: Text(
                         "${ps.sets} sets with ${ps.repsStart} to ${ps.repsEnd} reps",
                       ),
-                      // onTap: () => context.push(
-                      //   '/fitness/programs/${ps.programId}/${ps.id}',
-                      // ),
+                      onTap: () => context.push(
+                        '/fitness/programs/${widget.programId}/${widget.programSessionId}/${ps.id}',
+                      ),
                       trailing: IconButton(
                         onPressed: () => {
                           ref

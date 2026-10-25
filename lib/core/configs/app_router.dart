@@ -6,6 +6,7 @@ import 'package:tenkai/features/fitness/screens/fitness_screen.dart';
 import 'package:tenkai/features/fitness/screens/program_detail_screen.dart';
 import 'package:tenkai/features/fitness/screens/program_session_detail_screen.dart';
 import 'package:tenkai/features/fitness/screens/programs_screen.dart';
+import 'package:tenkai/features/fitness/screens/session_exercise_detail_screen.dart';
 import 'package:tenkai/features/goal_tracker/screens/create_goal_screen.dart';
 import 'package:tenkai/features/goal_tracker/screens/goal_detail_screen.dart';
 import 'package:tenkai/features/goal_tracker/screens/goals_screen.dart';
@@ -82,6 +83,18 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                                     state.pathParameters['programSessionId']!,
                                   ),
                                 ),
+                            routes: [
+                              GoRoute(
+                                path: ':sessionExerciseId',
+                                builder: (context, state) =>
+                                    SessionExerciseDetailScreen(
+                                      sessionExerciseId: int.parse(
+                                        state
+                                            .pathParameters['sessionExerciseId']!,
+                                      ),
+                                    ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
