@@ -8,7 +8,7 @@ abstract final class TenkaiNotifications {
 
   static const int _welcomeId = 1;
   static const int _programSessionId = 10;
-  static const int _habitId = 100;
+  static const int _habitId = 1000;
   static const int _readingReminderId = 100000;
 
   static bool _initialized = false;
@@ -71,7 +71,7 @@ abstract final class TenkaiNotifications {
     try {
       await AwesomeNotifications().createNotification(
         content: NotificationContent(
-          id: id * _habitId,
+          id: id + _habitId,
           channelKey: _channelKey,
           title: title,
           body: body,

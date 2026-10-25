@@ -176,3 +176,9 @@ List<HabitView> _buildForest(
       if (!visited.contains(id)) buildView(id, 0),
   ];
 }
+
+final habitCompletionProvider =
+    FutureProvider.family<List<HabitCompletion>, int>((ref, habitId) async {
+      final db = ref.read(appDataBaseProvider);
+      return db.habitDao.getAllHabitCompletions(habitId);
+    });

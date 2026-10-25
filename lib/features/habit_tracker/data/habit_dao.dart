@@ -35,6 +35,9 @@ class HabitDao extends DatabaseAccessor<AppDatabase> with _$HabitDaoMixin {
   Future<List<HabitSchedule>> getSchedulesFor(int habitId) =>
       (select(habitSchedules)..where((t) => t.habitId.equals(habitId))).get();
 
+  Future<List<HabitCompletion>> getAllHabitCompletions(int habitId) =>
+      (select(habitCompletions)..where((t) => t.habitId.equals(habitId))).get();
+
   Stream<List<HabitCompletion>> watchCompletionsForDate(String dateKey) =>
       (select(
         habitCompletions,

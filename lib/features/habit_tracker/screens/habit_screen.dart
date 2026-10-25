@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:tenkai/core/database.dart';
 import 'package:tenkai/core/tokens/tenkai_spacing.dart';
 import 'package:tenkai/core/tokens/tenkai_typography.dart';
 import 'package:tenkai/core/providers.dart';
@@ -21,6 +22,9 @@ class HabitScreen extends ConsumerWidget {
     final theme = Theme.of(context);
     final habit = habitView.habit;
     final done = habitView.isDoneToday;
+    final completionsAsync = ref.watch(
+      habitCompletionProvider(habitView.habit.id),
+    );
 
     Future<void> _markDone(BuildContext context, WidgetRef ref) async {
       final db = ref.read(appDataBaseProvider);
@@ -133,10 +137,45 @@ class HabitScreen extends ConsumerWidget {
               ),
             ],
 
-            TableCalendar(
-              firstDay: DateTime.utc(2010, 10, 16),
-              lastDay: DateTime.utc(2030, 3, 14),
-              focusedDay: DateTime.now(),
+            completionsAsync.when(
+              data: (data) {
+                print(data);
+                return TableCalendar<HabitCompletion>(
+                  firstDay: DateTime.utc(2010, 10, 16),
+                  lastDay: DateTime.utc(2030, 3, 14),
+                  focusedDay: DateTime.now(),
+                  daysOfWeekHeight: 24,
+
+                  eventLoader: (day) {
+                    return data
+                        .where(
+                          (completion) =>
+                              isSameDay(completion.completedAt, day),
+                        )
+                        .toList();
+                  },
+
+                  calendarBuilders: CalendarBuilders<HabitCompletion>(
+                    markerBuilder: (context, day, events) {
+                      if (events.isEmpty) return null;
+
+                      return Positioned(
+                        bottom: 1,
+                        child: Container(
+                          width: 6,
+                          height: 6,
+                          decoration: const BoxDecoration(
+                            color: Colors.green,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                );
+              },
+              error: (error, stackTrace) => Text('Error: $error'),
+              loading: () => const CircularProgressIndicator(),
             ),
           ],
         ),

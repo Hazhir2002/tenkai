@@ -1,3 +1,4 @@
+import 'package:drift/drift.dart' show Value;
 import 'package:ficonsax/ficonsax.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -5,9 +6,12 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tenkai/core/database.dart';
 import 'package:tenkai/core/theme/tenkai_semantic_colors.dart';
+import 'package:tenkai/core/tokens/tenkai_radius.dart';
 import 'package:tenkai/core/tokens/tenkai_spacing.dart';
 import 'package:tenkai/core/tokens/tenkai_typography.dart';
 import 'package:tenkai/core/widgets/tenkai_text_form_field.dart';
+import 'package:tenkai/core/widgets/tenkai_time_picker.dart';
+import 'package:tenkai/features/habit_tracker/models/schedule_slot_draft.dart';
 import 'package:tenkai/features/habit_tracker/providers/habit_provider.dart';
 import 'package:tenkai/features/habit_tracker/widgets/schedule_builder.dart';
 
@@ -26,17 +30,18 @@ class HabitForm extends ConsumerStatefulWidget {
 
 class _HabitFormState extends ConsumerState<HabitForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final titleController = TextEditingController();
-  final descController = TextEditingController();
-  HabitStatus? _habitStatus = .building;
-  HabitCueType? _cueType = .time;
+  final _titleController = TextEditingController();
+  final _descController = TextEditingController();
+  HabitStatus _habitStatus = .building;
+  HabitCueType _cueType = .time;
   bool _reminderEnabled = true;
   int? _cueHabitId;
+  ScheduleSlotDraft _slot = ScheduleSlotDraft(hour: 8, minute: 0);
 
   @override
   void dispose() {
-    titleController.dispose();
-    descController.dispose();
+    _titleController.dispose();
+    _descController.dispose();
     super.dispose();
   }
 
@@ -58,14 +63,14 @@ class _HabitFormState extends ConsumerState<HabitForm> {
                   TenkaiTextFormField(
                     isRequired: true,
                     placeholder: 'e.g. Meditate for 2 minutes',
-                    controller: titleController,
+                    controller: _titleController,
                     label: 'Habit',
                   ),
                   const SizedBox(height: 16),
                   TenkaiTextFormField(
                     label: 'Details',
                     placeholder: 'What exactly will you do?',
-                    controller: descController,
+                    controller: _descController,
                     maxLines: 2,
                   ),
                   const SizedBox(height: 20),
@@ -78,7 +83,7 @@ class _HabitFormState extends ConsumerState<HabitForm> {
                     groupValue: _habitStatus,
                     onChanged: (HabitStatus? value) {
                       setState(() {
-                        _habitStatus = value;
+                        _habitStatus = value!;
                       });
                     },
                     child: const Column(
@@ -129,7 +134,7 @@ class _HabitFormState extends ConsumerState<HabitForm> {
                     groupValue: _cueType,
                     onChanged: (HabitCueType? value) {
                       setState(() {
-                        _cueType = value;
+                        _cueType = value!;
                       });
                     },
                     child: const Column(
@@ -162,10 +167,97 @@ class _HabitFormState extends ConsumerState<HabitForm> {
                       ],
                       onSelected: (value) {},
                     ),
+                  if (_cueType == HabitCueType.time)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(
+                                child: GestureDetector(
+                                  onTap: () async {
+                                    final picked = await pickTime(
+                                      context,
+                                      _slot.hour,
+                                      _slot.minute,
+                                    );
+                                    if (picked != null) {
+                                      setState(() {
+                                        _slot.copyWith(
+                                          hour: picked.$1,
+                                          minute: picked.$2,
+                                        );
+                                      });
+                                    }
+                                  },
+                                  behavior: HitTestBehavior.opaque,
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 14,
+                                      vertical: 10,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: context.tenkai.muted,
+                                      borderRadius: BorderRadius.circular(
+                                        TenkaiRadius.control,
+                                      ),
+                                      border: Border.all(
+                                        color: context.tenkai.border,
+                                        width: 1,
+                                      ),
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          formatHm(_slot.hour, _slot.minute),
+                                          style: TenkaiTypography.mono.copyWith(
+                                            color: context.tenkai.foreground,
+                                          ),
+                                        ),
+                                        Icon(
+                                          Icons.access_time,
+                                          size: 16,
+                                          color: context
+                                              .tenkai
+                                              .secondaryForeground,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          Wrap(
+                            spacing: 6,
+                            runSpacing: 6,
+                            children: [
+                              ChoiceChip(
+                                label: Text('Daily'),
+                                selected: _slot.weekday == null,
+                                onSelected: (value) => setState(() {
+                                  (_slot.copyWith(weekday: null));
+                                }),
+                              ),
+                              for (var d = 1; d <= 7; d++)
+                                ChoiceChip(
+                                  label: Text(weekdayLabel(d)),
+                                  selected: _slot.weekday == d,
+                                  onSelected: (value) => setState(() {
+                                    (_slot.copyWith(weekday: d));
+                                  }),
+                                ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
                   // _CuePicker(editingId: widget.editing?.habit.id),
-
-                  // else
-                  //   const ScheduleBuilder(),
                   const SizedBox(height: 20),
                   CheckboxListTile(
                     value: _reminderEnabled,
@@ -184,7 +276,15 @@ class _HabitFormState extends ConsumerState<HabitForm> {
               onPressed: true
                   ? () async {
                       await habitNotifier.createHabit(
-                        HabitsCompanion(),
+                        HabitsCompanion(
+                          title: Value(_titleController.text),
+                          description: Value(_descController.text),
+                          status: Value(_habitStatus.dbValue),
+                          cueType: Value(_cueType.dbValue),
+                          cueHabitId: Value(_cueHabitId),
+                          reminderEnabled: Value(_reminderEnabled),
+                          sortOrder: Value(0),
+                        ),
                         slots: [],
                       );
                       if (context.mounted) {
