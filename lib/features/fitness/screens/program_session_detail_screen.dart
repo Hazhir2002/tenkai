@@ -62,6 +62,15 @@ class _ProgramSessionDetailScreenState
           ),
         ],
       ),
+      persistentFooterButtons: [
+        SizedBox(
+          width: double.infinity,
+          child: FilledButton(
+            onPressed: () => {},
+            child: Text('Start session'),
+          ),
+        ),
+      ],
       body: Builder(
         builder: (context) {
           if (fitnessState.isLoading) {

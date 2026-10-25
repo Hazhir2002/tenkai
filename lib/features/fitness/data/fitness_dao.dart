@@ -40,7 +40,7 @@ class FitnessDao extends DatabaseAccessor<AppDatabase> with _$FitnessDaoMixin {
 
   Future<SessionExercise> getSessionExercise(int sessionExerciseId) => (select(
     sessionExercises,
-  )..where((tbl) => tbl.sessionId.equals(sessionExerciseId))).getSingle();
+  )..where((tbl) => tbl.id.equals(sessionExerciseId))).getSingle();
 
   Future<Program> createProgram(ProgramsCompanion entry) {
     return transaction(() async {
@@ -83,6 +83,9 @@ class FitnessDao extends DatabaseAccessor<AppDatabase> with _$FitnessDaoMixin {
   Future<List<SessionLog>> getAllSessionLogs(int programSessionId) => (select(
     sessionLogs,
   )..where((t) => t.programSessionId.equals(programSessionId))).get();
+
+  Future<SessionLog> getSessionLog(int id) =>
+      (select(sessionLogs)..where((t) => t.id.equals(id))).getSingle();
 
   Future<SessionLog> createSessionLog(SessionLogsCompanion entry) =>
       transaction(() async {
