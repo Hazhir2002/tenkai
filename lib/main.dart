@@ -35,7 +35,7 @@ class TenkaiApp extends ConsumerWidget {
 
     return MaterialApp.router(
       routerConfig: router,
-      theme: TenkaiTheme.light,
+      theme: TenkaiTheme.dark,
       darkTheme: TenkaiTheme.dark,
       themeMode: themeMode,
       title: 'Tenkai',

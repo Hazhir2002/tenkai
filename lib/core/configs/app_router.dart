@@ -2,6 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tenkai/core/widgets/main_shell_wrapper.dart';
+import 'package:tenkai/features/auth/screens/login_screen.dart';
+import 'package:tenkai/features/auth/screens/register_screen.dart';
 import 'package:tenkai/features/fitness/screens/fitness_screen.dart';
 import 'package:tenkai/features/fitness/screens/program_detail_screen.dart';
 import 'package:tenkai/features/fitness/screens/program_session_detail_screen.dart';
@@ -27,10 +29,22 @@ final goRouterProvider = Provider<GoRouter>((ref) {
   ref.onDispose(refresh.dispose);
 
   return GoRouter(
-    initialLocation: '/',
+    initialLocation: '/auth',
     refreshListenable: refresh,
     debugLogDiagnostics: true,
     routes: [
+      GoRoute(
+        path: '/auth',
+        redirect: (context, state) => '/auth/login',
+        routes: [
+          GoRoute(path: '/login', builder: (context, state) => LoginScreen()),
+          GoRoute(
+            path: '/register',
+            builder: (context, state) => RegisterScreen(),
+          ),
+        ],
+      ),
+
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) =>
             MainShellWrapper(navigationShell: navigationShell),

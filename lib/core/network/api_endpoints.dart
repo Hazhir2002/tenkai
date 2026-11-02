@@ -1,6 +1,6 @@
 class ApiEndpoints {
   // static String baseUrl = 'https://api.h4zhir.com/';
-  static String baseUrl = 'http://localhost:8000/';
+  static String baseUrl = 'http://192.168.1.113:8000/';
   static String apiUrl = baseUrl;
 
   // Auth
@@ -8,6 +8,7 @@ class ApiEndpoints {
   static String register = 'auth/register';
   static String refresh = 'auth/refresh';
   static String logout = 'auth/logout';
+  static String me = 'auth/me';
 
   static String searchExercises = '/exercises/search';
 
