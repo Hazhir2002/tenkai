@@ -21,6 +21,7 @@ class ApiEndpoints {
 class TaskEndpoints {
   static String baseUrl = '/tasks';
   String get getTasks => baseUrl;
+  String get getTodaysTasks => '$baseUrl/today';
   String getTask(String id) => '$baseUrl/$id';
   String get createTask => baseUrl;
   String updateTask(String id) => '$baseUrl/$id';

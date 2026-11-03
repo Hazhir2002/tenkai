@@ -21,6 +21,7 @@ import 'package:tenkai/features/knowledge/screens/knowledge_dashboard.dart';
 import 'package:tenkai/features/habit_tracker/models/habit_view.dart';
 import 'package:tenkai/features/habit_tracker/screens/habit_dashboard.dart';
 import 'package:tenkai/features/habit_tracker/screens/habit_screen.dart';
+import 'package:tenkai/features/task_tracker/screens/tasks_screen.dart';
 
 final goRouterProvider = Provider<GoRouter>((ref) {
   // Bridge Riverpod → go_router: bump this whenever the auth status changes so
@@ -132,7 +133,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             routes: [
               GoRoute(
                 path: '/',
-                builder: (context, state) => const HomeScreen(),
+                builder: (context, state) => const TasksScreen(),
               ),
             ],
           ),

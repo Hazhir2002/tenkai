@@ -1,14 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:tenkai/core/theme/tenkai_semantic_colors.dart';
 import 'package:tenkai/core/tokens/tenkai_spacing.dart';
-import 'package:tenkai/core/tokens/tenkai_typography.dart';
 import 'package:tenkai/features/task_tracker/models/task.dart';
 
-/// A single task row: a done-toggle checkbox, the title (struck through when
-/// done), and a metadata line (status · context · due date).
-///
-/// Purely presentational — it reports intent through [onToggleDone] and
-/// [onTap] callbacks and owns no state, keeping it reusable and testable.
 class TaskCard extends StatelessWidget {
   const TaskCard({
     super.key,
@@ -23,7 +16,6 @@ class TaskCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = context.tenkai;
     final subtitle = _subtitle();
 
     return Padding(
@@ -32,47 +24,14 @@ class TaskCard extends StatelessWidget {
         vertical: TenkaiSpacing.xs,
       ),
       child: Card(
-        // interactive: onTap != null,
-        // onTap: onTap,
-        // padding: const EdgeInsets.all(TenkaiSpacing.md),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 2),
-              child: Checkbox(
-                value: task.isDone,
-                onChanged: (value) => onToggleDone(value!),
-              ),
-            ),
-            const SizedBox(width: TenkaiSpacing.md),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    task.title,
-                    style: TenkaiTypography.bodyMd.copyWith(
-                      color: task.isDone ? c.secondaryForeground : c.foreground,
-                      decoration: task.isDone
-                          ? TextDecoration.lineThrough
-                          : null,
-                      decorationColor: c.secondaryForeground,
-                    ),
-                  ),
-                  if (subtitle != null) ...[
-                    const SizedBox(height: 4),
-                    Text(
-                      subtitle,
-                      style: TenkaiTypography.labelSm.copyWith(
-                        color: c.secondaryForeground,
-                      ),
-                    ),
-                  ],
-                ],
-              ),
-            ),
-          ],
+        child: ListTile(
+          onTap: onTap,
+          leading: Checkbox(
+            value: task.isDone,
+            onChanged: (value) => onToggleDone(value!),
+          ),
+          title: Text(task.title),
+          subtitle: subtitle != null ? Text(subtitle) : null,
         ),
       ),
     );
