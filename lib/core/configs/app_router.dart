@@ -35,7 +35,13 @@ final goRouterProvider = Provider<GoRouter>((ref) {
     routes: [
       GoRoute(
         path: '/auth',
-        redirect: (context, state) => '/auth/login',
+        redirect: (context, state) {
+          if (state.fullPath == '/auth') {
+            return '/auth/login';
+          } else {
+            return state.fullPath;
+          }
+        },
         routes: [
           GoRoute(path: '/login', builder: (context, state) => LoginScreen()),
           GoRoute(

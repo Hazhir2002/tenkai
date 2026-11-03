@@ -46,6 +46,7 @@ abstract final class TenkaiTheme {
           side: BorderSide(color: c.border),
           borderRadius: BorderRadius.circular(TenkaiRadius.md),
         ),
+        margin: EdgeInsets.zero,
       ),
 
       // ── App bar ──
@@ -171,9 +172,7 @@ abstract final class TenkaiTheme {
       elevatedButtonTheme: ElevatedButtonThemeData(),
 
       textButtonTheme: TextButtonThemeData(
-        style: ButtonStyle(
-          foregroundColor: WidgetStatePropertyAll(c.foreground),
-        ),
+        style: ButtonStyle(foregroundColor: WidgetStatePropertyAll(c.primary)),
       ),
 
       filledButtonTheme: FilledButtonThemeData(

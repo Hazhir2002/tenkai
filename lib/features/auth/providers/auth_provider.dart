@@ -1,6 +1,7 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tenkai/features/auth/entities/user.dart';
 import 'package:tenkai/features/auth/params/login_params.dart';
+import 'package:tenkai/features/auth/params/register_params.dart';
 import 'package:tenkai/features/auth/repositories/auth_repository.dart';
 
 enum AuthStatus { unknown, unAuthenticated, authenticated }
@@ -40,6 +41,36 @@ class AuthNotifier extends Notifier<AuthState> {
     return const AuthState();
   }
 
+  Future<User?> register(RegisterParams params) async {
+    state = AuthState(
+      isLoading: true,
+      error: null,
+      authStatus: AuthStatus.unknown,
+    );
+    final result = await _authRepository.register(params);
+
+    return result.fold(
+      (error) {
+        state = state.copyWith(
+          isLoading: false,
+          error: error.message,
+          authStatus: AuthStatus.unAuthenticated,
+          user: null,
+        );
+        return null;
+      },
+      (user) {
+        state = state.copyWith(
+          isLoading: false,
+          error: null,
+          authStatus: AuthStatus.unAuthenticated,
+          user: null,
+        );
+        return user;
+      },
+    );
+  }
+
   Future<void> login(LoginParams params) async {
     state = AuthState(
       isLoading: true,
@@ -52,7 +83,7 @@ class AuthNotifier extends Notifier<AuthState> {
         state = state.copyWith(
           isLoading: false,
           error: error.message,
-          authStatus: AuthStatus.authenticated,
+          authStatus: AuthStatus.unAuthenticated,
           user: null,
         ),
       },
@@ -73,7 +104,7 @@ class AuthNotifier extends Notifier<AuthState> {
         state = state.copyWith(
           isLoading: false,
           error: error.message,
-          authStatus: AuthStatus.authenticated,
+          authStatus: AuthStatus.unAuthenticated,
           user: null,
         ),
       },

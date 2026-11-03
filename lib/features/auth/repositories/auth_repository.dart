@@ -8,12 +8,19 @@ import 'package:tenkai/core/services/storage_service.dart';
 import 'package:tenkai/features/auth/models/token_model.dart';
 import 'package:tenkai/features/auth/models/user_model.dart';
 import 'package:tenkai/features/auth/params/login_params.dart';
+import 'package:tenkai/features/auth/params/register_params.dart';
 
 class AuthRepository {
   final DioClient _dioClient;
   final StorageService _storageService;
 
   const AuthRepository(this._dioClient, this._storageService);
+
+  Future<Either<Failure, UserModel>> register(RegisterParams params) =>
+      RepositoryHelper.execute<UserModel>(
+        () => _dioClient.dio.post(ApiEndpoints.register, data: params.toJson()),
+        parser: UserModel.fromJson,
+      );
 
   Future<Either<Failure, void>> login(LoginParams params) async {
     final result = await RepositoryHelper.execute<TokenModel>(

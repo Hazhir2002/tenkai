@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tenkai/core/tokens/tenkai_spacing.dart';
 import 'package:tenkai/features/auth/widgets/login_form.dart';
 
@@ -18,6 +19,18 @@ class LoginScreen extends StatelessWidget {
           children: [
             Text('Welcome back', style: theme.textTheme.titleLarge),
             LoginForm(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text("If you're new"),
+                TextButton(
+                  onPressed: () {
+                    context.go('/auth/register');
+                  },
+                  child: Text('Register'),
+                ),
+              ],
+            ),
           ],
         ),
       ),

@@ -12,6 +12,6 @@ class UserModel extends User {
     id: json['id'],
     email: json['email'],
     username: json['username'],
-    createdAt: json['created_at'],
+    createdAt: DateTime.parse(json['created_at']),
   );
 }
