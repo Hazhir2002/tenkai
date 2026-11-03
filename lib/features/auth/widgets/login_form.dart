@@ -29,10 +29,6 @@ class _LoginFormState extends ConsumerState<LoginForm> {
   Widget build(BuildContext context) {
     final authState = ref.watch(authProvider);
 
-    if (authState.authStatus == AuthStatus.authenticated) {
-      context.go('/');
-    }
-
     return Column(
       spacing: TenkaiSpacing.lg,
       children: [
@@ -57,8 +53,8 @@ class _LoginFormState extends ConsumerState<LoginForm> {
               SizedBox(
                 width: double.infinity,
                 child: FilledButton(
-                  onPressed: () {
-                    ref
+                  onPressed: () async {
+                    final result = await ref
                         .read(authProvider.notifier)
                         .login(
                           LoginParams(
@@ -66,6 +62,9 @@ class _LoginFormState extends ConsumerState<LoginForm> {
                             password: _passwordCtrl.text,
                           ),
                         );
+                    if (result && context.mounted) {
+                      context.go('/');
+                    }
                   },
                   child: Text('login'),
                 ),

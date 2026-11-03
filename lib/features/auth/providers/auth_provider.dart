@@ -71,27 +71,30 @@ class AuthNotifier extends Notifier<AuthState> {
     );
   }
 
-  Future<void> login(LoginParams params) async {
+  Future<bool> login(LoginParams params) async {
     state = AuthState(
       isLoading: true,
       error: null,
       authStatus: AuthStatus.unknown,
     );
     final result = await _authRepository.login(params);
-    result.fold(
-      (error) => {
+    return result.fold(
+      (error) {
         state = state.copyWith(
           isLoading: false,
           error: error.message,
           authStatus: AuthStatus.unAuthenticated,
           user: null,
-        ),
+        );
+        return false;
       },
-      (_) async => {await authenticateUser()},
+      (_) async {
+        return await authenticateUser();
+      },
     );
   }
 
-  Future<void> authenticateUser() async {
+  Future<bool> authenticateUser() async {
     state = state.copyWith(
       isLoading: true,
       error: null,
@@ -99,22 +102,24 @@ class AuthNotifier extends Notifier<AuthState> {
       user: null,
     );
     final result = await _authRepository.authenticateUser();
-    result.fold(
-      (error) => {
+    return result.fold(
+      (error) {
         state = state.copyWith(
           isLoading: false,
           error: error.message,
           authStatus: AuthStatus.unAuthenticated,
           user: null,
-        ),
+        );
+        return false;
       },
-      (user) => {
+      (user) {
         state = state.copyWith(
           isLoading: false,
           error: null,
           authStatus: AuthStatus.authenticated,
           user: user,
-        ),
+        );
+        return true;
       },
     );
   }
